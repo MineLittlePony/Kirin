@@ -1,12 +1,12 @@
 package com.minelittlepony.common.client.gui.style;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IItemProvider;
 
 import java.util.List;
 
 import com.google.common.base.Splitter;
-import com.minelittlepony.common.client.gui.GameGui;
 
 public class Style {
 
@@ -45,7 +45,7 @@ public class Style {
     }
 
     public String getText() {
-        return GameGui.format(text);
+        return I18n.format(text);
     }
 
     public Style setIcon(IItemProvider iitem) {
@@ -70,7 +70,7 @@ public class Style {
      * @param tooltip A tooltip translation string.
      */
     public Style setTooltip(String tooltip) {
-        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(GameGui.format(tooltip)));
+        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.format(tooltip)));
     }
 
     public Style setTooltip(String tooltip, int x, int y) {

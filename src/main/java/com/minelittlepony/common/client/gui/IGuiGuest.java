@@ -4,7 +4,7 @@ public interface IGuiGuest {
 
     void initGui(GuiHost host);
 
-    default boolean drawContents(GuiHost host, int mouseX, int mouseY, float partialTicks) {
+    default boolean render(GuiHost host, int mouseX, int mouseY, float partialTicks) {
         return true;
     }
 

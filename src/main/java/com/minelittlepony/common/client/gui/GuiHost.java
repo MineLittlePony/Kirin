@@ -2,6 +2,12 @@ package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
 
+/**
+ * Host GUI for rendering content independent of itself.
+ *
+ * Useful for supporting stuff like LiteLoader's custom panel,
+ * though ultimately pointless if LiteLoader does end up biting the dust.
+ */
 public class GuiHost extends GameGui {
 
     private final IGuiGuest guest;
@@ -16,9 +22,9 @@ public class GuiHost extends GameGui {
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks) {
-        if (guest.drawContents(this, mouseX, mouseY, partialTicks)) {
-            super.drawContents(mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        if (guest.render(this, mouseX, mouseY, partialTicks)) {
+            super.render(mouseX, mouseY, partialTicks);
         }
     }
 
