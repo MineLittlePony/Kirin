@@ -21,6 +21,7 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -50,11 +51,6 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
-sourceSets {
-    main {
-    }
-}
-
 minecraft {
     mappings channel: project.mappings_channel, version: project.mappings_version + "-" + project.minecraft_version
 
@@ -77,16 +73,16 @@ dependencies {
     minecraft "net.minecraftforge:forge:" + project.minecraft_version + "-" + project.forge_version
 }
 
-manifest {
-    attributes(
-        "Implementation-Version": "${project.version} (git-${project.hash})",
-        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    )
-}
-
 jar {
     from sourceSets.main.output
 
-    classifier 'base'
     extension 'jar'
+
+    manifest {
+        attributes(
+                "Implementation-Version": "${project.version} (git-${project.hash})",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        )
+    }
 }
+install.dependsOn build
