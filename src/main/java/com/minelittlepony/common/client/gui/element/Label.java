@@ -1,7 +1,7 @@
 package com.minelittlepony.common.client.gui.element;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 
 /**
  * A simple label for drawing text to a gui screen.
@@ -22,15 +22,20 @@ public class Label extends Button {
 
         return this;
     }
+    
+    @Override
+    protected boolean isValidClickButton(int button) {
+    	return false;
+    }
 
     @Override
-    protected boolean isPressable(double mouseX, double mouseY) {
+    public boolean isMouseOver(double mouseX, double mouseY) {
         return false;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+        TextRenderer fontRenderer = MinecraftClient.getInstance().textRenderer;
 
         if (center) {
             drawCenteredString(fontRenderer, getStyle().getText(), x, y, getStyle().getColor());

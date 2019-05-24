@@ -1,6 +1,7 @@
 package com.minelittlepony.common.client.gui;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  * Host GUI for rendering content independent of itself.
@@ -13,11 +14,12 @@ public class GuiHost extends GameGui {
     private final IGuiGuest guest;
 
     public GuiHost(IGuiGuest guest) {
+    	super(new TranslatableComponent(guest.getTitle()));
         this.guest = guest;
     }
 
     @Override
-    public void initGui() {
+    public void init() {
         guest.initGui(this);
     }
 
@@ -29,16 +31,12 @@ public class GuiHost extends GameGui {
     }
 
     @Override
-    public void onGuiClosed() {
+    public void onClose() {
         guest.onGuiClosed(this);
     }
 
-    public String getTitle() {
-        return guest.getTitle();
-    }
-
     @Override
-    public <T extends GuiButton> T addButton(T button) {
+    public <T extends AbstractButtonWidget> T addButton(T button) {
         return super.addButton(button);
     }
 

@@ -46,14 +46,14 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     public void render(int mouseX, int mouseY, float partialTicks) {
         super.render(mouseX, mouseY, partialTicks);
 
-        int i = hovered ? 2 : 1;
+        int i = active ? 2 : 1;
         float value = on ? 1 : 0;
-        drawTexturedModalRect(x + (int)(value * (width - 8)), y, 0, 46 + i * 20, 4, 20);
-        drawTexturedModalRect(x + (int)(value * (width - 8)) + 4, y, 196, 46 + i * 20, 4, 20);
+        blit(x + (int)(value * (width - 8)), y, 0, 46 + i * 20, 4, 20);
+        blit(x + (int)(value * (width - 8)) + 4, y, 196, 46 + i * 20, 4, 20);
     }
 
     @Override
-    protected int getHoverState(boolean mouseOver) {
+    protected int getYImage(boolean mouseOver) {
         return 0;
     }
 }

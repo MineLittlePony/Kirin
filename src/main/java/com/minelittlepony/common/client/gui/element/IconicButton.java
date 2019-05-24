@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui.element;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class IconicButton extends Button {
 
@@ -13,7 +13,7 @@ public class IconicButton extends Button {
         super.render(mouseX, mouseY, partialTicks);
 
         if (getStyle().hasIcon()) {
-            Minecraft.getInstance().getItemRenderer().renderItemIntoGUI(getStyle().getIcon(), x + 2, y + 2);
+            MinecraftClient.getInstance().getItemRenderer().renderGuiItem(getStyle().getIcon(), x + 2, y + 2);
         }
     }
 }

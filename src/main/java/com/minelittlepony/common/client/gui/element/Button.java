@@ -9,10 +9,10 @@ import com.minelittlepony.common.client.gui.ITooltipped;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
-public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Button> {
+public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -25,7 +25,7 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     public Button(int x, int y, int width, int height) {
-        super(5000, x, y, width, height, "");
+        super(x, y, width, height, "");
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +36,7 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     public Button setEnabled(boolean enable) {
-        enabled = enable;
+    	active = enable;
         return this;
     }
 
@@ -53,18 +53,17 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     @Override
-    public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
+    public void renderToolTip(MinecraftClient mc, int mouseX, int mouseY) {
         List<String> tooltip = getStyle().getTooltip();
 
-        if (visible && isMouseOver() && tooltip != null) {
-            mc.currentScreen.drawHoveringText(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+        if (visible && isMouseOver(mouseX, mouseY) && tooltip != null) {
+            mc.currentScreen.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
         }
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        displayString = getStyle().getText();
-        packedFGColor = getStyle().getColor();
+    	setMessage(getStyle().getText());
 
         super.render(mouseX, mouseY, partialTicks);
     }
