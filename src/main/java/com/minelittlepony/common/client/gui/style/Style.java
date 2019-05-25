@@ -1,7 +1,7 @@
 package com.minelittlepony.common.client.gui.style;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Language;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemConvertible;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class Style {
     }
 
     public String getText() {
-        return Language.getInstance().translate(text);
+        return I18n.translate(text);
     }
 
     public Style setIcon(ItemConvertible iitem) {
@@ -70,7 +70,7 @@ public class Style {
      * @param tooltip A tooltip translation string.
      */
     public Style setTooltip(String tooltip) {
-        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(Language.getInstance().translate(tooltip)));
+        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.translate(tooltip)));
     }
 
     public Style setTooltip(String tooltip, int x, int y) {

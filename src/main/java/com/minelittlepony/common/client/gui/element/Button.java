@@ -70,7 +70,6 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
         action.accept(this);
     }
 }
