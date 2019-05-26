@@ -10,12 +10,7 @@
     "sources": "https://github.com/MineLittlePony/Kirin"
   },
   "license": "CC0-1.0",
-  "icon": "",
   "environment": "*",
-  "entrypoints": {
-    "main": []
-  },
-  "mixins": [],
   "requires": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
