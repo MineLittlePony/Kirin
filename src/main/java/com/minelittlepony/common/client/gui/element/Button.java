@@ -63,7 +63,9 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
+        long lastNarration = nextNarration;
     	setMessage(getStyle().getText());
+        nextNarration = lastNarration;
 
         super.render(mouseX, mouseY, partialTicks);
     }
