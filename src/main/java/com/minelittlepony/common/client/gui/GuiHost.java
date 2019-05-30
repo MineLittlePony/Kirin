@@ -32,6 +32,7 @@ public class GuiHost extends GameGui {
 
     @Override
     public void onClose() {
+        super.onClose();
         guest.onGuiClosed(this);
     }
 
