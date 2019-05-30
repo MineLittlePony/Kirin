@@ -8,9 +8,12 @@ import javax.annotation.Nonnull;
 import com.minelittlepony.common.client.gui.ITooltipped;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.util.math.MathHelper;
 
 public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IStyled<Button> {
 
@@ -36,7 +39,7 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     public Button setEnabled(boolean enable) {
-    	active = enable;
+        active = enable;
         return this;
     }
 
@@ -62,16 +65,66 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        long lastNarration = nextNarration;
-    	setMessage(getStyle().getText());
-        nextNarration = lastNarration;
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        MinecraftClient mc = MinecraftClient.getInstance();
 
-        super.render(mouseX, mouseY, partialTicks);
+        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+
+        GlStateManager.color4f(1, 1, 1, alpha);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+        int state = 46 + getYImage(isHovered()) * 20;
+
+        renderButtonBlit(x, y, state, width, height);
+
+        renderBg(mc, mouseX, mouseY);
+
+        int foreColor = getStyle().getColor();
+        if (!active) {
+            foreColor = 10526880;
+        } else if (isHovered()) {
+            foreColor = 16777120;
+        }
+
+        setMessage(getStyle().getText());
+        renderForground(mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255.0F) << 24);
+    }
+
+    protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+        TextRenderer font = mc.textRenderer;
+
+        drawCenteredString(font, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
         action.accept(this);
     }
+
+    protected final void renderButtonBlit(int x, int y, int state, int blockWidth, int blockHeight) {
+
+        int endV = 200 - blockWidth/2;
+        int endU = state + blockHeight - 2;
+
+        blit(x,                y,
+                0, state,
+                blockWidth/2, blockHeight/2);
+        blit(x + blockWidth/2, y,
+                endV, state,
+                blockWidth/2, blockHeight/2);
+
+        blit(x,                y + blockHeight/2,
+                0, endU,
+                blockWidth/2, blockHeight/2);
+        blit(x + blockWidth/2, y + blockHeight/2,
+                endV, endU,
+                blockWidth/2, blockHeight/2);
+    }
+
 }
