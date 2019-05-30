@@ -18,7 +18,7 @@ public class Style {
     private List<String> tooltip;
 
     private String text = "";
-    private int color;
+    private int color = 0xFFFFFFFF;
 
     public ItemStack getIcon() {
         return icon;
