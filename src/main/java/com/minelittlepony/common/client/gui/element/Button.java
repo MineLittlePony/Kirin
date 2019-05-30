@@ -110,7 +110,7 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     protected final void renderButtonBlit(int x, int y, int state, int blockWidth, int blockHeight) {
 
         int endV = 200 - blockWidth/2;
-        int endU = state + blockHeight - 2;
+        int endU = state + 20 - blockHeight/2;
 
         blit(x,                y,
                 0, state,
