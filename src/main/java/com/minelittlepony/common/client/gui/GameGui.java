@@ -21,8 +21,8 @@ public abstract class GameGui extends Screen {
         super.render(mouseX, mouseY, partialTicks);
 
         buttons.forEach(button -> {
-            if (button instanceof ITooltipped) {
-                ((ITooltipped<?>)button).renderToolTip(minecraft, mouseX, mouseY);
+            if (button instanceof ITooltipped && button.isMouseOver(mouseX, mouseY)) {
+                ((ITooltipped<?>)button).renderToolTip(this, mouseX, mouseY);
             }
         });
     }

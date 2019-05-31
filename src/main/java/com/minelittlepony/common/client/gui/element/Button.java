@@ -6,18 +6,23 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
 import com.minelittlepony.common.client.gui.ITooltipped;
+import com.minelittlepony.common.client.gui.dimension.Bounds;
+import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.util.math.MathHelper;
 
-public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IStyled<Button> {
+public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, IStyled<Button> {
 
     private Style style = new Style();
+    
+    private final Bounds bounds;
 
     private static final Consumer<Button> NONE = v -> {};
     @Nonnull
@@ -29,6 +34,8 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
 
     public Button(int x, int y, int width, int height) {
         super(x, y, width, height, "");
+
+        bounds = new Bounds(y, x, width, height);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,11 +63,16 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     @Override
-    public void renderToolTip(MinecraftClient mc, int mouseX, int mouseY) {
+    public Bounds getBounds() {
+        return bounds;
+    }
+
+    @Override
+    public void renderToolTip(Screen parent, int mouseX, int mouseY) {
         List<String> tooltip = getStyle().getTooltip();
 
-        if (visible && isMouseOver(mouseX, mouseY) && tooltip != null) {
-            mc.currentScreen.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+        if (visible && tooltip != null) {
+            parent.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
         }
     }
 

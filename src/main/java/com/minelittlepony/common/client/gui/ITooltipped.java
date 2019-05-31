@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Screen;
 
 /**
  * Interface element that renders a tooltip when hovered.
@@ -13,5 +13,5 @@ public interface ITooltipped<T extends ITooltipped<T>> {
     /**
      * Draws this element's tooltip.
      */
-    void renderToolTip(MinecraftClient mc, int mouseX, int mouseY);
+    void renderToolTip(Screen parent, int mouseX, int mouseY);
 }
