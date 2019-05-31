@@ -1,87 +1,84 @@
+// Frabric build script
+// 24/05/2019
+// https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
+
 buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name 'forge'
-            url 'http://files.minecraftforge.net/maven'
-        }
-        maven {
-            name = 'sponge'
-            url = 'https://repo.spongepowered.org/maven'
-        }
+  repositories {
+    jcenter()
+    maven {
+      name = 'Fabric'
+      url = 'https://maven.fabricmc.net/'
     }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-    }
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath 'fabric-loom:fabric-loom.gradle.plugin:0.2.2-SNAPSHOT'
+    classpath 'org.ajoberstar.grgit:grgit-gradle:3.1.1'
+  }
 }
 
-plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
-}
+apply plugin: 'fabric-loom'
+apply plugin: 'org.ajoberstar.grgit'
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-
-// From the forge MDK: Need this here so eclipse task generates correctly.
-targetCompatibility = compileJava.targetCompatibility = 1.8
-sourceCompatibility = compileJava.sourceCompatibility = 1.8
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 ext {
-    revision = grgit.log().size()
-    hash = grgit.head().abbreviatedId
+  if (grgit == null) {
+    revision = "nogit"
+  } else {
+    revision = "${grgit.log().size()}-${grgit.head().abbreviatedId}"
     if (file('.git/shallow').exists()) {
-        // don't clone with --depth
-        revision = -1
-        hash += " shallow"
+      // don't clone with --depth
+      revision = "-1-${shallow}"
     }
+  }
 }
 
 version = "${project.minecraft_version}.${project.version}"
 
 if (project.release != 'RELEASE') {
-    version += "-${project.release}"
+  version += "-${project.release}"
 }
 if (project.release == 'SNAPSHOT') {
-    version += "-${project.revision}-${project.hash}"
+  version += "-${project.revision}"
 }
 
 group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
-minecraft {
-    mappings channel: project.mappings_channel, version: project.mappings_version + "-" + project.minecraft_version
+dependencies {
+  minecraft "com.mojang:minecraft:${project.minecraft_version}"
+  mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+  modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+  compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'SCAN'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                kirin {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+  modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 }
 
-dependencies {
-    minecraft "net.minecraftforge:forge:" + project.minecraft_version + "-" + project.forge_version
+processResources {
+  inputs.property "version", project.version
+
+  from(sourceSets.main.resources.srcDirs) {
+    include "fabric.mod.json"
+    expand "version": project.version
+  }
+
+  from(sourceSets.main.resources.srcDirs) {
+    exclude "fabric.mod.json"
+  }
+}
+
+tasks.withType(JavaCompile) {
+  options.encoding = "UTF-8"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = "sources"
+  from sourceSets.main.allSource
 }
 
 jar {
-    from sourceSets.main.output
-
-    extension 'jar'
-
-    manifest {
-        attributes(
-                "Implementation-Version": "${project.version} (git-${project.hash})",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        )
-    }
+  from "LICENSE"
 }
-install.dependsOn build

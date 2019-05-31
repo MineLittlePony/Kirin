@@ -1,8 +1,8 @@
 package com.minelittlepony.common.client.gui.style;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemConvertible;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class Style {
     private List<String> tooltip;
 
     private String text = "";
-    private int color;
+    private int color = 0xFFFFFFFF;
 
     public ItemStack getIcon() {
         return icon;
@@ -45,10 +45,10 @@ public class Style {
     }
 
     public String getText() {
-        return I18n.format(text);
+        return I18n.translate(text);
     }
 
-    public Style setIcon(IItemProvider iitem) {
+    public Style setIcon(ItemConvertible iitem) {
         return setIcon(new ItemStack(iitem));
     }
 
@@ -59,7 +59,7 @@ public class Style {
     }
 
     public Style setIcon(ItemStack stack, int colour) {
-        stack.getOrCreateChildTag("display").putInt("color", colour);
+        stack.getOrCreateSubCompoundTag("display").putInt("color", colour);
         return setIcon(stack);
     }
 
@@ -70,7 +70,7 @@ public class Style {
      * @param tooltip A tooltip translation string.
      */
     public Style setTooltip(String tooltip) {
-        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.format(tooltip)));
+        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.translate(tooltip)));
     }
 
     public Style setTooltip(String tooltip, int x, int y) {

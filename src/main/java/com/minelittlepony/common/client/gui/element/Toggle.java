@@ -2,6 +2,9 @@ package com.minelittlepony.common.client.gui.element;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+
 import com.minelittlepony.common.client.gui.IField;
 
 public class Toggle extends Button implements IField<Boolean, Toggle> {
@@ -12,7 +15,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     private IChangeCallback<Boolean> action = IChangeCallback::none;
 
     public Toggle(int x, int y, boolean value) {
-        super(x, y, 20, 20);
+        super(x, y, 30, 15);
 
         on = value;
     }
@@ -23,6 +26,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
         return this;
     }
 
+    @Override
     public Boolean getValue() {
         return on;
     }
@@ -43,17 +47,27 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    protected void renderBg(MinecraftClient mc, int mouseX, int mouseY) {
+        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 
-        int i = hovered ? 2 : 1;
-        float value = on ? 1 : 0;
-        drawTexturedModalRect(x + (int)(value * (width - 8)), y, 0, 46 + i * 20, 4, 20);
-        drawTexturedModalRect(x + (int)(value * (width - 8)) + 4, y, 196, 46 + i * 20, 4, 20);
+        int i = 46 + (isHovered() ? 2 : 1) * 20;
+        int sliderX = x + (int)((on ? 1 : 0) * (width - 8));
+
+        renderButtonBlit(sliderX, y, i, 8, height);
     }
 
     @Override
-    protected int getHoverState(boolean mouseOver) {
+    protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+        TextRenderer font = mc.textRenderer;
+
+        int textY = (int)(y + font.fontHeight / 2);
+        int textX = x + width + 10;
+
+        drawString(font, getStyle().getText(), textX, textY, foreColor);
+    }
+
+    @Override
+    protected int getYImage(boolean mouseOver) {
         return 0;
     }
 }

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "kirin",
+  "version": "${version}",
+  "name": "Kirin UI",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [ "Sollace" ],
+  "contact": {
+    "homepage": "https://minelittlepony-mod.com/",
+    "sources": "https://github.com/MineLittlePony/Kirin"
+  },
+  "license": "CC0-1.0",
+  "environment": "*",
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}

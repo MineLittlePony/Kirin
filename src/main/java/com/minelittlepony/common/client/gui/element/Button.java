@@ -8,11 +8,14 @@ import javax.annotation.Nonnull;
 import com.minelittlepony.common.client.gui.ITooltipped;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
+import com.mojang.blaze3d.platform.GlStateManager;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.util.math.MathHelper;
 
-public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Button> {
+public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -25,7 +28,7 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     public Button(int x, int y, int width, int height) {
-        super(5000, x, y, width, height, "");
+        super(x, y, width, height, "");
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +39,7 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     public Button setEnabled(boolean enable) {
-        enabled = enable;
+        active = enable;
         return this;
     }
 
@@ -53,25 +56,75 @@ public class Button extends GuiButton implements ITooltipped<Button>, IStyled<Bu
     }
 
     @Override
-    public void renderToolTip(Minecraft mc, int mouseX, int mouseY) {
+    public void renderToolTip(MinecraftClient mc, int mouseX, int mouseY) {
         List<String> tooltip = getStyle().getTooltip();
 
-        if (visible && isMouseOver() && tooltip != null) {
-            mc.currentScreen.drawHoveringText(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+        if (visible && isMouseOver(mouseX, mouseY) && tooltip != null) {
+            mc.currentScreen.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
         }
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        displayString = getStyle().getText();
-        packedFGColor = getStyle().getColor();
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        MinecraftClient mc = MinecraftClient.getInstance();
 
-        super.render(mouseX, mouseY, partialTicks);
+        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+
+        GlStateManager.color4f(1, 1, 1, alpha);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFunc(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+
+        int state = 46 + getYImage(isHovered()) * 20;
+
+        renderButtonBlit(x, y, state, width, height);
+
+        renderBg(mc, mouseX, mouseY);
+
+        int foreColor = getStyle().getColor();
+        if (!active) {
+            foreColor = 10526880;
+        } else if (isHovered()) {
+            foreColor = 16777120;
+        }
+
+        setMessage(getStyle().getText());
+        renderForground(mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255.0F) << 24);
+    }
+
+    protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+        TextRenderer font = mc.textRenderer;
+
+        drawCenteredString(font, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
         action.accept(this);
     }
+
+    protected final void renderButtonBlit(int x, int y, int state, int blockWidth, int blockHeight) {
+
+        int endV = 200 - blockWidth/2;
+        int endU = state + 20 - blockHeight/2;
+
+        blit(x,                y,
+                0, state,
+                blockWidth/2, blockHeight/2);
+        blit(x + blockWidth/2, y,
+                endV, state,
+                blockWidth/2, blockHeight/2);
+
+        blit(x,                y + blockHeight/2,
+                0, endU,
+                blockWidth/2, blockHeight/2);
+        blit(x + blockWidth/2, y + blockHeight/2,
+                endV, endU,
+                blockWidth/2, blockHeight/2);
+    }
+
 }
