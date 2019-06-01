@@ -2,10 +2,11 @@ package com.minelittlepony.common.client.gui.element;
 
 import javax.annotation.Nonnull;
 
+import com.minelittlepony.common.client.gui.IField;
+import com.minelittlepony.common.client.gui.dimension.Bounds;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-
-import com.minelittlepony.common.client.gui.IField;
 
 public class Toggle extends Button implements IField<Boolean, Toggle> {
 
@@ -41,6 +42,20 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
+    public Bounds getBounds() {
+        Bounds bounds = super.getBounds();
+
+        // The text label sits outside the bounds of the main toggle widget,
+        // so we have to include that in our calculations.
+        String label = getStyle().getText();
+        int labelWidth = MinecraftClient.getInstance().textRenderer.getStringWidth(label);
+
+        bounds.width = labelWidth > 0 ? Math.max(bounds.width, width + 10 + labelWidth) : width;
+
+        return bounds;
+    }
+
+    @Override
     public void onClick(double mouseX, double mouseY) {
         super.onClick(mouseX, mouseY);
         setValue(!on);
@@ -51,7 +66,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
         mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 
         int i = 46 + (isHovered() ? 2 : 1) * 20;
-        int sliderX = x + (int)((on ? 1 : 0) * (width - 8));
+        int sliderX = x + (on ? 1 : 0) * (width - 8);
 
         renderButtonBlit(sliderX, y, i, 8, height);
     }
@@ -60,7 +75,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         TextRenderer font = mc.textRenderer;
 
-        int textY = (int)(y + font.fontHeight / 2);
+        int textY = y + font.fontHeight / 2;
         int textX = x + width + 10;
 
         drawString(font, getStyle().getText(), textX, textY, foreColor);
