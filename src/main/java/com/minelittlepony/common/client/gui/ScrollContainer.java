@@ -65,8 +65,8 @@ public class ScrollContainer extends GameGui implements IBounded {
             GlStateManager.translated(0, -scroll + padding.top, 0);
 
             super.render(
-                    mouseX + getMouseXOffset(),
-                    mouseY + getMouseYOffset(),
+                    mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
+                    mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
             GlStateManager.popMatrix();
 
@@ -129,7 +129,7 @@ public class ScrollContainer extends GameGui implements IBounded {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return getBounds().contains(mouseX - margin.left, mouseY - margin.top);
+        return getBounds().contains(mouseX, mouseY);
     }
 
     public Bounds getContentBounds() {
