@@ -1,32 +1,30 @@
 package com.minelittlepony.common.client.gui.element;
 
 import com.minelittlepony.common.client.gui.GameGui;
+import com.minelittlepony.common.client.gui.dimension.Bounds;
+import com.minelittlepony.common.client.gui.dimension.IBounded;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
-public class Scrollbar extends DrawableHelper implements Element {
+public class Scrollbar extends DrawableHelper implements Element, IBounded {
 
     private boolean dragging = false;
     private boolean touching = false;
 
     private int scrollY = 0;
 
-    private int thickness = 6;
-
     private double scrollMomentum = 0;
     private float scrollFactor = 0;
+
+    private final Bounds bounds = new Bounds(0, 0, 6, 0);
 
     private int maxScrollY = 0;
     private int shiftFactor = 0;
 
-    private int elementHeight;
     private int contentHeight;
-
-    private int x;
-    private int y;
 
     private double initialMouseY;
 
@@ -35,9 +33,9 @@ public class Scrollbar extends DrawableHelper implements Element {
     }
 
     public void reposition(int x, int y, int elementHeight, int contentHeight) {
-        this.x = x;
-        this.y = y;
-        this.elementHeight = elementHeight;
+        bounds.left = x;
+        bounds.top = y;
+        bounds.height = elementHeight;
         this.contentHeight = contentHeight;
 
         maxScrollY = contentHeight - elementHeight;
@@ -65,7 +63,7 @@ public class Scrollbar extends DrawableHelper implements Element {
                 shiftFactor = computeShiftFactor(mouseX, mouseY);
             }
         }
-        
+
         if (maxScrollY <= 0) {
             return;
         }
@@ -74,11 +72,11 @@ public class Scrollbar extends DrawableHelper implements Element {
     }
 
     protected void renderVertical() {
-        int scrollbarHeight = getScrubberLength(elementHeight, contentHeight);
-        int scrollbarTop = (int)getScrubberStart(scrollbarHeight, elementHeight, contentHeight);
+        int scrollbarHeight = getScrubberLength(bounds.height, contentHeight);
+        int scrollbarTop = getScrubberStart(scrollbarHeight, bounds.height, contentHeight);
 
-        renderBackground(y, x, y + elementHeight, x + thickness);
-        renderBar(x, x + thickness, scrollbarTop, scrollbarTop + scrollbarHeight);
+        renderBackground(bounds.top, bounds.left, bounds.top + bounds.height, bounds.left + bounds.width);
+        renderBar(bounds.left, bounds.left + bounds.width, scrollbarTop, scrollbarTop + scrollbarHeight);
     }
 
     protected int getScrubberStart(int scrollbarHeight, int elementHeight, int contentHeight) {
@@ -86,7 +84,7 @@ public class Scrollbar extends DrawableHelper implements Element {
             return 0;
         }
 
-        int scrollbarTop = y + getScrollAmount() * (elementHeight - scrollbarHeight) / maxScrollY;
+        int scrollbarTop = bounds.top + getScrollAmount() * (elementHeight - scrollbarHeight) / maxScrollY;
         if (scrollbarTop < 0) {
             return 0;
         }
@@ -95,13 +93,6 @@ public class Scrollbar extends DrawableHelper implements Element {
 
     protected int getScrubberLength(int elementL, int contentL) {
         return MathHelper.clamp(elementL * elementL / contentL, 32, elementL - 8);
-    }
-
-    public boolean isFocused(double mouseX, double mouseY) {
-        return mouseY >= y
-            && mouseY <= y + elementHeight
-            && mouseX >= (x - 10)
-            && mouseX <= (x + thickness + 1);
     }
 
     private void renderBackground(int top, int left, int bottom, int right) {
@@ -116,8 +107,8 @@ public class Scrollbar extends DrawableHelper implements Element {
     private int computeShiftFactor(double mouseX, double mouseY) {
         double pos = mouseY;
 
-        int scrubberLength = getScrubberLength(elementHeight, contentHeight);
-        int scrubberStart = getScrubberStart(scrubberLength, elementHeight, contentHeight);
+        int scrubberLength = getScrubberLength(bounds.height, contentHeight);
+        int scrubberStart = getScrubberStart(scrubberLength, bounds.height, contentHeight);
 
         if (pos < scrubberStart) {
             return 1;
@@ -132,7 +123,7 @@ public class Scrollbar extends DrawableHelper implements Element {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         mouseY -= getScrollAmount();
 
-        if (!isFocused(mouseX, mouseY)) {
+        if (!isMouseOver(mouseX, mouseY)) {
             touching = true;
             return isMouseOver(mouseX, mouseY);
         }
@@ -146,7 +137,7 @@ public class Scrollbar extends DrawableHelper implements Element {
 
         return isMouseOver(mouseX, mouseY);
     }
-    
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int int_1, double differX, double differY) {
         mouseY -= getScrollAmount();
@@ -160,7 +151,7 @@ public class Scrollbar extends DrawableHelper implements Element {
         }
 
         initialMouseY = mouseY;
-        
+
         return isMouseOver(mouseX, mouseY);
     }
 
@@ -168,7 +159,7 @@ public class Scrollbar extends DrawableHelper implements Element {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = touching = false;
         shiftFactor = 0;
-        
+
         return isMouseOver(mouseX, mouseY - getScrollAmount());
     }
 
@@ -178,7 +169,12 @@ public class Scrollbar extends DrawableHelper implements Element {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-       return mouseX >= x && mouseX <= (x + thickness);
+       return getBounds().contains(mouseX, mouseY);
+    }
+
+    @Override
+    public Bounds getBounds() {
+        return bounds;
     }
 
 }
