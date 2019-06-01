@@ -17,8 +17,8 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
     @Nonnull
     private IChangeCallback<Integer> action = IChangeCallback::none;
 
-    public IconicToggle(int x, int y) {
-        super(x, y);
+    public IconicToggle(int x, int y, int width, int height) {
+        super(x, y, width, height);
     }
 
     @Override
