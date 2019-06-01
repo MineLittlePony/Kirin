@@ -1,5 +1,7 @@
 package com.minelittlepony.common.client.gui.element;
 
+import com.minelittlepony.common.client.gui.dimension.Bounds;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 
@@ -22,7 +24,21 @@ public class Label extends Button {
 
         return this;
     }
-    
+
+    @Override
+    public Bounds getBounds() {
+        Bounds bounds = super.getBounds();
+
+        TextRenderer fonts = MinecraftClient.getInstance().textRenderer;
+
+        bounds.width = fonts.getStringWidth(getStyle().getText());
+        if (this.center) {
+            bounds.left = x - bounds.width/2;
+        }
+
+        return bounds;
+    }
+
     @Override
     protected boolean isValidClickButton(int button) {
     	return false;
@@ -36,11 +52,12 @@ public class Label extends Button {
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         TextRenderer fontRenderer = MinecraftClient.getInstance().textRenderer;
+        int textY = (int)(y + fontRenderer.fontHeight/1.5F);
 
         if (center) {
-            drawCenteredString(fontRenderer, getStyle().getText(), x, y, getStyle().getColor());
+            drawCenteredString(fontRenderer, getStyle().getText(), x, textY, getStyle().getColor());
         } else {
-            drawString(fontRenderer, getStyle().getText(), x, y, getStyle().getColor());
+            drawString(fontRenderer, getStyle().getText(), x, textY, getStyle().getColor());
         }
     }
 }

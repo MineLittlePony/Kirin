@@ -40,6 +40,15 @@ public class Bounds {
         );
     }
 
+    public Bounds offset(Padding other) {
+        return new Bounds(
+            top + other.top,
+            left + other.left,
+            width,
+            height
+        );
+    }
+
     public Bounds add(Bounds other) {
 
         if (other.isEmpty()) {
