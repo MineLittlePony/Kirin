@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 
 /**
  * Interface element that renders a tooltip when hovered.
