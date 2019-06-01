@@ -30,6 +30,8 @@ public class ScrollContainer extends GameGui implements IBounded {
     public void init() {
         width = getBounds().width = minecraft.window.getScaledWidth() - margin.left - margin.right;
         height = getBounds().height = minecraft.window.getScaledHeight() - margin.top - margin.bottom;
+        getBounds().top = margin.top;
+        getBounds().left = margin.left;
 
         Bounds content = getContentBounds();
 
