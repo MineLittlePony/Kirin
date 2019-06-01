@@ -21,7 +21,7 @@ import net.minecraft.util.math.MathHelper;
 public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, IStyled<Button> {
 
     private Style style = new Style();
-    
+
     private final Bounds bounds;
 
     private static final Consumer<Button> NONE = v -> {};
@@ -102,6 +102,10 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
             foreColor = 10526880;
         } else if (isHovered()) {
             foreColor = 16777120;
+        }
+
+        if (getStyle().hasIcon()) {
+            getStyle().getIcon().render(x, y, mouseX, mouseY, partialTicks);
         }
 
         setMessage(getStyle().getText());

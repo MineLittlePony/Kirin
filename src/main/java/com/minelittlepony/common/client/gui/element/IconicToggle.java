@@ -6,7 +6,7 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
-public class IconicToggle extends IconicButton implements IMultiStyled<IconicToggle>, IField<Integer, IconicToggle> {
+public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, IField<Integer, IconicToggle> {
 
     private Style[] styles = new Style[] {
             getStyle()
@@ -33,6 +33,7 @@ public class IconicToggle extends IconicButton implements IMultiStyled<IconicTog
         return value;
     }
 
+    @Override
     public IconicToggle setValue(Integer value) {
         if (this.value != value) {
             this.value = action.perform(value) % styles.length;
@@ -62,5 +63,4 @@ public class IconicToggle extends IconicButton implements IMultiStyled<IconicTog
         setValue(value + 1);
         super.onClick(mouseX, mouseY);
     }
-
 }

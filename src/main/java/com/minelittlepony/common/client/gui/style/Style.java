@@ -1,16 +1,18 @@
 package com.minelittlepony.common.client.gui.style;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.ItemConvertible;
-
 import java.util.List;
 
 import com.google.common.base.Splitter;
+import com.minelittlepony.common.client.gui.sprite.ISprite;
+import com.minelittlepony.common.client.gui.sprite.ItemStackSprite;
+
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 
 public class Style {
 
-    private ItemStack icon = ItemStack.EMPTY;
+    private ISprite icon = ISprite.EMPTY;
 
     public int toolTipX = 0;
     public int toolTipY = 0;
@@ -20,12 +22,12 @@ public class Style {
     private String text = "";
     private int color = 0xFFFFFFFF;
 
-    public ItemStack getIcon() {
+    public ISprite getIcon() {
         return icon;
     }
 
     public boolean hasIcon() {
-        return !getIcon().isEmpty();
+        return getIcon() != ISprite.EMPTY;
     }
 
     public Style setColor(int color) {
@@ -49,18 +51,21 @@ public class Style {
     }
 
     public Style setIcon(ItemConvertible iitem) {
-        return setIcon(new ItemStack(iitem));
+        return setIcon(new ItemStackSprite().setStack(iitem));
     }
 
     public Style setIcon(ItemStack stack) {
-        icon = stack;
+        return setIcon(new ItemStackSprite().setStack(stack));
+    }
+
+    public Style setIcon(ISprite sprite) {
+        icon = sprite;
 
         return this;
     }
 
     public Style setIcon(ItemStack stack, int colour) {
-        stack.getOrCreateSubCompoundTag("display").putInt("color", colour);
-        return setIcon(stack);
+        return setIcon(new ItemStackSprite().setStack(stack).setTint(colour));
     }
 
     /**
