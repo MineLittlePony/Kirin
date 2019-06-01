@@ -1,5 +1,9 @@
 # Kirin UI
 
+[![Build Status](https://travis-ci.org/MineLittlePony/Kirin.svg?branch=master)](https://travis-ci.org/MineLittlePony/Kirin)
+[![Jitpack](https://jitpack.io/v/MineLittlePony/Kirin.svg)](https://jitpack.io/#MineLittlePony/Kirin)
+
+
 Embedded common code used across several Mine Little Pony projects to create their GUIs.
 
 http://minelittlepony-mod.com
