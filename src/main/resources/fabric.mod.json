@@ -9,6 +9,9 @@
     "homepage": "https://minelittlepony-mod.com/",
     "sources": "https://github.com/MineLittlePony/Kirin"
   },
+  "mixins": [
+    "kirin.mixin.json"
+  ],
   "license": "CC0-1.0",
   "environment": "*",
   "requires": {

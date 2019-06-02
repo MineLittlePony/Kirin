@@ -31,6 +31,10 @@ group = project.group
 description = project.displayname
 archivesBaseName = project.name
 
+minecraft {
+    refmapName = 'kirin.mixin.refmap.json'
+}
+
 dependencies {
   minecraft "com.mojang:minecraft:${project.minecraft_version}"
   mappings "net.fabricmc:yarn:${project.yarn_mappings}"
