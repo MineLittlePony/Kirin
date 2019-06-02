@@ -6,7 +6,7 @@ plugins {
 targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
-version = "${project.minecraft_version}.${project.version}"
+version = "${project.minecraft_version}-${project.version}"
 
 if (project.release != 'RELEASE') {
   version += "-${project.release}"
