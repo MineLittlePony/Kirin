@@ -1,6 +1,7 @@
 package com.minelittlepony.common.client.gui;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sound.SoundEvent;
 
@@ -23,6 +25,14 @@ public abstract class GameGui extends Screen implements IBounded {
 
     public static void playSound(SoundEvent event) {
         MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1));
+    }
+
+    public static boolean isKeyDown(int key) {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().window.getHandle(), key);
+    }
+
+    public static Supplier<Boolean> keyCheck(int key) {
+        return () -> isKeyDown(key);
     }
 
     public List<AbstractButtonWidget> buttons() {
