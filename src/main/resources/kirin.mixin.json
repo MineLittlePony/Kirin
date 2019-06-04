@@ -6,7 +6,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBlockEntityRenderDispatcher",
-    "MixinEntityRenderDispatcher"
+    "MixinEntityRenderDispatcher",
+    "MixinScreen"
   ],
   "injectors": {
     "defaultRequire": 1
