@@ -74,16 +74,8 @@ public interface IModUtilities {
      *
      * @return A new KeyBinding instance.
      */
-    default KeyBinding registerKeybind(String category, int key, String bindName) {
-        // normalize Fabric's behavior
-        if (bindName.startsWith("key.")) {
-            bindName = bindName.replace("key.", "");
-        }
-
-        FabricKeyBinding binding = FabricKeyBinding.Builder.create(new Identifier(bindName) {
-            @Override
-            public String toString() { return getPath(); }
-        }, InputUtil.Type.KEYSYM, key, category).build();
+    default KeyBinding registerKeybind(String category, String bindName, int key) {
+        FabricKeyBinding binding = FabricKeyBinding.Builder.create(new Identifier(bindName), InputUtil.Type.KEYSYM, key, category).build();
 
         KeyBindingRegistry.INSTANCE.register(binding);
         return binding;
