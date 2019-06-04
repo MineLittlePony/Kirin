@@ -6,6 +6,8 @@ import java.util.function.Function;
 import com.minelittlepony.common.mixin.MixinBlockEntityRenderDispatcher;
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -15,7 +17,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Identifier;
 
 /**
  * Common mod interface to the underlying loader. (Currently Fabric)
@@ -71,7 +75,18 @@ public interface IModUtilities {
      * @return A new KeyBinding instance.
      */
     default KeyBinding registerKeybind(String category, int key, String bindName) {
-        return new KeyBinding(category, key, bindName);
+        // normalize Fabric's behavior
+        if (bindName.startsWith("key.")) {
+            bindName = bindName.replace("key.", "");
+        }
+
+        FabricKeyBinding binding = FabricKeyBinding.Builder.create(new Identifier(bindName) {
+            @Override
+            public String toString() { return getPath(); }
+        }, InputUtil.Type.KEYSYM, key, category).build();
+
+        KeyBindingRegistry.INSTANCE.register(binding);
+        return binding;
     }
 
     /**
