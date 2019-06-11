@@ -21,6 +21,7 @@
     "fabric": "*"
   },
   "custom": {
+    "modmenu:clientsideOnly": true,
     "modmenu:api": true
   }
 }
