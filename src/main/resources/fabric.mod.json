@@ -3,19 +3,24 @@
   "id": "kirin",
   "version": "${version}",
   "name": "Kirin UI",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Embedded common code used across several Mine Little Pony projects to create their GUIs.",
   "authors": [ "Sollace" ],
   "contact": {
     "homepage": "https://minelittlepony-mod.com/",
-    "sources": "https://github.com/MineLittlePony/Kirin"
+    "sources": "https://github.com/MineLittlePony/Kirin",
+    "issues": "https://github.com/MineLittlePony/Kirin/issues"
   },
   "mixins": [
     "kirin.mixin.json"
   ],
-  "license": "CC0-1.0",
+  "license": "MIT",
+  "icon": "kirin_logo.png",
   "environment": "*",
   "requires": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
+  },
+  "custom": {
+    "modmenu:api": true
   }
 }
