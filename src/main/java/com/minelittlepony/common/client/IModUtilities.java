@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import com.minelittlepony.common.mixin.MixinBlockEntityRenderDispatcher;
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
+import com.minelittlepony.common.mixin.MixinMinecraftClient;
 
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
@@ -92,6 +93,6 @@ public interface IModUtilities {
      * Gets the platform assets directory.
      */
     default Path getAssetsDirectory() {
-        return FabricLoader.getInstance().getGameDirectory().toPath().resolve("assets");
+        return ((MixinMinecraftClient)MinecraftClient.getInstance()).getAssetsDirectory().toPath();
     }
 }
