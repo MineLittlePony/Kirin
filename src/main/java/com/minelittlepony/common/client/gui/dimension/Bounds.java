@@ -71,6 +71,13 @@ public class Bounds {
         return new Bounds(t, l, w, h);
     }
 
+    public void copy(Bounds other) {
+        top = other.top;
+        left = other.left;
+        width = other.width;
+        height = other.height;
+    }
+
     /**
      * Draws a coloured rectangle over the area covered by this bounds.
      * Useful for debugging.

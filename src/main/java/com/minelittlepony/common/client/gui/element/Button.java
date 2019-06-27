@@ -68,6 +68,16 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     @Override
+    public void setBounds(Bounds bounds) {
+        this.bounds.copy(bounds);
+
+        x = bounds.left;
+        y = bounds.top;
+        width = bounds.width;
+        height = bounds.height;
+    }
+
+    @Override
     public void renderToolTip(Screen parent, int mouseX, int mouseY) {
         List<String> tooltip = getStyle().getTooltip();
 

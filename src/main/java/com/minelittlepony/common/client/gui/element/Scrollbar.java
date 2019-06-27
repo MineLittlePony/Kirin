@@ -177,4 +177,9 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return bounds;
     }
 
+    @Override
+    public void setBounds(Bounds bounds) {
+
+    }
+
 }

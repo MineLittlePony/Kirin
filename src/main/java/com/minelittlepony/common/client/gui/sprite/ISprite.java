@@ -13,4 +13,9 @@ public interface ISprite extends IBounded {
     default Bounds getBounds() {
         return Bounds.empty();
     }
+
+    @Override
+    default void setBounds(Bounds bounds) {
+
+    }
 }

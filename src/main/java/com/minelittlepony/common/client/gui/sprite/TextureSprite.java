@@ -69,4 +69,9 @@ public class TextureSprite implements ISprite {
     public Bounds getBounds() {
         return bounds;
     }
+
+    @Override
+    public void setBounds(Bounds bounds) {
+        setPosition(bounds.left, bounds.top);
+    }
 }

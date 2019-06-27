@@ -71,4 +71,9 @@ public abstract class GameGui extends Screen implements IBounded {
     public Bounds getBounds() {
         return bounds;
     }
+
+    @Override
+    public void setBounds(Bounds bounds) {
+
+    }
 }

@@ -13,7 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.network.chat.TextComponent;
 
-public class ScrollContainer extends GameGui implements IBounded {
+public class ScrollContainer extends GameGui {
 
     protected final Scrollbar scrollbar = new Scrollbar();
 
@@ -142,5 +142,11 @@ public class ScrollContainer extends GameGui implements IBounded {
         }
 
         return bounds.add(padding);
+    }
+
+    @Override
+    public void setBounds(Bounds bounds) {
+        margin.top = bounds.top;
+        margin.left = bounds.left;
     }
 }
