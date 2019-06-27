@@ -21,7 +21,7 @@ public class ItemStackSprite implements ISprite {
     }
 
     public ItemStackSprite setTint(int tint) {
-        stack.getOrCreateSubCompoundTag("display").putInt("color", tint);
+        stack.getOrCreateSubTag("display").putInt("color", tint);
         return this;
     }
 

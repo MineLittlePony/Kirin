@@ -11,7 +11,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 
 public class ScrollContainer extends GameGui {
 
@@ -21,7 +21,7 @@ public class ScrollContainer extends GameGui {
     public final Padding padding = new Padding(0, 0, 0, 0);
 
     public ScrollContainer() {
-        super(new TextComponent(""));
+        super(new LiteralText(""));
 
         init(MinecraftClient.getInstance(), 0, 0);
     }

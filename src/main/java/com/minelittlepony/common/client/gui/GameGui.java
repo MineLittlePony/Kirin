@@ -12,14 +12,14 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.Text;
 
 public abstract class GameGui extends Screen implements IBounded {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 
-    protected GameGui(Component title) {
+    protected GameGui(Text title) {
         super(title);
     }
 
