@@ -35,7 +35,7 @@ public class GridPacker implements IPacker {
 
     @Override
     public void start() {
-        bounds.top = -(bounds.height + itemSpacing);
+        bounds.top = 0;
         bounds.left = -(bounds.width + itemSpacing);
     }
 
