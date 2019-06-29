@@ -80,7 +80,7 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
     }
 
     protected int getScrubberStart(int scrollbarHeight, int elementHeight, int contentHeight) {
-        if (maxScrollY == 0) {
+        if (maxScrollY <= 0) {
             return 0;
         }
 

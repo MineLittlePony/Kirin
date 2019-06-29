@@ -28,10 +28,19 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public void init() {
+        init(() -> {});
+    }
+
+    public void init(Runnable contentInitializer) {
+        buttons.clear();
+        children.clear();
+
         width = getBounds().width = minecraft.window.getScaledWidth() - margin.left - margin.right;
         height = getBounds().height = minecraft.window.getScaledHeight() - margin.top - margin.bottom;
         getBounds().top = margin.top;
         getBounds().left = margin.left;
+
+        contentInitializer.run();
 
         Bounds content = getContentBounds();
 
