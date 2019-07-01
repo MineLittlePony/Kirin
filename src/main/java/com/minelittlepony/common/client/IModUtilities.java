@@ -3,17 +3,17 @@ package com.minelittlepony.common.client;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-import com.minelittlepony.common.mixin.MixinBlockEntityRenderDispatcher;
 import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.common.mixin.MixinMinecraftClient;
 
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -33,10 +33,9 @@ public interface IModUtilities {
      *
      * Only safe to call after normal game initialization. Use this if you need an immediate change.
      */
+    @Deprecated
     default <T extends BlockEntity> void addRenderer(Class<T> type, BlockEntityRenderer<T> renderer) {
-        MixinBlockEntityRenderDispatcher mx = ((MixinBlockEntityRenderDispatcher)BlockEntityRenderDispatcher.INSTANCE);
-        mx.getRenderers().put(type, renderer);
-        renderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
+        BlockEntityRendererRegistry.INSTANCE.register(type, renderer);
     }
 
     /**
@@ -44,9 +43,9 @@ public interface IModUtilities {
      *
      * Only safe to call after normal game initialization. Use this if you need an immediate change.
      */
+    @Deprecated
     default <T extends Entity> void addRenderer(Class<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> renderer) {
-        EntityRenderDispatcher mx = MinecraftClient.getInstance().getEntityRenderManager();
-        ((MixinEntityRenderDispatcher)mx).getRenderers().put(type, renderer.apply(mx));
+        EntityRendererRegistry.INSTANCE.register(type, (m, c) -> renderer.apply(m));
     }
 
     /**
