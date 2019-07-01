@@ -3,14 +3,8 @@ package com.minelittlepony.common.client;
 import java.nio.file.Path;
 import java.util.function.Function;
 
-import com.minelittlepony.common.mixin.MixinEntityRenderDispatcher;
 import com.minelittlepony.common.mixin.MixinMinecraftClient;
 
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
@@ -18,12 +12,10 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
 
 /**
- * Common mod interface to the underlying loader. (Currently Fabric)
+ * Common interface to the underlying loader.
  *
  */
 public interface IModUtilities {
@@ -33,30 +25,21 @@ public interface IModUtilities {
      *
      * Only safe to call after normal game initialization. Use this if you need an immediate change.
      */
-    @Deprecated
-    default <T extends BlockEntity> void addRenderer(Class<T> type, BlockEntityRenderer<T> renderer) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, renderer);
-    }
+    <T extends BlockEntity> void addRenderer(Class<T> type, BlockEntityRenderer<T> renderer);
 
     /**
      * Registers a custom entity renderer.
      *
      * Only safe to call after normal game initialization. Use this if you need an immediate change.
      */
-    @Deprecated
-    default <T extends Entity> void addRenderer(Class<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> renderer) {
-        EntityRendererRegistry.INSTANCE.register(type, (m, c) -> renderer.apply(m));
-    }
+    <T extends Entity> void addRenderer(Class<T> type, Function<EntityRenderDispatcher, EntityRenderer<T>> renderer);
 
     /**
      * Registers a custom entity renderer.
      *
      * Only safe to call after normal game initialization. Use this if you need an immediate change.
      */
-    default <T extends Entity> void addRenderer(String modelType, PlayerEntityRenderer renderer) {
-        EntityRenderDispatcher mx = MinecraftClient.getInstance().getEntityRenderManager();
-        ((MixinEntityRenderDispatcher)mx).getPlayerRenderers().put(modelType, renderer);
-    }
+    <T extends Entity> void addRenderer(String modelType, PlayerEntityRenderer renderer);
 
     /**
      * Returns true if the current environment has forge classes.
@@ -74,19 +57,12 @@ public interface IModUtilities {
      *
      * @return A new KeyBinding instance.
      */
-    default KeyBinding registerKeybind(String category, String bindName, int key) {
-        FabricKeyBinding binding = FabricKeyBinding.Builder.create(new Identifier(bindName), InputUtil.Type.KEYSYM, key, category).build();
-
-        KeyBindingRegistry.INSTANCE.register(binding);
-        return binding;
-    }
+    KeyBinding registerKeybind(String category, String bindName, int key);
 
     /**
      * Gets the platform configuration directory.
      */
-    default Path getConfigDirectory() {
-        return FabricLoader.getInstance().getConfigDirectory().toPath();
-    }
+    Path getConfigDirectory();
 
     /**
      * Gets the platform assets directory.
