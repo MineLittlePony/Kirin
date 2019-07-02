@@ -20,11 +20,11 @@ public interface TextureConverter {
          * Copies a texture region from one area to another.
          */
         default void copy(
-                int xFrom, int yFrom,  // source coordinates
-                int xTo, int yTo,      // destination coordinates
-                int width, int height, // section size
+                int xFrom, int yFrom,     // source coordinates
+                int xOffset, int yOffset, // distance moved
+                int width, int height,    // section size
                 boolean mirrorX, boolean mirrorY) {
-            getImage().method_4304(xFrom, yFrom, xTo, yTo, width, height, mirrorX, mirrorY);
+            getImage().method_4304(xFrom, yFrom, xOffset, yOffset, width, height, mirrorX, mirrorY);
         }
     }
 }
