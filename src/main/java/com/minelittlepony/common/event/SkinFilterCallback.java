@@ -1,0 +1,41 @@
+package com.minelittlepony.common.event;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.client.texture.NativeImage;
+
+public interface SkinFilterCallback {
+
+    Event<SkinFilterCallback> EVENT = EventFactory.createArrayBacked(SkinFilterCallback.class, listeners -> (image, legacy) -> {
+        for (SkinFilterCallback event : listeners) {
+            event.processImage(image, legacy);
+        }
+    });
+
+    void processImage(NativeImage image, boolean legacy);
+
+    /**
+     * Copies a scaled section from one region to another.
+     *
+     * @param xFrom   Source x
+     * @param yFrom   Source y
+     * @param xOffset Distance moved x
+     * @param yOffset Distance moved y
+     * @param width   Section width
+     * @param height  Section height
+     * @param mirrorX Mirror on x axis
+     * @param mirrorY Mirror on y axis
+     */
+    static void copy(NativeImage image,
+                      int xFrom, int yFrom,
+                      int xOffset, int yOffset,
+                      int width, int height,
+                      boolean mirrorX, boolean mirrorY) {
+        int scale = image.getWidth() / 64;
+        image.method_4304(
+                xFrom * scale, yFrom * scale,
+                xOffset * scale, yOffset * scale,
+                width * scale, height * scale,
+                mirrorX, mirrorY);
+    }
+}
