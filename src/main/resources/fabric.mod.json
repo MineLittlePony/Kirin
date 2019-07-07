@@ -18,7 +18,9 @@
   "environment": "*",
   "requires": {
     "fabricloader": ">=0.4.0",
-    "fabric": "*"
+    "fabric-api-base": ">=0.1.0",
+    "fabric-keybindings": ">=0.1.0",
+    "fabric-rendering-v0": ">=0.1.0"
   },
   "custom": {
     "modmenu:clientsideOnly": true,
