@@ -18,7 +18,7 @@ public final class ToStringAdapter<T> extends TypeAdapter<T> {
 
     @Override
     public void write(JsonWriter out, T value) throws IOException {
-        out.value(Objects.toString(value));
+        out.value(value == null ? null : Objects.toString(value));
     }
 
     @Override
