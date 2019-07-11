@@ -5,11 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.util.UUIDTypeAdapter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -33,6 +36,8 @@ public class JsonConfig extends Config {
     static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .excludeFieldsWithoutExposeAnnotation()
+            .registerTypeHierarchyAdapter(Path.class, new PathTypeAdapter())
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
     private Path configFile;
