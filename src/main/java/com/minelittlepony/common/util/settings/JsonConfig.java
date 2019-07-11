@@ -16,10 +16,20 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A specialised configuration container that loads from a json file.
  */
 public class JsonConfig extends Config {
+
+    private static final Logger logger = LogManager.getLogger();
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
+            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .create();
 
     /**
      * Loads a new JsonConfig instance from the given file and
@@ -34,12 +44,6 @@ public class JsonConfig extends Config {
         return creator.get().load(file);
     }
 
-    static final Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
-            .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
-            .create();
-
     private Path configFile;
 
     @Override
@@ -49,12 +53,12 @@ public class JsonConfig extends Config {
 
             gson.toJson(entries, HashMap.class, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("Error whilst saving Json config", e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends JsonConfig> T load(Path file) {
+    <T extends JsonConfig> T load(Path file) {
         try {
             configFile = file;
 
@@ -70,7 +74,7 @@ public class JsonConfig extends Config {
                         }
                     });
                 } catch (IOException | JsonParseException e) {
-                    e.printStackTrace();
+                    logger.warn("Erorr whilst loading json config", e);
                 }
             }
         } finally {
