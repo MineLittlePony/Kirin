@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -35,8 +36,7 @@ public class JsonConfig extends Config {
 
     static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
-            .excludeFieldsWithoutExposeAnnotation()
-            .registerTypeHierarchyAdapter(Path.class, new PathTypeAdapter())
+            .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
             .create();
 
