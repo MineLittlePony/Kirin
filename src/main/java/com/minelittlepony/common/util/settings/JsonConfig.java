@@ -3,8 +3,8 @@ package com.minelittlepony.common.util.settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonWriter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -51,6 +51,8 @@ public class JsonConfig extends Config {
     @SuppressWarnings("unchecked")
     protected <T extends JsonConfig> T load(Path file) {
         try {
+            configFile = file;
+
             if (Files.exists(file)) {
                 try (BufferedReader s = Files.newBufferedReader(file)) {
                     gson.fromJson(s, JsonObject.class).entrySet().forEach(entry -> {
@@ -62,9 +64,10 @@ public class JsonConfig extends Config {
                             entries.put(key, value);
                         }
                     });
-                } catch (IOException ignored) { }
+                } catch (IOException | JsonParseException e) {
+                    e.printStackTrace();
+                }
             }
-            configFile = file;
         } finally {
             save();
         }
