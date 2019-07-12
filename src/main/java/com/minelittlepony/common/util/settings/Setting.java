@@ -14,31 +14,16 @@ public interface Setting<T> extends IChangeCallback<T> {
     @Nonnull
     T getDefault();
 
-    Config config();
-
     /**
      * Gets the config value associated with this entry.
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
-    default T get() {
-        T t = (T)config().entries.computeIfAbsent(name().toLowerCase(), k -> getDefault());
-
-        if (t == null) {
-            return set(getDefault());
-        }
-
-        return t;
-    }
+    T get();
 
     /**
      * Sets the config value associated with this entry.
      */
-    default T set(@Nullable T value) {
-        value = value == null ? getDefault() : value;
-        config().entries.put(name().toLowerCase(), value);
-        return value;
-    }
+    T set(@Nullable T value);
 
     @Override
     default T perform(T value) {

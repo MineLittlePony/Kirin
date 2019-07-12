@@ -1,22 +1,42 @@
 package com.minelittlepony.common.util.settings;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Any value that can be stored in this config file.
  */
 class Value<T> implements Setting<T> {
-    private final Config config;
 
-    private final T def;
-    private final String name;
+    private T value;
+
+    private transient final T def;
+    private transient final String name;
 
     public Value(Config config, String name, T def) {
-        this.config = config;
         this.name = name;
-        this.def = def;
+        this.def = Preconditions.checkNotNull(def);
+        this.value = def;
 
-        this.config.entries.putIfAbsent(name().toLowerCase(), def);
+        config.entries.putIfAbsent(name().toLowerCase(), this);
+    }
+
+    @Override
+    @Nonnull
+    public T get() {
+        if (value == null) {
+            return set(getDefault());
+        }
+
+        return value;
+    }
+
+    @Override
+    public T set(@Nullable T value) {
+        this.value = value == null ? getDefault() : value;
+        return this.value;
     }
 
     @Override
@@ -28,11 +48,6 @@ class Value<T> implements Setting<T> {
     @Override
     public T getDefault() {
         return def;
-    }
-
-    @Override
-    public Config config() {
-        return config;
     }
 
     @Override

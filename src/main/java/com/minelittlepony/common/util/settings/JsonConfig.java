@@ -29,6 +29,7 @@ public class JsonConfig extends Config {
             .setPrettyPrinting()
             .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
             .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
+            .registerTypeHierarchyAdapter(Setting.class, new SettingSerializer())
             .create();
 
     /**
@@ -68,9 +69,9 @@ public class JsonConfig extends Config {
                         String key = entry.getKey().toLowerCase();
 
                         if (entries.containsKey(key)) {
-                            Object value = gson.getAdapter(entries.get(key).getClass()).fromJsonTree(entry.getValue());
+                            Setting<Object> setting = (Setting<Object>)entries.get(key);
 
-                            entries.put(key, value);
+                            setting.set(gson.getAdapter(setting.getDefault().getClass()).fromJsonTree(entry.getValue()));
                         }
                     });
                 } catch (IOException | JsonParseException e) {
