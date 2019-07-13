@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * A specialised configuration container that loads from a json file.
  */
+@Deprecated
 public class JsonConfig extends Config {
 
     private static final Logger logger = LogManager.getLogger();

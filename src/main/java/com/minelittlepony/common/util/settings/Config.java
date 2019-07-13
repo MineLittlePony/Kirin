@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * A configuration container that lets you programmatically index values by a key.
  */
+@Deprecated
 public abstract class Config {
 
     protected Map<String, Setting<?>> entries = new HashMap<>();

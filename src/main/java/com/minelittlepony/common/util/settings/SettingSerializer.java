@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+@Deprecated
 class SettingSerializer implements JsonSerializer<Setting<?>> {
     @Override
     public JsonElement serialize(Setting<?> src, Type typeOfSrc, JsonSerializationContext context) {

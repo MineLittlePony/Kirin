@@ -8,6 +8,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * @deprecated Useful, but might be moved to util package.
+ */
+@Deprecated
 public final class ToStringAdapter<T> extends TypeAdapter<T> {
 
     private final Function<String, T> converter;

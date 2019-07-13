@@ -1,3 +1,4 @@
+@Deprecated
 @ParametersAreNonnullByDefault
 package com.minelittlepony.common.util.settings;
 

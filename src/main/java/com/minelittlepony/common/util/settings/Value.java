@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 /**
  * Any value that can be stored in this config file.
  */
+@Deprecated
 class Value<T> implements Setting<T> {
 
     private T value;

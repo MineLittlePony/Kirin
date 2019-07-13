@@ -8,6 +8,7 @@ import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 /**
  * Any settings.
  */
+@Deprecated
 public interface Setting<T> extends IChangeCallback<T> {
     String name();
 
