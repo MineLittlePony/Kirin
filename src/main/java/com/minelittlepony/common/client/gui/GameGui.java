@@ -3,6 +3,8 @@ package com.minelittlepony.common.client.gui;
 import java.util.List;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 
@@ -19,8 +21,17 @@ public abstract class GameGui extends Screen implements IBounded {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 
+    @Nullable
+    protected final Screen parent;
+
     protected GameGui(Text title) {
+        this(title, MinecraftClient.getInstance().currentScreen);
+    }
+
+    protected GameGui(Text title, @Nullable Screen parent) {
         super(title);
+
+        this.parent = parent;
     }
 
     public static void playSound(SoundEvent event) {
@@ -65,6 +76,10 @@ public abstract class GameGui extends Screen implements IBounded {
                 ((ITooltipped<?>)button).renderToolTip(this, mouseX, mouseY);
             }
         });
+    }
+
+    public void finish() {
+        minecraft.openScreen(parent);
     }
 
     @Override
