@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.stream.JsonWriter;
 import com.mojang.util.UUIDTypeAdapter;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,9 +49,7 @@ public class JsonConfig extends Config {
 
     @Override
     public void save() {
-        try (JsonWriter writer = new JsonWriter(Files.newBufferedWriter(configFile))) {
-            writer.setIndent("    ");
-
+        try (BufferedWriter writer = Files.newBufferedWriter(configFile)) {
             gson.toJson(entries, HashMap.class, writer);
         } catch (IOException e) {
             logger.warn("Error whilst saving Json config", e);
