@@ -14,11 +14,19 @@ public class OutsideWorldRenderer {
         BlockEntityRenderDispatcher dispatcher = BlockEntityRenderDispatcher.INSTANCE;
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        dispatcher.configure(ObjectUtils.firstNonNull(dispatcher.world, world, mc.world),
+        world = ObjectUtils.firstNonNull(dispatcher.world, world, mc.world);
+
+        dispatcher.configure(world,
                 mc.getTextureManager(),
                 mc.getEntityRenderManager().getTextRenderer(),
                 mc.gameRenderer.getCamera(),
                 mc.hitResult);
+
+        mc.getEntityRenderManager().configure(world,
+                mc.textRenderer,
+                mc.gameRenderer.getCamera(),
+                mc.targetedEntity,
+                mc.options);
 
         return dispatcher;
     }
