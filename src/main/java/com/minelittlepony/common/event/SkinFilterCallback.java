@@ -32,7 +32,7 @@ public interface SkinFilterCallback {
                       int width, int height,
                       boolean mirrorX, boolean mirrorY) {
         int scale = image.getWidth() / 64;
-        image.method_4304(
+        image.copyRect(
                 xFrom * scale, yFrom * scale,
                 xOffset * scale, yOffset * scale,
                 width * scale, height * scale,
