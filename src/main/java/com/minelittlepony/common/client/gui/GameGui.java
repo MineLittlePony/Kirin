@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 
+import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
@@ -78,8 +79,14 @@ public abstract class GameGui extends Screen implements IBounded {
         });
     }
 
-    public void finish() {
+    @Override
+    public void onClose() {
         minecraft.openScreen(parent);
+    }
+
+    @Deprecated
+    public void finish() {
+        onClose();
     }
 
     @Override
