@@ -7,7 +7,8 @@
   "client": [
     "MixinEntityRenderDispatcher",
     "MixinMinecraftClient",
-    "MixinScreen"
+    "MixinScreen",
+    "MixinSkinRemappingImageFilter"
   ],
   "injectors": {
     "defaultRequire": 1
