@@ -8,17 +8,22 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(SkinRemappingImageFilter.class)
 public abstract class MixinSkinRemappingImageFilter implements ImageFilter {
 
-    @Inject(method = "filterImage(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;",
-            at = @At("RETURN"),
-            cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci, boolean legacy) {
+    private static final String FILTER_IMAGE = "filterImage(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
+
+    private boolean isLegacy;
+
+    @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
+    private void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
+        isLegacy = image.getHeight() == 32;
+    }
+
+    @Inject(method = FILTER_IMAGE, at = @At("RETURN"))
+    private void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
         // convert skins from mojang server
-        SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), legacy);
+        SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), isLegacy);
     }
 }
