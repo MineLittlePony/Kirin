@@ -3,7 +3,7 @@
 // https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
 
 plugins {
-    id 'fabric-loom' version '0.2.4-SNAPSHOT'
+    id 'fabric-loom' version '0.2.5-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -64,7 +64,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             afterEvaluate {
-                artifact(remapJar.output)
+                artifact(remapJar)
             }
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
