@@ -5,6 +5,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * Any value that can be stored in this config file.
  */
@@ -15,12 +19,19 @@ class Value<T> implements Setting<T> {
     private transient final T def;
     private transient final String name;
 
+    private transient final List<Consumer<T>> listeners = new ArrayList<>();
+
     public Value(Config config, String name, T def) {
         this.name = name;
         this.def = Preconditions.checkNotNull(def);
         this.value = def;
 
         config.entries.putIfAbsent(name().toLowerCase(), this);
+    }
+
+    @Override
+    public void onChanged(Consumer<T> listener) {
+        this.listeners.add(listener);
     }
 
     @Override
@@ -36,6 +47,7 @@ class Value<T> implements Setting<T> {
     @Override
     public T set(@Nullable T value) {
         this.value = value == null ? getDefault() : value;
+        listeners.forEach(l -> l.accept(this.value));
         return this.value;
     }
 
