@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.common.client.gui.IField;
 
@@ -55,7 +56,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     protected void setClampedValue(float value) {
-        value = clamp(value, 0, 1);
+        value = MathHelper.clamp(value, 0, 1);
 
         if (value != this.value) {
             this.value = value;
@@ -109,14 +110,10 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     static float convertFromRange(float value, float min, float max) {
-        return (clamp(value, min, max) - min) / (max - min);
+        return (MathHelper.clamp(value, min, max) - min) / (max - min);
     }
 
     static float convertToRange(float value, float min, float max) {
-        return clamp(min + (value * (max - min)), min, max);
-    }
-
-    static float clamp(float value, float min, float max) {
-        return value < min ? min : value > max ? max : value;
+        return MathHelper.clamp(min + (value * (max - min)), min, max);
     }
 }
