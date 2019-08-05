@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,20 +31,11 @@ public class JsonConfig extends Config {
             .registerTypeHierarchyAdapter(Setting.class, new SettingSerializer())
             .create();
 
-    /**
-     * Loads a new JsonConfig instance from the given file and
-     * supplied by the provided constructor.
-     *
-     * @param <T>     The type to instantiate
-     * @param file    The file to read from
-     * @param creator The instantiator to use
-     * @return A new instance.
-     */
-    public static <T extends JsonConfig> T of(Path file, Supplier<T> creator) {
-        return creator.get().load(file);
-    }
+    private transient final Path configFile;
 
-    private Path configFile;
+    public JsonConfig(Path path) {
+        configFile = path;
+    }
 
     @Override
     public void save() {
@@ -57,12 +47,10 @@ public class JsonConfig extends Config {
     }
 
     @SuppressWarnings("unchecked")
-    <T extends JsonConfig> T load(Path file) {
+    public void load() {
         try {
-            configFile = file;
-
-            if (Files.exists(file)) {
-                try (BufferedReader s = Files.newBufferedReader(file)) {
+            if (Files.isReadable(configFile)) {
+                try (BufferedReader s = Files.newBufferedReader(configFile)) {
                     gson.fromJson(s, JsonObject.class).entrySet().forEach(entry -> {
                         String key = entry.getKey().toLowerCase();
 
@@ -79,7 +67,5 @@ public class JsonConfig extends Config {
         } finally {
             save();
         }
-
-        return (T)this;
     }
 }

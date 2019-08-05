@@ -22,7 +22,7 @@ public abstract class Config {
     }
 
     /**
-     * Initializes a enw value for this config and assigns it to a named category.
+     * Initializes a new value for this config and assigns it to a named category.
      */
     protected <T> Setting<T> value(String category, String key, T def) {
         Setting<T> setting = value(key, def);
