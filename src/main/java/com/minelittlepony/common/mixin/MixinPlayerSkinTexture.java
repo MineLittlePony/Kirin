@@ -1,22 +1,24 @@
 package com.minelittlepony.common.mixin;
 
 import com.minelittlepony.common.event.SkinFilterCallback;
-import net.minecraft.client.texture.ImageFilter;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.SkinRemappingImageFilter;
+import net.minecraft.client.texture.PlayerSkinTexture;
+import net.minecraft.client.texture.ResourceTexture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(SkinRemappingImageFilter.class)
-public abstract class MixinSkinRemappingImageFilter implements ImageFilter {
+@Mixin(PlayerSkinTexture.class)
+public abstract class MixinPlayerSkinTexture extends ResourceTexture {
 
-    private static final String FILTER_IMAGE = "filterImage(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
+    private MixinPlayerSkinTexture() { super(null); }
 
-    private static final String STRIP_COLOR = "method_3311(Lnet/minecraft/client/texture/NativeImage;IIII)V";
-    private static final String STRIP_ALPHA = "method_3312(Lnet/minecraft/client/texture/NativeImage;IIII)V";
+    private static final String FILTER_IMAGE = "method_22798(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
+
+    private static final String STRIP_COLOR = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
+    private static final String STRIP_ALPHA = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
 
     private boolean isLegacy;
 

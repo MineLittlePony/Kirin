@@ -39,7 +39,7 @@ public abstract class GameGui extends Screen implements IBounded {
     }
 
     public static boolean isKeyDown(int key) {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().window.getHandle(), key);
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), key);
     }
 
     public static Supplier<Boolean> keyCheck(int key) {

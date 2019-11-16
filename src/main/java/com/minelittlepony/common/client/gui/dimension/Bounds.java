@@ -87,7 +87,7 @@ public class Bounds {
     }
 
     public void debugMeasure() {
-        Window window = MinecraftClient.getInstance().window;
+        Window window = MinecraftClient.getInstance().getWindow();
         DrawableHelper.fill(left, 0, left + 1, window.getScaledHeight(), 0xFFFFFFFF);
         DrawableHelper.fill(left + width, 0, left + width + 1, window.getScaledHeight(), 0xFFFFFFFF);
 

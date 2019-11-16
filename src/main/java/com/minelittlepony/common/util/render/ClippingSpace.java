@@ -16,7 +16,7 @@ public class ClippingSpace {
     }
 
     private static void enableClipRegion(int x, int y, int width, int height) {
-        Window window = MinecraftClient.getInstance().window;
+        Window window = MinecraftClient.getInstance().getWindow();
         double f = window.getScaleFactor();
         int windowHeight = (int)Math.round(window.getScaledHeight() * f);
 
@@ -26,10 +26,10 @@ public class ClippingSpace {
         height *= f;
 
         GL11.glScissor(
-                (int)Math.round(x),
+                Math.round(x),
                 windowHeight - height - y,
-                (int)Math.round(width),
-                (int)Math.round(height)
+                Math.round(width),
+                Math.round(height)
         );
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
     }

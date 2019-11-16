@@ -6,9 +6,9 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinEntityRenderDispatcher",
-    "MixinMinecraftClient",
+    "MixinPlayerSkinProvider",
     "MixinScreen",
-    "MixinSkinRemappingImageFilter"
+    "MixinPlayerSkinTexture"
   ],
   "injectors": {
     "defaultRequire": 1

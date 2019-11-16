@@ -7,7 +7,7 @@ import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.util.render.ClippingSpace;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -35,8 +35,8 @@ public class ScrollContainer extends GameGui {
         buttons.clear();
         children.clear();
 
-        width = getBounds().width = minecraft.window.getScaledWidth() - margin.left - margin.right;
-        height = getBounds().height = minecraft.window.getScaledHeight() - margin.top - margin.bottom;
+        width = getBounds().width = minecraft.getWindow().getScaledWidth() - margin.left - margin.right;
+        height = getBounds().height = minecraft.getWindow().getScaledHeight() - margin.top - margin.bottom;
         getBounds().top = margin.top;
         getBounds().left = margin.left;
 
@@ -58,31 +58,31 @@ public class ScrollContainer extends GameGui {
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
             int scroll = scrollbar.getScrollAmount();
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(margin.left, margin.top, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translated(margin.left, margin.top, 0);
 
             fill(0, 0, width, height, 0x66000000);
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(padding.left, 0, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translated(padding.left, 0, 0);
 
             scrollbar.render(
                     mouseX - margin.left,
                     mouseY - margin.top,
                     partialTicks);
 
-            GlStateManager.translated(0, -scroll + padding.top, 0);
+            RenderSystem.translated(0, -scroll + padding.top, 0);
 
             super.render(
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
 
             fillGradient(0, -3, width, 5, 0xFF000000, 0);
             fillGradient(0, height - 6, width, height + 3, 0, 0xEE000000);
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         });
     }
 
@@ -125,15 +125,15 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public void renderTooltip(List<String> tooltip, int mouseX, int mouseY) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
-        GlStateManager.translated(-margin.left, -margin.top, 0);
-        GlStateManager.translated(-padding.left, 0, 0);
-        GlStateManager.translated(0, scrollbar.getScrollAmount() - padding.top, 0);
+        RenderSystem.translated(-margin.left, -margin.top, 0);
+        RenderSystem.translated(-padding.left, 0, 0);
+        RenderSystem.translated(0, scrollbar.getScrollAmount() - padding.top, 0);
 
         minecraft.currentScreen.renderTooltip(tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

@@ -3,7 +3,7 @@
 // https://github.com/FabricMC/fabric-example-mod/blob/master/build.gradle
 
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -28,12 +28,12 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}"
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.0+"
-    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.0+"
-    modApi "net.fabricmc.fabric-api:fabric-keybindings:0.1.0+"
-    modApi "net.fabricmc.fabric-api:fabric-rendering-v0:0.1.0+"
-
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.2+"
+    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+"
+    modApi "net.fabricmc.fabric-api:fabric-keybindings-v0:0.1.1+"
+    modApi "net.fabricmc.fabric-api:fabric-rendering-v0:1.0.1+"
 }
 
 processResources {
