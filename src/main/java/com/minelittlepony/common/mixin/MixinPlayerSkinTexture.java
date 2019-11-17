@@ -20,15 +20,15 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
     private static final String STRIP_COLOR = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
     private static final String STRIP_ALPHA = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
 
-    private boolean isLegacy;
+    private static boolean isLegacy;
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
-    private void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
+    private static void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
         isLegacy = image.getHeight() == 32;
     }
 
     @Inject(method = FILTER_IMAGE, at = @At("RETURN"))
-    private void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
+    private static void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
         // convert skins from mojang server
         SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), isLegacy);
     }
