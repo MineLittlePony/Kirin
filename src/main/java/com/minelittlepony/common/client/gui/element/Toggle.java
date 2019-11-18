@@ -6,7 +6,6 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 
 public class Toggle extends Button implements IField<Boolean, Toggle> {
 
@@ -73,12 +72,10 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @Override
     protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        TextRenderer font = mc.textRenderer;
-
-        int textY = y + font.fontHeight / 2;
+        int textY = y + mc.textRenderer.fontHeight / 2;
         int textX = x + width + 10;
 
-        drawString(font, getStyle().getText(), textX, textY, foreColor);
+        drawLabel(getStyle().getText(), textX, textY, foreColor, 0);
     }
 
     @Override

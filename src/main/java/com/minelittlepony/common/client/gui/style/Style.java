@@ -1,6 +1,7 @@
 package com.minelittlepony.common.client.gui.style;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Splitter;
 import com.minelittlepony.common.client.gui.sprite.ISprite;
@@ -17,7 +18,7 @@ public class Style {
     public int toolTipX = 0;
     public int toolTipY = 0;
 
-    private List<String> tooltip;
+    private Optional<List<String>> tooltip = Optional.empty();
 
     private String text = "";
     private int color = 0xFFFFFFFF;
@@ -86,11 +87,11 @@ public class Style {
      * Sets the tooltip text with a multi-line value.
      */
     public Style setTooltip(List<String> tooltip) {
-        this.tooltip = tooltip;
+        this.tooltip = Optional.ofNullable(tooltip);
         return this;
     }
 
-    public List<String> getTooltip() {
+    public Optional<List<String>> getTooltip() {
         return tooltip;
     }
 

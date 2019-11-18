@@ -17,7 +17,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 
-public abstract class GameGui extends Screen implements IBounded {
+public abstract class GameGui extends Screen implements IBounded, ITextContext {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 

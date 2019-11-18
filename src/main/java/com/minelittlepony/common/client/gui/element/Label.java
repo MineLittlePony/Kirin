@@ -51,13 +51,12 @@ public class Label extends Button {
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        TextRenderer fontRenderer = MinecraftClient.getInstance().textRenderer;
-        int textY = (int)(y + fontRenderer.fontHeight/1.5F);
+        int textY = (int)(y + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
 
         if (center) {
-            drawCenteredString(fontRenderer, getStyle().getText(), x, textY, getStyle().getColor());
+            drawCenteredLabel(getStyle().getText(), x, textY, getStyle().getColor(), 0);
         } else {
-            drawString(fontRenderer, getStyle().getText(), x, textY, getStyle().getColor());
+            drawLabel(getStyle().getText(), x, textY, getStyle().getColor(), 0);
         }
     }
 }

@@ -1,10 +1,10 @@
 package com.minelittlepony.common.client.gui.element;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
+import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITooltipped;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
@@ -14,12 +14,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.util.math.MathHelper;
 
-public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, IStyled<Button> {
+public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -80,10 +79,10 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
 
     @Override
     public void renderToolTip(Screen parent, int mouseX, int mouseY) {
-        List<String> tooltip = getStyle().getTooltip();
-
-        if (visible && tooltip != null) {
-            parent.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+        if (visible) {
+            getStyle().getTooltip().ifPresent(tooltip -> {
+                parent.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+            });
         }
     }
 
@@ -124,9 +123,7 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        TextRenderer font = mc.textRenderer;
-
-        drawCenteredString(font, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor);
+        drawCenteredLabel(getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
     }
 
     @Override
