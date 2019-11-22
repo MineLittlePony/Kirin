@@ -15,10 +15,10 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
 
     private MixinPlayerSkinTexture() { super(null); }
 
-    private static final String FILTER_IMAGE = "method_22798(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
+    private static final String FILTER_IMAGE = "remapTexture(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
 
-    private static final String STRIP_COLOR = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
-    private static final String STRIP_ALPHA = "method_22796(Lnet/minecraft/client/texture/NativeImage;IIII)V";
+    private static final String STRIP_COLOR = "stripColor(Lnet/minecraft/client/texture/NativeImage;IIII)V";
+    private static final String STRIP_ALPHA = "stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V";
 
     private static boolean isLegacy;
 
