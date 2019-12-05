@@ -16,7 +16,7 @@
   "license": "MIT",
   "icon": "kirin_logo.png",
   "environment": "*",
-  "requires": {
+  "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": ">=0.1.0",
     "fabric-keybindings": ">=0.1.0",
