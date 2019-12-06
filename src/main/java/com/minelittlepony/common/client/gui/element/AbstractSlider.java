@@ -59,12 +59,11 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         value = MathHelper.clamp(value, 0, 1);
 
         if (value != this.value) {
+            float initial = this.value;
             this.value = value;
+            this.value = convertFromRange(valueToFloat(action.perform(getValue())), min, max);
 
-            value = convertFromRange(valueToFloat(action.perform(getValue())), min, max);
-            if (value != this.value) {
-                this.value = value;
-
+            if (this.value != initial) {
                 if (formatter != null) {
                     getStyle().setText(formatter.apply(getValue()));
                 }
