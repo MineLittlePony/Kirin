@@ -116,6 +116,7 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
 
         if (getStyle().hasIcon()) {
             getStyle().getIcon().render(x, y, mouseX, mouseY, partialTicks);
+            RenderSystem.disableDepthTest();
         }
 
         setMessage(getStyle().getText());

@@ -21,6 +21,8 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 
+    private final ToolTipRenderer tooltip = new ToolTipRenderer(this);
+
     @Nullable
     protected final Screen parent;
 
@@ -96,5 +98,10 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
     @Override
     public void setBounds(Bounds bounds) {
 
+    }
+
+    @Override
+    public void renderTooltip(List<String> text, int x, int y) {
+        tooltip.render(text, x, y);
     }
 }
