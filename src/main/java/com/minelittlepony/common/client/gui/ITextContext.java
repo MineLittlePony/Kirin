@@ -37,14 +37,14 @@ public interface ITextContext {
 
         Matrix4f matrix = Rotation3.identity().getMatrix();
 
-        for (String string : getFont().wrapStringToWidthAsList(text, maxWidth)) {
+        for (String line : getFont().wrapStringToWidthAsList(text, maxWidth)) {
             float left = x;
             if (getFont().isRightToLeft()) {
-                left += maxWidth - getFont().getStringWidth(getFont().mirror(string));
+                left += maxWidth - getFont().getStringWidth(getFont().mirror(line));
             }
 
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-            getFont().draw(text, left, y, color, true, matrix, immediate, true, 0, 0xF000F0);
+            getFont().draw(line, left, y, color, false, matrix, immediate, true, 0, 0xF000F0);
             immediate.draw();
 
             y += 9;
