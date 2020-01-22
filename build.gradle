@@ -50,7 +50,7 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.2+"
     modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+"
     modApi "net.fabricmc.fabric-api:fabric-keybindings-v0:0.1.1+"
-    modApi "net.fabricmc.fabric-api:fabric-rendering-v0:1.0.1+"
+    modApi "net.fabricmc.fabric-api:fabric-rendering-v0:1.1.0+"
 }
 
 processResources {
