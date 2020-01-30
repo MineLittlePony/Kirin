@@ -90,7 +90,7 @@ publishing {
             pom {
                 name = "Kirin"
                 description = "Common code for MineLP mods"
-                url = "http://minelittlepony-mod.com"
+                url = "https://minelittlepony-mod.com"
                 licenses {
                     license {
                         name = "MIT Public License"

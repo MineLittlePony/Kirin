@@ -6,7 +6,7 @@
 
 Embedded common code used across several Mine Little Pony projects to create their GUIs.
 
-http://minelittlepony-mod.com
+https://minelittlepony-mod.com
 
 ## Building
 
@@ -19,3 +19,9 @@ gradlew build
 ```
 
 3. After some time, the built mod will be in `/build/libs`.
+
+## Installation (Modders):
+
+Maven: `https://repo.minelittlepony-mod.com/maven/snapshot`
+
+Dependency: `com.minelittlepony:Kirin:1.5.2-1.15.2`
