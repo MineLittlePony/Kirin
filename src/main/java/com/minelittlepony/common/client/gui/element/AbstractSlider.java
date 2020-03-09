@@ -99,8 +99,8 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         int i = 46 + (isHovered() ? 2 : 1) * 20;
         int sliderX = x + (int)(value * (width - 8));
 
-        blit(sliderX,     y, 0,   i, 4, 20);
-        blit(sliderX + 4, y, 196, i, 4, 20);
+        drawTexture(sliderX,     y, 0,   i, 4, 20);
+        drawTexture(sliderX + 4, y, 196, i, 4, 20);
     }
 
     @Override

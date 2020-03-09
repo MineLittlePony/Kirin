@@ -4,9 +4,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Rotation3;
 
 public interface ITextContext {
 
@@ -35,7 +35,7 @@ public interface ITextContext {
             text = text.substring(0, text.length() - 1);
         }
 
-        Matrix4f matrix = Rotation3.identity().getMatrix();
+        Matrix4f matrix = AffineTransformation.identity().getMatrix();
 
         for (String line : getFont().wrapStringToWidthAsList(text, maxWidth)) {
             float left = x;

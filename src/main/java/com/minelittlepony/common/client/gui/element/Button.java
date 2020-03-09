@@ -136,17 +136,17 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
         int endV = 200 - blockWidth/2;
         int endU = state + 20 - blockHeight/2;
 
-        blit(x,                y,
+        drawTexture(x,                y,
                 0, state,
                 blockWidth/2, blockHeight/2);
-        blit(x + blockWidth/2, y,
+        drawTexture(x + blockWidth/2, y,
                 endV, state,
                 blockWidth/2, blockHeight/2);
 
-        blit(x,                y + blockHeight/2,
+        drawTexture(x,                y + blockHeight/2,
                 0, endU,
                 blockWidth/2, blockHeight/2);
-        blit(x + blockWidth/2, y + blockHeight/2,
+        drawTexture(x + blockWidth/2, y + blockHeight/2,
                 endV, endU,
                 blockWidth/2, blockHeight/2);
     }

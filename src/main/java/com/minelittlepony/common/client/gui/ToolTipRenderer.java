@@ -12,7 +12,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class ToolTipRenderer extends DrawableHelper {
@@ -72,7 +72,7 @@ public class ToolTipRenderer extends DrawableHelper {
             top = screen.height - labelHeight - 6;
         }
 
-        setBlitOffset(300);
+        setZOffset(300);
         itemRenderer.zOffset = 300;
 
         int labelFill = getFill();
@@ -112,7 +112,7 @@ public class ToolTipRenderer extends DrawableHelper {
 
         immediate.draw();
 
-        setBlitOffset(0);
+        setZOffset(0);
         itemRenderer.zOffset = 0;
         RenderSystem.enableDepthTest();
         RenderSystem.enableRescaleNormal();

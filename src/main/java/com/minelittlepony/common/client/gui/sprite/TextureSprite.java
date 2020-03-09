@@ -55,7 +55,7 @@ public class TextureSprite implements ISprite {
 
         mc.getTextureManager().bindTexture(texture);
 
-        DrawableHelper.blit(
+        DrawableHelper.drawTexture(
                 x + bounds.left, y + bounds.top,
                 0,
                 textureBounds.left, textureBounds.top,

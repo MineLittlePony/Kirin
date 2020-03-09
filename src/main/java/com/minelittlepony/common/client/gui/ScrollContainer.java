@@ -35,8 +35,8 @@ public class ScrollContainer extends GameGui {
         buttons.clear();
         children.clear();
 
-        width = getBounds().width = minecraft.getWindow().getScaledWidth() - margin.left - margin.right;
-        height = getBounds().height = minecraft.getWindow().getScaledHeight() - margin.top - margin.bottom;
+        width = getBounds().width = client.getWindow().getScaledWidth() - margin.left - margin.right;
+        height = getBounds().height = client.getWindow().getScaledHeight() - margin.top - margin.bottom;
         getBounds().top = margin.top;
         getBounds().left = margin.left;
 
@@ -131,7 +131,7 @@ public class ScrollContainer extends GameGui {
         RenderSystem.translated(-padding.left, 0, 0);
         RenderSystem.translated(0, scrollbar.getScrollAmount() - padding.top, 0);
 
-        minecraft.currentScreen.renderTooltip(tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
+        client.currentScreen.renderTooltip(tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
 
         RenderSystem.popMatrix();
     }

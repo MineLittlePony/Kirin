@@ -87,7 +87,7 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
      */
     public void finish() {
         onClose();
-        minecraft.openScreen(parent);
+        client.openScreen(parent);
     }
 
     @Override
