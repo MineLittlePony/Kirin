@@ -11,6 +11,13 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Controls the visual appearance of any elements in Kirin
+ * (label, font colour, the icon, and tooltip)
+ *
+ * @author     Sollace
+ *
+ */
 public class Style {
 
     private ISprite icon = ISprite.EMPTY;
@@ -23,6 +30,9 @@ public class Style {
     private String text = "";
     private int color = 0xFFFFFFFF;
 
+    /**
+     * Gets the icon to be used on buttons with this style.
+     */
     public ISprite getIcon() {
         return icon;
     }
@@ -31,6 +41,9 @@ public class Style {
         return getIcon() != ISprite.EMPTY;
     }
 
+    /**
+     * Sets the font colour to be used for labes and button text.
+     */
     public Style setColor(int color) {
         this.color = color;
 
@@ -41,6 +54,10 @@ public class Style {
         return color;
     }
 
+    /**
+     * Sets the text label to display. Accepts raw text, or a translation string.
+     * Translations are done internally.
+     */
     public Style setText(String text) {
         this.text = text;
 
@@ -51,20 +68,39 @@ public class Style {
         return I18n.translate(text);
     }
 
+    /**
+     * Sets the icon to use for elements with this style.
+     *
+     * @param iitem An Item or Item supplier to render on this button
+     */
     public Style setIcon(ItemConvertible iitem) {
         return setIcon(new ItemStackSprite().setStack(iitem));
     }
 
+    /**
+     * Sets the icon to use for elements with this style.
+     *
+     * @param stack An ItemStack to render on this button
+     */
     public Style setIcon(ItemStack stack) {
         return setIcon(new ItemStackSprite().setStack(stack));
     }
 
+    /**
+     * Sets the icon to use for elements with this style.
+     */
     public Style setIcon(ISprite sprite) {
         icon = sprite;
 
         return this;
     }
 
+    /**
+     * Sets the icon to use for elements with this style.
+     *
+     * @param stack An ItemStack to render on this button
+     * @param colour If the ItemStack is dyeable, will use the defined colour.
+     */
     public Style setIcon(ItemStack stack, int colour) {
         return setIcon(new ItemStackSprite().setStack(stack).setTint(colour));
     }

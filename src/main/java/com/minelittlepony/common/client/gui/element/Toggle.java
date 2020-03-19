@@ -7,6 +7,11 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
 
+/**
+ * Implements a toggle (switch) element with two states (ON/OFF).
+ *
+ * @author     Sollace
+ */
 public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     private boolean on;

@@ -6,6 +6,15 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
+/**
+ * Represents a toggle button that switches between different
+ * styles as you toggle between its different states.
+ * <p>
+ * "Iconic" here refers to how it uses an icon instead of text
+ *
+ * @author     Sollace
+ *
+ */
 public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, IField<Integer, IconicToggle> {
 
     private Style[] styles = new Style[] {
@@ -43,6 +52,11 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
         return this;
     }
 
+    /**
+     * Sets the styles to use for each state this toggle is able to be in.
+     * The number of styles here determines the number of possible states
+     * and the value is the index to the array of styles.
+     */
     @Override
     public IconicToggle setStyles(Style... styles) {
         this.styles = styles;

@@ -1,5 +1,10 @@
 package com.minelittlepony.common.client.gui.dimension;
 
+/**
+ * An element's external padding.
+ *
+ * @author     Sollace
+ */
 public class Padding {
 
     public int top;
@@ -14,17 +19,26 @@ public class Padding {
         this.bottom = bottom;
         this.right = right;
     }
-    
+
+    /**
+     * Sets all sides to the given value.
+     */
     public void setAll(int padding) {
         setVertical(padding);
         setHorizontal(padding);
     }
-    
+
+    /**
+     * Sets the top and bottom padding to the given value.
+     */
     public void setVertical(int padding) {
         top = padding;
         bottom = padding;
     }
-    
+
+    /**
+     * Sets the left and right padding to the given value.
+     */
     public void setHorizontal(int padding) {
         left = padding;
         right = padding;

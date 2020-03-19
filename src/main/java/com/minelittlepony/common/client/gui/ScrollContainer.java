@@ -13,11 +13,30 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.text.LiteralText;
 
+/**
+ * A container implementing proper overflow mechanics and smooth scrolling.
+ * Scroll amounts are determined dynamically by the bounds of the elements
+ * placed inside of it and the outer dimensions of the screen and/or this container.
+ * <p>
+ * Can serve as your root screen or as an element inside a screen.
+ *
+ * @author     Sollace
+ *
+ */
 public class ScrollContainer extends GameGui {
 
+    /**
+     * The scrollbar for this container.
+     */
     protected final Scrollbar scrollbar = new Scrollbar();
 
+    /**
+     * The external padding around this container. (default: [0,0,0,0])
+     */
     public final Padding margin = new Padding(0, 0, 0, 0);
+    /**
+     * The external padding around the content inside this container. (default: [0,0,0,0])
+     */
     public final Padding padding = new Padding(0, 0, 0, 0);
 
     public ScrollContainer() {
@@ -31,6 +50,12 @@ public class ScrollContainer extends GameGui {
         init(() -> {});
     }
 
+    /**
+     * Initialises this container.
+     * Called on init to recalculate the flow of elements and append its contents.
+     *
+     * @param contentInitializer A method to call to initialise this element's contents.
+     */
     public void init(Runnable contentInitializer) {
         buttons.clear();
         children.clear();
@@ -141,6 +166,9 @@ public class ScrollContainer extends GameGui {
         return getBounds().contains(mouseX, mouseY);
     }
 
+    /**
+     * Gets the total bounds of all the elements inside this container.
+     */
     public Bounds getContentBounds() {
         Bounds bounds = Bounds.empty();
 

@@ -4,6 +4,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
 
+/**
+ * Represents the bounding rectangle of an element on the screen.
+ *
+ * @author     Sollace
+ */
 public class Bounds {
 
     public int top;
@@ -27,10 +32,23 @@ public class Bounds {
         return width <= 0 || height <= 0;
     }
 
+    /**
+     * Determines whether the given point is somewhere in this bounding rectangle.
+     *
+     * @param x The X position
+     * @param y The Y Position
+     * @return True if the point overlaps of touches the edge of this rectangle
+     */
     public boolean contains(double x, double y) {
         return !isEmpty() && x >= left && x <= (left + width) && y >= top && y <= (top + height);
     }
 
+    /**
+     * Computes a new bounds expanded on all sides by the given padding
+     *
+     * @param other The padding to add to these bounds.
+     * @return A new bounds with the computed dimensions.
+     */
     public Bounds add(Padding other) {
         return new Bounds(
             top - other.top,
@@ -40,6 +58,13 @@ public class Bounds {
         );
     }
 
+    /**
+     * Computes a new bounds with the same dimensions as this one,
+     * but shifted by the given margin.
+     *
+     * @param other the margins to move this bounds by.
+     * @return A new bounds with the computed dimensions.
+     */
     public Bounds offset(Padding other) {
         return new Bounds(
             top + other.top,
@@ -49,6 +74,12 @@ public class Bounds {
         );
     }
 
+    /**
+     * Computes a new bounds that encompasses both this one and the one passed in.
+     *
+     * @param other The bounds to add to this one.
+     * @return A new bounds with the computed dimensions.
+     */
     public Bounds add(Bounds other) {
 
         if (other.isEmpty()) {
@@ -71,6 +102,9 @@ public class Bounds {
         return new Bounds(t, l, w, h);
     }
 
+    /**
+     * Copies the values of another bounds into this one.
+     */
     public void copy(Bounds other) {
         top = other.top;
         left = other.left;

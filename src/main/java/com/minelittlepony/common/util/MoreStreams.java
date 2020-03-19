@@ -10,6 +10,12 @@ import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
 
+/**
+ * Provides extra utilities for working with streams in a less annoying way.
+ *
+ * @author     Sollace
+ *
+ */
 public class MoreStreams {
 
     public static <T> Stream<T> ofNullable(@Nullable T t) {

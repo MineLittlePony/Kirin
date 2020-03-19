@@ -9,6 +9,13 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * A scrollbar for interacting with scrollable UI elements.
+ * <p>
+ * Refer to {@code ScrollContainer} for an example of how this can be used.
+ *
+ * @author     Sollace
+ */
 public class Scrollbar extends DrawableHelper implements Element, IBounded {
 
     private boolean dragging = false;
@@ -32,6 +39,14 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
 
     }
 
+    /**
+     * Sets up this scrollbar's position based on content position and size, and viewport element size.
+     *
+     * @param x The left X position (in pixels) of this scrollbar
+     * @param y The top Y position (in pixels) of this scrollbar
+     * @param elementHeight The total height of the container/parent.
+     * @param contentHeight The total height of the content/siblings to this scrollbar.
+     */
     public void reposition(int x, int y, int elementHeight, int contentHeight) {
         bounds.left = x;
         bounds.top = y;
@@ -47,6 +62,9 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         scrollBy(0);
     }
 
+    /**
+     * Gets the vertical scroll amount.
+     */
     public int getScrollAmount() {
         return scrollY;
     }
@@ -163,6 +181,9 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return isMouseOver(mouseX, mouseY - getScrollAmount());
     }
 
+    /**
+     * Scrolls this bar by the given amount.
+     */
     public void scrollBy(double y) {
         scrollY = MathHelper.clamp((int)Math.floor(scrollY - y * scrollFactor), 0, maxScrollY);
     }

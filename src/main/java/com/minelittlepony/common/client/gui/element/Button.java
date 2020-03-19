@@ -18,6 +18,15 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * A stylable button element.
+ * <p>
+ * All appearance other than dimensions and position are controlled by this element's {Style}
+ * to make switching and changing styles easier.
+ *
+ * @author     Sollace
+ *
+ */
 public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
 
     private Style style = new Style();
@@ -38,6 +47,12 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
         bounds = new Bounds(y, x, width, height);
     }
 
+    /**
+     * Adds a listener to call when this button is clicked.
+     *
+     * @param callback The callback function.
+     * @return {@code this} for chaining purposes.
+     */
     @SuppressWarnings("unchecked")
     public Button onClick(@Nonnull Consumer<? extends Button> callback) {
         action = (Consumer<Button>)callback;
@@ -45,16 +60,25 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
         return this;
     }
 
+    /**
+     * Enables or disables this button.
+     */
     public Button setEnabled(boolean enable) {
         active = enable;
         return this;
     }
 
+    /**
+     * Gets this button's current styling.
+     */
     @Override
     public Style getStyle() {
         return style;
     }
 
+    /**
+     * Sets this button's current styling.
+     */
     @Override
     public Button setStyle(Style style) {
         this.style = style;

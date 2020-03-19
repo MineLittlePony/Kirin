@@ -10,6 +10,13 @@ import com.minelittlepony.common.client.gui.IField;
 
 import java.util.function.Function;
 
+/**
+ * Base class for a slider element.
+ *
+ * @author     Sollace
+ *
+ * @param <T> The value type for this slider.
+ */
 public abstract class AbstractSlider<T> extends Button implements IField<T, AbstractSlider<T>> {
 
     private float min;
@@ -41,6 +48,12 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         return this;
     }
 
+    /**
+     * Sets a function to use when formatting the slider's current value for display.
+     *
+     * @param formatter The formatting function to call.
+     * @return {@code this} for chaining purposes
+     */
     public AbstractSlider<T> setFormatter(@Nonnull Function<T, String> formatter) {
         this.formatter = formatter;
         getStyle().setText(formatter.apply(getValue()));

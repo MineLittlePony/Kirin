@@ -15,30 +15,60 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 
+/**
+ * Renders a stylised tooltip with borders and backgrounds.
+ *
+ * @author     Sollace
+ */
 public class ToolTipRenderer extends DrawableHelper {
 
     private final Screen screen;
 
+    /***
+     * Screates a new tooltip renderer.
+     *
+     * @param parent The screen containing this element.
+     */
     public ToolTipRenderer(Screen parent) {
         screen = parent;
     }
 
+    /**
+     * The default font colour of text inside the tooltip.
+     */
     protected int getTextColor() {
         return 0xF000F0;
     }
 
+    /**
+     * The background fill for the tooltip.
+     */
     protected int getFill() {
         return 0xF0100010;
     }
 
+    /**
+     * The top (start) gradient colour of the tooltip's border.
+     */
     protected int getOutlineGradientTop() {
         return 0x505000FF;
     }
 
+    /**
+     * The bottom (end) gradient colour of the tooltip's border.
+     * @return
+     */
     protected int getOutlineGradientBottom() {
         return 0x5028007F;
     }
 
+    /**
+     * Renders a tooltip with text.
+     *
+     * @param text Text to display.
+     * @param x The left X position (in pixels) of the tooltip
+     * @param y The top Y position (in pixels) of the tooltip
+     */
     public void render(List<String> text, int x, int y) {
         if (text.isEmpty()) {
             return;
