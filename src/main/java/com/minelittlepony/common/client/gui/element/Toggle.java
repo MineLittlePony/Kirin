@@ -60,8 +60,8 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onPress() {
+        super.onPress();
         setValue(!on);
     }
 

@@ -3,6 +3,8 @@ package com.minelittlepony.common.client.gui.element;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 
@@ -66,6 +68,25 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         setClampedValue(convertFromRange(valueToFloat(value), min, max));
 
         return this;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (active && visible && (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT)) {
+            playDownSound(MinecraftClient.getInstance().getSoundManager());
+
+            float step = (max - min) / 4F;
+
+            if (keyCode == GLFW.GLFW_KEY_LEFT) {
+                step *= -1;
+            }
+
+            setClampedValue(value + step);
+            onPress();
+
+            return true;
+        }
+        return false;
     }
 
     protected void setClampedValue(float value) {

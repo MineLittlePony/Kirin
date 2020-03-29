@@ -15,7 +15,7 @@ import com.minelittlepony.common.client.gui.style.Style;
  * @author     Sollace
  *
  */
-public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, IField<Integer, IconicToggle> {
+public class Cycler extends Button implements IMultiStyled<Cycler>, IField<Integer, Cycler> {
 
     private Style[] styles = new Style[] {
             getStyle()
@@ -26,12 +26,12 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
     @Nonnull
     private IChangeCallback<Integer> action = IChangeCallback::none;
 
-    public IconicToggle(int x, int y, int width, int height) {
+    public Cycler(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
 
     @Override
-    public IconicToggle onChange(IChangeCallback<Integer> action) {
+    public Cycler onChange(IChangeCallback<Integer> action) {
         this.action = action;
 
         return this;
@@ -43,7 +43,7 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
     }
 
     @Override
-    public IconicToggle setValue(Integer value) {
+    public Cycler setValue(Integer value) {
         if (this.value != value) {
             this.value = action.perform(value) % styles.length;
             this.setStyle(styles[this.value]);
@@ -58,7 +58,7 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
      * and the value is the index to the array of styles.
      */
     @Override
-    public IconicToggle setStyles(Style... styles) {
+    public Cycler setStyles(Style... styles) {
         this.styles = styles;
 
         value = value % styles.length;
@@ -73,8 +73,8 @@ public class IconicToggle extends Button implements IMultiStyled<IconicToggle>, 
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onPress() {
         setValue(value + 1);
-        super.onClick(mouseX, mouseY);
+        super.onPress();
     }
 }

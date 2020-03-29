@@ -15,7 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -27,7 +27,7 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends AbstractButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
+public class Button extends AbstractPressableButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -151,7 +151,7 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onPress() {
         action.accept(this);
     }
 
@@ -174,5 +174,4 @@ public class Button extends AbstractButtonWidget implements ITooltipped<Button>,
                 endV, endU,
                 blockWidth/2, blockHeight/2);
     }
-
 }
