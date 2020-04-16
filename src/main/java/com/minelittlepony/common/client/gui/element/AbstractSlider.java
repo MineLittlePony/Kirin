@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.common.client.gui.IField;
@@ -127,14 +128,14 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected void renderBg(MinecraftClient mc, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
         mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 
         int i = 46 + (isHovered() ? 2 : 1) * 20;
         int sliderX = x + (int)(value * (width - 8));
 
-        drawTexture(sliderX,     y, 0,   i, 4, 20);
-        drawTexture(sliderX + 4, y, 196, i, 4, 20);
+        drawTexture(matrices, sliderX,     y, 0,   i, 4, 20);
+        drawTexture(matrices, sliderX + 4, y, 196, i, 4, 20);
     }
 
     @Override

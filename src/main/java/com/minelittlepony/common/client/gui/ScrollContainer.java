@@ -7,11 +7,11 @@ import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.util.render.ClippingSpace;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 
 /**
  * A container implementing proper overflow mechanics and smooth scrolling.
@@ -40,7 +40,7 @@ public class ScrollContainer extends GameGui {
     public final Padding padding = new Padding(0, 0, 0, 0);
 
     public ScrollContainer() {
-        super(new LiteralText(""));
+        super(LiteralText.EMPTY);
 
         init(MinecraftClient.getInstance(), 0, 0);
     }
@@ -78,36 +78,36 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
 
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
             int scroll = scrollbar.getScrollAmount();
 
-            RenderSystem.pushMatrix();
-            RenderSystem.translated(margin.left, margin.top, 0);
+            matrices.push();
+            matrices.translate(margin.left, margin.top, 0);
 
-            fill(0, 0, width, height, 0x66000000);
+            fill(matrices, 0, 0, width, height, 0x66000000);
 
-            RenderSystem.pushMatrix();
-            RenderSystem.translated(padding.left, 0, 0);
+            matrices.push();
+            matrices.translate(padding.left, 0, 0);
 
-            scrollbar.render(
+            scrollbar.render(matrices,
                     mouseX - margin.left,
                     mouseY - margin.top,
                     partialTicks);
 
-            RenderSystem.translated(0, -scroll + padding.top, 0);
+            matrices.translate(0, -scroll + padding.top, 0);
 
-            super.render(
+            super.render(matrices,
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
-            RenderSystem.popMatrix();
+            matrices.pop();
 
-            fillGradient(0, -3, width, 5, 0xFF000000, 0);
-            fillGradient(0, height - 6, width, height + 3, 0, 0xEE000000);
+            fillGradient(matrices, 0, -3, width, 5, 0xFF000000, 0);
+            fillGradient(matrices, 0, height - 6, width, height + 3, 0, 0xEE000000);
 
-            RenderSystem.popMatrix();
+            matrices.pop();
         });
     }
 
@@ -149,16 +149,16 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public void renderTooltip(List<String> tooltip, int mouseX, int mouseY) {
-        RenderSystem.pushMatrix();
+    public void renderTooltip(MatrixStack matrices, List<? extends StringRenderable> tooltip, int mouseX, int mouseY) {
+        matrices.push();
 
-        RenderSystem.translated(-margin.left, -margin.top, 0);
-        RenderSystem.translated(-padding.left, 0, 0);
-        RenderSystem.translated(0, scrollbar.getScrollAmount() - padding.top, 0);
+        matrices.translate(-margin.left, -margin.top, 0);
+        matrices.translate(-padding.left, 0, 0);
+        matrices.translate(0, scrollbar.getScrollAmount() - padding.top, 0);
 
-        client.currentScreen.renderTooltip(tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
+        client.currentScreen.renderTooltip(matrices, tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
 
-        RenderSystem.popMatrix();
+        matrices.pop();
     }
 
     @Override

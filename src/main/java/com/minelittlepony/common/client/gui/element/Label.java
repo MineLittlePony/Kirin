@@ -4,6 +4,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * A simple label for drawing text to a gui screen.
@@ -31,7 +32,7 @@ public class Label extends Button {
 
         TextRenderer fonts = MinecraftClient.getInstance().textRenderer;
 
-        bounds.width = fonts.getStringWidth(getStyle().getText());
+        bounds.width = fonts.getWidth(getStyle().getText());
         if (this.center) {
             bounds.left = x - bounds.width/2;
         }
@@ -50,7 +51,7 @@ public class Label extends Button {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         int textY = (int)(y + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
 
         if (center) {

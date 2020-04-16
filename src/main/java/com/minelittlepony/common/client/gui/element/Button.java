@@ -16,6 +16,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -42,7 +44,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
     }
 
     public Button(int x, int y, int width, int height) {
-        super(x, y, width, height, "");
+        super(x, y, width, height, LiteralText.EMPTY);
 
         bounds = new Bounds(y, x, width, height);
     }
@@ -102,16 +104,16 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
     }
 
     @Override
-    public void renderToolTip(Screen parent, int mouseX, int mouseY) {
+    public void renderToolTip(MatrixStack matrices, Screen parent, int mouseX, int mouseY) {
         if (visible) {
             getStyle().getTooltip().ifPresent(tooltip -> {
-                parent.renderTooltip(tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+                parent.renderTooltip(matrices, tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
             });
         }
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
         mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
@@ -127,9 +129,9 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
 
         int state = 46 + getYImage(isHovered()) * 20;
 
-        renderButtonBlit(x, y, state, width, height);
+        renderButtonBlit(matrices, x, y, state, width, height);
 
-        renderBg(mc, mouseX, mouseY);
+        renderBg(matrices, mc, mouseX, mouseY);
 
         int foreColor = getStyle().getColor();
         if (!active) {
@@ -139,14 +141,14 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
         }
 
         if (getStyle().hasIcon()) {
-            getStyle().getIcon().render(x, y, mouseX, mouseY, partialTicks);
+            getStyle().getIcon().render(matrices, x, y, mouseX, mouseY, partialTicks);
         }
 
         setMessage(getStyle().getText());
-        renderForground(mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255.0F) << 24);
+        renderForground(matrices, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255.0F) << 24);
     }
 
-    protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+    protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         drawCenteredLabel(getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
     }
 
@@ -155,22 +157,26 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
         action.accept(this);
     }
 
-    protected final void renderButtonBlit(int x, int y, int state, int blockWidth, int blockHeight) {
+    protected final void renderButtonBlit(MatrixStack matrices, int x, int y, int state, int blockWidth, int blockHeight) {
 
         int endV = 200 - blockWidth/2;
         int endU = state + 20 - blockHeight/2;
 
-        drawTexture(x,                y,
+        drawTexture(matrices,
+                x,                y,
                 0, state,
                 blockWidth/2, blockHeight/2);
-        drawTexture(x + blockWidth/2, y,
+        drawTexture(matrices,
+                x + blockWidth/2, y,
                 endV, state,
                 blockWidth/2, blockHeight/2);
 
-        drawTexture(x,                y + blockHeight/2,
+        drawTexture(matrices,
+                x,                y + blockHeight/2,
                 0, endU,
                 blockWidth/2, blockHeight/2);
-        drawTexture(x + blockWidth/2, y + blockHeight/2,
+        drawTexture(matrices,
+                x + blockWidth/2, y + blockHeight/2,
                 endV, endU,
                 blockWidth/2, blockHeight/2);
     }

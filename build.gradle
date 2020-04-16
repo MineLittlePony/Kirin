@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.6-SNAPSHOT'
+    id 'fabric-loom' version '0.4-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -43,10 +43,10 @@ dependencies {
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
-    modApi "net.fabricmc.fabric-api:fabric-api-base:0.1.2+"
-    modApi "net.fabricmc.fabric-api:fabric-events-lifecycle-v0:0.1.2+b7f9825dd1"
-    modApi "net.fabricmc.fabric-api:fabric-keybindings-v0:0.1.1+"
-    modApi "net.fabricmc.fabric-api:fabric-rendering-v1:0.1.0+"
+    modApi fabricApi.module("fabric-api-base", project.fabric_version)
+    modApi fabricApi.module("fabric-events-lifecycle-v0", project.fabric_version)
+    modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_version)
+    modApi fabricApi.module("fabric-rendering-v1", project.fabric_version)
 }
 
 processResources {

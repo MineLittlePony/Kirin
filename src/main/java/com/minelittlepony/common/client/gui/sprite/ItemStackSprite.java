@@ -3,6 +3,7 @@ package com.minelittlepony.common.client.gui.sprite;
 import com.minelittlepony.common.client.gui.OutsideWorldRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
@@ -28,7 +29,7 @@ public class ItemStackSprite implements ISprite {
     }
 
     @Override
-    public void render(int x, int y, int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float partialTicks) {
         OutsideWorldRenderer.renderStack(stack, x + 2, y + 2);
         RenderSystem.disableDepthTest();
     }

@@ -3,6 +3,7 @@ package com.minelittlepony.common.client.gui.dimension;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * Represents the bounding rectangle of an element on the screen.
@@ -116,16 +117,16 @@ public class Bounds {
      * Draws a coloured rectangle over the area covered by this bounds.
      * Useful for debugging.
      */
-    public void draw(int tint) {
-        DrawableHelper.fill(left, top, left + width, top + height, tint);
+    public void draw(MatrixStack matrices, int tint) {
+        DrawableHelper.fill(matrices, left, top, left + width, top + height, tint);
     }
 
-    public void debugMeasure() {
+    public void debugMeasure(MatrixStack matrices) {
         Window window = MinecraftClient.getInstance().getWindow();
-        DrawableHelper.fill(left, 0, left + 1, window.getScaledHeight(), 0xFFFFFFFF);
-        DrawableHelper.fill(left + width, 0, left + width + 1, window.getScaledHeight(), 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, left, 0, left + 1, window.getScaledHeight(), 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, left + width, 0, left + width + 1, window.getScaledHeight(), 0xFFFFFFFF);
 
-        DrawableHelper.fill(0, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
-        DrawableHelper.fill(0, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, 0, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, 0, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
     }
 }

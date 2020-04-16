@@ -7,12 +7,13 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 /**
  * Context utility for things that want to render text to the screen.
  * <p>
  * These methods are provided as an alternative to the Vanilla ones,
- * which one slight change to allow text to be rendered over content
+ * with one slight change to allow text to be rendered over content
  * that would normally be layered on top of it.
  * <p>
  * If you have entities in your screen and can't see text behind them,
@@ -38,7 +39,7 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawLabel(String text, int x, int y, int color, double zIndex) {
+    default void drawLabel(Text text, int x, int y, int color, double zIndex) {
         VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         MatrixStack stack = new MatrixStack();
         stack.translate(0, 0, zIndex);
@@ -57,8 +58,8 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawCenteredLabel(String text, int x, int y, int color, double zIndex) {
-        int width = getFont().getStringWidth(text);
+    default void drawCenteredLabel(Text text, int x, int y, int color, double zIndex) {
+        int width = getFont().getWidth(text);
 
         drawLabel(text, x - width/2, y, color, zIndex);
     }
@@ -73,19 +74,11 @@ public interface ITextContext {
      * @param maxWidth The maximum page width
      * @param color The font colour
      */
-    default void drawTextBlock(String text, int x, int y, int maxWidth, int color) {
-        while(text != null && text.endsWith("\n")) {
-            text = text.substring(0, text.length() - 1);
-        }
-
+    default void drawTextBlock(Text text, int x, int y, int maxWidth, int color) {
         Matrix4f matrix = AffineTransformation.identity().getMatrix();
 
-        for (String line : getFont().wrapStringToWidthAsList(text, maxWidth)) {
+        for (Text line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
-            if (getFont().isRightToLeft()) {
-                left += maxWidth - getFont().getStringWidth(getFont().mirror(line));
-            }
-
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
             getFont().draw(line, left, y, color, false, matrix, immediate, true, 0, 0xF000F0);
             immediate.draw();

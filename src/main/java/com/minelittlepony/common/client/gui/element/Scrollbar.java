@@ -6,6 +6,7 @@ import com.minelittlepony.common.client.gui.dimension.IBounded;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 
@@ -69,7 +70,7 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return scrollY;
     }
 
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (!touching && !dragging) {
             scrollMomentum *= partialTicks;
             if (scrollMomentum > 0) {
@@ -86,15 +87,15 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
             return;
         }
 
-        renderVertical();
+        renderVertical(matrices);
     }
 
-    protected void renderVertical() {
+    protected void renderVertical(MatrixStack matrices) {
         int scrollbarHeight = getScrubberLength(bounds.height, contentHeight);
         int scrollbarTop = getScrubberStart(scrollbarHeight, bounds.height, contentHeight);
 
-        renderBackground(bounds.top, bounds.left, bounds.top + bounds.height, bounds.left + bounds.width);
-        renderBar(bounds.left, bounds.left + bounds.width, scrollbarTop, scrollbarTop + scrollbarHeight);
+        renderBackground(matrices, bounds.top, bounds.left, bounds.top + bounds.height, bounds.left + bounds.width);
+        renderBar(matrices, bounds.left, bounds.left + bounds.width, scrollbarTop, scrollbarTop + scrollbarHeight);
     }
 
     protected int getScrubberStart(int scrollbarHeight, int elementHeight, int contentHeight) {
@@ -113,13 +114,13 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return MathHelper.clamp(elementL * elementL / contentL, 32, elementL - 8);
     }
 
-    private void renderBackground(int top, int left, int bottom, int right) {
-        fill(left, top, right, bottom, 0x96000000);
+    private void renderBackground(MatrixStack matrices, int top, int left, int bottom, int right) {
+        fill(matrices, left, top, right, bottom, 0x96000000);
     }
 
-    private void renderBar(int left, int right, int top, int bottom) {
-        fill(left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
-        fill(left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
+    private void renderBar(MatrixStack matrices, int left, int right, int top, int bottom) {
+        fill(matrices, left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
+        fill(matrices, left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
     }
 
     private int computeShiftFactor(double mouseX, double mouseY) {

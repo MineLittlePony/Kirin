@@ -6,6 +6,8 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 
 /**
  * Implements a toggle (switch) element with two states (ON/OFF).
@@ -51,8 +53,8 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
         // The text label sits outside the bounds of the main toggle widget,
         // so we have to include that in our calculations.
-        String label = getStyle().getText();
-        int labelWidth = MinecraftClient.getInstance().textRenderer.getStringWidth(label);
+        Text label = getStyle().getText();
+        int labelWidth = MinecraftClient.getInstance().textRenderer.getWidth(label);
 
         bounds.width = labelWidth > 0 ? Math.max(bounds.width, width + 10 + labelWidth) : width;
 
@@ -66,17 +68,17 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    protected void renderBg(MinecraftClient mc, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
         mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
 
         int i = 46 + (isHovered() ? 2 : 1) * 20;
         int sliderX = x + (on ? 1 : 0) * (width - 8);
 
-        renderButtonBlit(sliderX, y, i, 8, height);
+        renderButtonBlit(matrices, sliderX, y, i, 8, height);
     }
 
     @Override
-    protected void renderForground(MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+    protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         int textY = y + mc.textRenderer.fontHeight / 2;
         int textX = x + width + 10;
 

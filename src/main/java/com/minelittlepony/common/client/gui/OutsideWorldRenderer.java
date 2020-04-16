@@ -55,6 +55,6 @@ public class OutsideWorldRenderer {
      */
     public static void renderStack(ItemStack stack, int x, int y) {
         configure(null);
-        MinecraftClient.getInstance().getItemRenderer().renderGuiItem(stack, x, y);
+        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(stack, x, y);
     }
 }

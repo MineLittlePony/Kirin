@@ -14,6 +14,7 @@ import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 
 /**
  * Renders a stylised tooltip with borders and backgrounds.
@@ -69,7 +70,7 @@ public class ToolTipRenderer extends DrawableHelper {
      * @param x The left X position (in pixels) of the tooltip
      * @param y The top Y position (in pixels) of the tooltip
      */
-    public void render(List<String> text, int x, int y) {
+    public void render(MatrixStack matrices, List<? extends StringRenderable> text, int x, int y) {
         if (text.isEmpty()) {
             return;
         }
@@ -82,8 +83,8 @@ public class ToolTipRenderer extends DrawableHelper {
 
         int labelWidth = 0;
 
-        for (String string : text) {
-            labelWidth = Math.max(labelWidth, font.getStringWidth(string));
+        for (StringRenderable string : text) {
+            labelWidth = Math.max(labelWidth, font.getWidth(string));
         }
 
         int left = x + 12;
@@ -106,18 +107,18 @@ public class ToolTipRenderer extends DrawableHelper {
         itemRenderer.zOffset = 300;
 
         int labelFill = getFill();
-        fillGradient(left - 3,              top - 4,               left + labelWidth + 3, top - 3,               labelFill, labelFill);
-        fillGradient(left - 3,              top + labelHeight + 3, left + labelWidth + 3, top + labelHeight + 4, labelFill, labelFill);
-        fillGradient(left - 3,              top - 3,               left + labelWidth + 3, top + labelHeight + 3, labelFill, labelFill);
-        fillGradient(left - 4,              top - 3,               left - 3,              top + labelHeight + 3, labelFill, labelFill);
-        fillGradient(left + labelWidth + 3, top - 3,               left + labelWidth + 4, top + labelHeight + 3, labelFill, labelFill);
+        fillGradient(matrices, left - 3,              top - 4,               left + labelWidth + 3, top - 3,               labelFill, labelFill);
+        fillGradient(matrices, left - 3,              top + labelHeight + 3, left + labelWidth + 3, top + labelHeight + 4, labelFill, labelFill);
+        fillGradient(matrices, left - 3,              top - 3,               left + labelWidth + 3, top + labelHeight + 3, labelFill, labelFill);
+        fillGradient(matrices, left - 4,              top - 3,               left - 3,              top + labelHeight + 3, labelFill, labelFill);
+        fillGradient(matrices, left + labelWidth + 3, top - 3,               left + labelWidth + 4, top + labelHeight + 3, labelFill, labelFill);
 
         int borderGradientTop = getOutlineGradientTop();
         int borderGradientBot = getOutlineGradientBottom();
-        fillGradient(left - 3,              top - 3 + 1,           left - 3 + 1,          top + labelHeight + 3 - 1, borderGradientTop, borderGradientBot);
-        fillGradient(left + labelWidth + 2, top - 3 + 1,           left + labelWidth + 3, top + labelHeight + 3 - 1, borderGradientTop, borderGradientBot);
-        fillGradient(left - 3,              top - 3,               left + labelWidth + 3, top - 3 + 1,               borderGradientTop, borderGradientTop);
-        fillGradient(left - 3,              top + labelHeight + 2, left + labelWidth + 3, top + labelHeight + 3,     borderGradientBot, borderGradientBot);
+        fillGradient(matrices, left - 3,              top - 3 + 1,           left - 3 + 1,          top + labelHeight + 3 - 1, borderGradientTop, borderGradientBot);
+        fillGradient(matrices, left + labelWidth + 2, top - 3 + 1,           left + labelWidth + 3, top + labelHeight + 3 - 1, borderGradientTop, borderGradientBot);
+        fillGradient(matrices, left - 3,              top - 3,               left + labelWidth + 3, top - 3 + 1,               borderGradientTop, borderGradientTop);
+        fillGradient(matrices, left - 3,              top + labelHeight + 2, left + labelWidth + 3, top + labelHeight + 3,     borderGradientBot, borderGradientBot);
 
         MatrixStack stack = new MatrixStack();
         Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
@@ -128,7 +129,7 @@ public class ToolTipRenderer extends DrawableHelper {
         int color = getTextColor();
 
         for(int r = 0; r < text.size(); ++r) {
-            String line = text.get(r);
+            StringRenderable line = text.get(r);
             if (line != null) {
                 font.draw(line, left, top, -1, true, matrix, immediate, true, 0, color);
             }

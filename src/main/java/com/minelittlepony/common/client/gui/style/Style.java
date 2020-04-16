@@ -2,14 +2,19 @@ package com.minelittlepony.common.client.gui.style;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.minelittlepony.common.client.gui.sprite.ISprite;
 import com.minelittlepony.common.client.gui.sprite.ItemStackSprite;
 
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 /**
  * Controls the visual appearance of any elements in Kirin
@@ -25,9 +30,9 @@ public class Style {
     public int toolTipX = 0;
     public int toolTipY = 0;
 
-    private Optional<List<String>> tooltip = Optional.empty();
+    private Optional<List<Text>> tooltip = Optional.empty();
 
-    private String text = "";
+    private Text text = LiteralText.EMPTY;
     private int color = 0xFFFFFFFF;
 
     /**
@@ -54,18 +59,27 @@ public class Style {
         return color;
     }
 
+
     /**
      * Sets the text label to display. Accepts raw text, or a translation string.
      * Translations are done internally.
      */
     public Style setText(String text) {
+        return setText(new TranslatableText(text));
+    }
+
+    /**
+     * Sets the text label to display. Accepts raw text, or a translation string.
+     * Translations are done internally.
+     */
+    public Style setText(Text text) {
         this.text = text;
 
         return this;
     }
 
-    public String getText() {
-        return I18n.translate(text);
+    public Text getText() {
+        return text;
     }
 
     /**
@@ -105,29 +119,42 @@ public class Style {
         return setIcon(new ItemStackSprite().setStack(stack).setTint(colour));
     }
 
+
     /**
      * Sets the tooltip. The passed in value will be automatically translated and split into separate
      * lines.
      *
      * @param tooltip A tooltip translation string.
      */
+    @Deprecated
     public Style setTooltip(String tooltip) {
-        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.translate(tooltip)));
+        return setTooltip(Splitter.onPattern("\r?\n|\\\\n").splitToList(I18n.translate(tooltip)).stream().map(LiteralText::new).collect(Collectors.toList()));
     }
 
-    public Style setTooltip(String tooltip, int x, int y) {
+
+    /**
+     * Sets the tooltip. The passed in value will be automatically translated and split into separate
+     * lines.
+     *
+     * @param tooltip A tooltip translation string.
+     */
+    public Style setTooltip(Text tooltip) {
+        return setTooltip(Lists.newArrayList(tooltip));
+    }
+
+    public Style setTooltip(Text tooltip, int x, int y) {
         return setTooltip(tooltip).setTooltipOffset(x, y);
     }
 
     /**
      * Sets the tooltip text with a multi-line value.
      */
-    public Style setTooltip(List<String> tooltip) {
+    public Style setTooltip(List<Text> tooltip) {
         this.tooltip = Optional.ofNullable(tooltip);
         return this;
     }
 
-    public Optional<List<String>> getTooltip() {
+    public Optional<List<Text>> getTooltip() {
         return tooltip;
     }
 

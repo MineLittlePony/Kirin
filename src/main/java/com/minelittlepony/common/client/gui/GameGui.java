@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 
@@ -123,12 +124,12 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        super.render(matrices, mouseX, mouseY, delta);
 
         buttons.forEach(button -> {
             if (button instanceof ITooltipped && button.isMouseOver(mouseX, mouseY)) {
-                ((ITooltipped<?>)button).renderToolTip(this, mouseX, mouseY);
+                ((ITooltipped<?>)button).renderToolTip(matrices, this, mouseX, mouseY);
             }
         });
     }
@@ -154,7 +155,7 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
     }
 
     @Override
-    public void renderTooltip(List<String> text, int x, int y) {
-        tooltip.render(text, x, y);
+    public void renderTooltip(MatrixStack matrices, List<Text> text, int x, int y) {
+        tooltip.render(matrices, text, x, y);
     }
 }
