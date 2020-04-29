@@ -107,7 +107,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
     public void renderToolTip(MatrixStack matrices, Screen parent, int mouseX, int mouseY) {
         if (visible) {
             getStyle().getTooltip().ifPresent(tooltip -> {
-                parent.renderTooltip(matrices, tooltip, mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
+                parent.renderTooltip(matrices, tooltip.getLines(), mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
             });
         }
     }
@@ -149,7 +149,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
     }
 
     protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        drawCenteredLabel(getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
+        drawCenteredLabel(matrices, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
     }
 
     @Override

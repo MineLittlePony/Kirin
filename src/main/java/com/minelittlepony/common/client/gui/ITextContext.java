@@ -4,9 +4,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 
 /**
@@ -39,13 +39,10 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawLabel(Text text, int x, int y, int color, double zIndex) {
+    default void drawLabel(MatrixStack matrices, Text text, int x, int y, int color, double zIndex) {
         VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-        MatrixStack stack = new MatrixStack();
-        stack.translate(0, 0, zIndex);
-        Matrix4f matrix = stack.peek().getModel();
-
-        getFont().draw(text, x, y, color, true, matrix, immediate, true, 0, 0xF000F0);
+        matrices.translate(0, 0, zIndex);
+        getFont().draw(text, x, y, color, true, matrices.peek().getModel(), immediate, true, 0, 0xF000F0);
         immediate.draw();
     }
 
@@ -58,10 +55,10 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawCenteredLabel(Text text, int x, int y, int color, double zIndex) {
+    default void drawCenteredLabel(MatrixStack matrices, Text text, int x, int y, int color, double zIndex) {
         int width = getFont().getWidth(text);
 
-        drawLabel(text, x - width/2, y, color, zIndex);
+        drawLabel(matrices, text, x - width/2, y, color, zIndex);
     }
 
     /**
@@ -74,13 +71,13 @@ public interface ITextContext {
      * @param maxWidth The maximum page width
      * @param color The font colour
      */
-    default void drawTextBlock(Text text, int x, int y, int maxWidth, int color) {
-        Matrix4f matrix = AffineTransformation.identity().getMatrix();
+    default void drawTextBlock(MatrixStack matrices, StringRenderable text, int x, int y, int maxWidth, int color) {
+        AffineTransformation.identity().getMatrix();
 
-        for (Text line : getFont().wrapLines(text, maxWidth)) {
+        for (StringRenderable line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-            getFont().draw(line, left, y, color, false, matrix, immediate, true, 0, 0xF000F0);
+            getFont().draw(line, left, y, color, false, matrices.peek().getModel(), immediate, true, 0, 0xF000F0);
             immediate.draw();
 
             y += 9;

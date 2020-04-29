@@ -82,7 +82,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
         int textY = y + mc.textRenderer.fontHeight / 2;
         int textX = x + width + 10;
 
-        drawLabel(getStyle().getText(), textX, textY, foreColor, 0);
+        drawLabel(matrices, getStyle().getText(), textX, textY, foreColor, 0);
     }
 
     @Override
