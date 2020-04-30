@@ -129,4 +129,24 @@ public class Bounds {
         DrawableHelper.fill(matrices, 0, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
         DrawableHelper.fill(matrices, 0, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
     }
+
+    protected boolean equals(Bounds o) {
+        return this == o || o.top == top && o.left == left && o.width == width && o.height == height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || (o instanceof Bounds && equals((Bounds)o));
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + height;
+        result = prime * result + left;
+        result = prime * result + top;
+        result = prime * result + width;
+        return result;
+    }
 }

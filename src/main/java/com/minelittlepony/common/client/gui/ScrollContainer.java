@@ -3,7 +3,6 @@ package com.minelittlepony.common.client.gui;
 import java.util.List;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
-import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.util.render.ClippingSpace;
@@ -23,12 +22,12 @@ import net.minecraft.text.StringRenderable;
  * @author     Sollace
  *
  */
-public class ScrollContainer extends GameGui {
+public class ScrollContainer extends GameGui implements IViewRoot {
 
     /**
      * The scrollbar for this container.
      */
-    protected final Scrollbar scrollbar = new Scrollbar();
+    protected final Scrollbar scrollbar = new Scrollbar(this);
 
     /**
      * The external padding around this container. (default: [0,0,0,0])
@@ -67,21 +66,15 @@ public class ScrollContainer extends GameGui {
 
         contentInitializer.run();
 
-        Bounds content = getContentBounds();
-
+        scrollbar.reposition();
         children.add(scrollbar);
-        scrollbar.reposition(
-                content.left + content.width,
-                0,
-                getBounds().height,
-                content.height);
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
 
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
-            int scroll = scrollbar.getScrollAmount();
+            int scroll = scrollbar.getVerticalScrollAmount();
 
             matrices.push();
             matrices.translate(margin.left, margin.top, 0);
@@ -102,6 +95,7 @@ public class ScrollContainer extends GameGui {
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
+
             matrices.pop();
 
             fillGradient(matrices, 0, -3, width, 5, 0xFF000000, 0);
@@ -109,6 +103,7 @@ public class ScrollContainer extends GameGui {
 
             matrices.pop();
         });
+
     }
 
     @Override
@@ -119,11 +114,11 @@ public class ScrollContainer extends GameGui {
     }
 
     public int getMouseYOffset() {
-        return -margin.top - padding.top + scrollbar.getScrollAmount();
+        return -margin.top - padding.top + scrollbar.getVerticalScrollAmount();
     }
 
     public int getMouseXOffset() {
-        return -margin.left - padding.left;
+        return -margin.left - padding.left + scrollbar.getHorizontalScrollAmount();
     }
 
     @Override
@@ -154,7 +149,7 @@ public class ScrollContainer extends GameGui {
 
         matrices.translate(-margin.left, -margin.top, 0);
         matrices.translate(-padding.left, 0, 0);
-        matrices.translate(0, scrollbar.getScrollAmount() - padding.top, 0);
+        matrices.translate(0, scrollbar.getVerticalScrollAmount() - padding.top, 0);
 
         client.currentScreen.renderTooltip(matrices, tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
 
@@ -166,24 +161,19 @@ public class ScrollContainer extends GameGui {
         return getBounds().contains(mouseX, mouseY);
     }
 
-    /**
-     * Gets the total bounds of all the elements inside this container.
-     */
-    public Bounds getContentBounds() {
-        Bounds bounds = Bounds.empty();
-
-        for (Element element : children) {
-            if (element instanceof IBounded) {
-                bounds = bounds.add(((IBounded)element).getBounds());
-            }
-        }
-
-        return bounds.add(padding);
+    @Override
+    public Padding getContentPadding() {
+        return padding;
     }
 
     @Override
     public void setBounds(Bounds bounds) {
         margin.top = bounds.top;
         margin.left = bounds.left;
+    }
+
+    @Override
+    public List<Element> getChildElements() {
+        return children();
     }
 }

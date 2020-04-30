@@ -1,8 +1,10 @@
 package com.minelittlepony.common.client.gui.element;
 
 import com.minelittlepony.common.client.gui.GameGui;
+import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
+import com.minelittlepony.common.client.gui.dimension.Padding;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
@@ -27,17 +29,19 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
     private double scrollMomentum = 0;
     private float scrollFactor = 0;
 
+    private final IViewRoot rootView;
     private final Bounds bounds = new Bounds(0, 0, 6, 0);
+
+    private Bounds contentBounds = bounds;
+    private Padding contentPadding = new Padding(0, 0, 0, 0);
 
     private int maxScrollY = 0;
     private int shiftFactor = 0;
 
-    private int contentHeight;
-
     private double initialMouseY;
 
-    public Scrollbar() {
-
+    public Scrollbar(IViewRoot rootView) {
+        this.rootView = rootView;
     }
 
     /**
@@ -45,20 +49,20 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
      *
      * @param x The left X position (in pixels) of this scrollbar
      * @param y The top Y position (in pixels) of this scrollbar
-     * @param elementHeight The total height of the container/parent.
-     * @param contentHeight The total height of the content/siblings to this scrollbar.
      */
-    public void reposition(int x, int y, int elementHeight, int contentHeight) {
-        bounds.left = x;
-        bounds.top = y;
-        bounds.height = elementHeight;
-        this.contentHeight = contentHeight;
+    public void reposition() {
+        contentBounds = rootView.getContentBounds();
+        contentPadding = rootView.getContentPadding();
 
-        maxScrollY = contentHeight - elementHeight;
+        bounds.left = contentBounds.left + contentBounds.width;
+        bounds.top = 0;
+        bounds.height = rootView.getBounds().height;
+
+        maxScrollY = contentBounds.height - bounds.height;
         if (maxScrollY < 0) {
             maxScrollY = 0;
         }
-        scrollFactor = elementHeight == 0 ? 1 : contentHeight / elementHeight;
+        scrollFactor = bounds.height == 0 ? 1 : contentBounds.height / bounds.height;
 
         scrollBy(0);
     }
@@ -66,11 +70,23 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
     /**
      * Gets the vertical scroll amount.
      */
-    public int getScrollAmount() {
+    public int getVerticalScrollAmount() {
         return scrollY;
     }
 
+    /**
+     * Gets the vertical scroll amount.
+     */
+    public int getHorizontalScrollAmount() {
+        return 0;
+    }
+
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+
+        if (maxScrollY <= 0) {
+            return;
+        }
+
         if (!touching && !dragging) {
             scrollMomentum *= partialTicks;
             if (scrollMomentum > 0) {
@@ -78,21 +94,19 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
             }
 
             if (shiftFactor != 0) {
+                System.out.println("shifting by" + (shiftFactor * scrollFactor));
                 scrollBy(shiftFactor * scrollFactor);
                 shiftFactor = computeShiftFactor(mouseX, mouseY);
+                System.out.println("new shift factor " + shiftFactor);
             }
-        }
-
-        if (maxScrollY <= 0) {
-            return;
         }
 
         renderVertical(matrices);
     }
 
     protected void renderVertical(MatrixStack matrices) {
-        int scrollbarHeight = getScrubberLength(bounds.height, contentHeight);
-        int scrollbarTop = getScrubberStart(scrollbarHeight, bounds.height, contentHeight);
+        int scrollbarHeight = getScrubberLength(bounds.height, contentBounds.height);
+        int scrollbarTop = getScrubberStart(scrollbarHeight, bounds.height, contentBounds.height);
 
         renderBackground(matrices, bounds.top, bounds.left, bounds.top + bounds.height, bounds.left + bounds.width);
         renderBar(matrices, bounds.left, bounds.left + bounds.width, scrollbarTop, scrollbarTop + scrollbarHeight);
@@ -103,7 +117,7 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
             return 0;
         }
 
-        int scrollbarTop = bounds.top + getScrollAmount() * (elementHeight - scrollbarHeight) / maxScrollY;
+        int scrollbarTop = bounds.top + getVerticalScrollAmount() * (elementHeight - scrollbarHeight) / maxScrollY;
         if (scrollbarTop < 0) {
             return 0;
         }
@@ -126,8 +140,8 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
     private int computeShiftFactor(double mouseX, double mouseY) {
         double pos = mouseY;
 
-        int scrubberLength = getScrubberLength(bounds.height, contentHeight);
-        int scrubberStart = getScrubberStart(scrubberLength, bounds.height, contentHeight);
+        int scrubberLength = getScrubberLength(bounds.height, contentBounds.height);
+        int scrubberStart = getScrubberStart(scrubberLength, bounds.height, contentBounds.height);
 
         if (pos < scrubberStart) {
             return 1;
@@ -140,7 +154,9 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        mouseY -= getScrollAmount();
+        mouseY = calculateInternalYPosition(mouseY);
+
+        touching = dragging = false;
 
         if (!isMouseOver(mouseX, mouseY)) {
             touching = true;
@@ -157,9 +173,14 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return isMouseOver(mouseX, mouseY);
     }
 
+    private double calculateInternalYPosition(double mouseY) {
+        mouseY += contentPadding.top - getVerticalScrollAmount();
+        return Math.max(0, Math.min(mouseY, bounds.height));
+    }
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int int_1, double differX, double differY) {
-        mouseY -= getScrollAmount();
+        mouseY = calculateInternalYPosition(mouseY);
 
         if (dragging) {
             scrollBy(initialMouseY - mouseY);
@@ -178,8 +199,9 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = touching = false;
         shiftFactor = 0;
+        System.out.println("release");
 
-        return isMouseOver(mouseX, mouseY - getScrollAmount());
+        return isMouseOver(mouseX, calculateInternalYPosition(mouseY));
     }
 
     /**
@@ -191,7 +213,7 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-       return getBounds().contains(mouseX, mouseY);
+       return maxScrollY > 0 && getBounds().contains(mouseX, mouseY);
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
-import com.minelittlepony.common.client.gui.dimension.IBounded;
+import com.minelittlepony.common.client.gui.dimension.Padding;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -16,6 +16,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 
 /**
@@ -28,9 +29,11 @@ import net.minecraft.text.Text;
  * @author     Sollace
  *
  */
-public abstract class GameGui extends Screen implements IBounded, ITextContext {
+public abstract class GameGui extends Screen implements IViewRoot, ITextContext {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
+
+    private final Padding padding = new Padding(0, 0, 0, 0);
 
     private final ToolTipRenderer tooltip = new ToolTipRenderer(this);
 
@@ -155,7 +158,17 @@ public abstract class GameGui extends Screen implements IBounded, ITextContext {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrices, List<Text> text, int x, int y) {
+    public Padding getContentPadding() {
+        return padding;
+    }
+
+    @Override
+    public List<Element> getChildElements() {
+        return children();
+    }
+
+    @Override
+    public void renderTooltip(MatrixStack matrices, List<? extends StringRenderable> text, int x, int y) {
         tooltip.render(matrices, text, x, y);
     }
 }
