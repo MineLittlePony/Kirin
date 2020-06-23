@@ -1,6 +1,6 @@
 # Kirin UI
 
-[![Build Status](https://travis-ci.org/MineLittlePony/Kirin.svg?branch=master)](https://travis-ci.org/MineLittlePony/Kirin)
+[![Build Status](https://travis-ci.org/MineLittlePony/Kirin.svg?branch=1.16)](https://travis-ci.org/MineLittlePony/Kirin)
 [![Jitpack](https://jitpack.io/v/MineLittlePony/Kirin.svg)](https://jitpack.io/#MineLittlePony/Kirin)
 
 
@@ -24,4 +24,4 @@ gradlew build
 
 Maven: `https://repo.minelittlepony-mod.com/maven/snapshot`
 
-Dependency: `com.minelittlepony:Kirin:1.5.2-1.15.2`
+Dependency: `com.minelittlepony:Kirin:1.6.4-1.16-rc1`
