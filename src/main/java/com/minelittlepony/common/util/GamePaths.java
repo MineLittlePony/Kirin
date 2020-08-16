@@ -22,14 +22,14 @@ public class GamePaths {
      * Gets the current game (root) direction as a Path.
      */
     public static Path getGameDirectory() {
-        return FabricLoader.getInstance().getGameDirectory().toPath();
+        return FabricLoader.getInstance().getGameDir();
     }
 
     /**
      * Gets the current game config direction as a Path.
      */
     public static Path getConfigDirectory() {
-        return FabricLoader.getInstance().getConfigDirectory().toPath();
+        return FabricLoader.getInstance().getConfigDir();
     }
 
     /**

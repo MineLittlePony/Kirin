@@ -35,11 +35,11 @@ public class OutsideWorldRenderer {
 
         dispatcher.configure(world,
                 mc.getTextureManager(),
-                mc.getEntityRenderManager().getTextRenderer(),
+                mc.getEntityRenderDispatcher().getTextRenderer(),
                 mc.gameRenderer.getCamera(),
                 mc.crosshairTarget);
 
-        mc.getEntityRenderManager().configure(world,
+        mc.getEntityRenderDispatcher().configure(world,
                 mc.gameRenderer.getCamera(),
                 mc.targetedEntity);
 

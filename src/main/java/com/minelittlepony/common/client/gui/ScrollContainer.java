@@ -10,7 +10,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 
 /**
  * A container implementing proper overflow mechanics and smooth scrolling.
@@ -144,14 +144,14 @@ public class ScrollContainer extends GameGui implements IViewRoot {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrices, List<? extends StringRenderable> tooltip, int mouseX, int mouseY) {
+    public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> tooltip, int mouseX, int mouseY) {
         matrices.push();
 
         matrices.translate(-margin.left, -margin.top, 0);
         matrices.translate(-padding.left, 0, 0);
         matrices.translate(0, scrollbar.getVerticalScrollAmount() - padding.top, 0);
 
-        client.currentScreen.renderTooltip(matrices, tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
+        client.currentScreen.renderOrderedTooltip(matrices, tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
 
         matrices.pop();
     }

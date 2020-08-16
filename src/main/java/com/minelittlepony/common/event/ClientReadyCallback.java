@@ -1,8 +1,8 @@
 package com.minelittlepony.common.event;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.client.MinecraftClient;
 
 /**
@@ -19,7 +19,7 @@ public interface ClientReadyCallback {
 
     void onClientPostInit(MinecraftClient client);
 
-    class Handler implements ClientTickCallback {
+    class Handler implements ClientTickEvents.EndTick  {
 
         private static Handler instance;
 
@@ -35,17 +35,16 @@ public interface ClientReadyCallback {
             // make sure to only register once
             if (instance == null) {
                 instance = new Handler();
-                ClientTickCallback.EVENT.register(instance);
+                ClientTickEvents.END_CLIENT_TICK.register(instance);
             }
         }
 
         @Override
-        public void tick(MinecraftClient client) {
+        public void onEndTick(MinecraftClient client) {
             if (firstTick) {
                 ClientReadyCallback.EVENT.invoker().onClientPostInit(client);
                 firstTick = false;
             }
-
         }
     }
 }

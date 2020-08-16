@@ -16,7 +16,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 /**
@@ -168,7 +168,7 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrices, List<? extends StringRenderable> text, int x, int y) {
+    public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> text, int x, int y) {
         tooltip.render(matrices, text, x, y);
     }
 }

@@ -6,7 +6,8 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 
 /**
@@ -71,10 +72,10 @@ public interface ITextContext {
      * @param maxWidth The maximum page width
      * @param color The font colour
      */
-    default void drawTextBlock(MatrixStack matrices, StringRenderable text, int x, int y, int maxWidth, int color) {
+    default void drawTextBlock(MatrixStack matrices, StringVisitable text, int x, int y, int maxWidth, int color) {
         AffineTransformation.identity().getMatrix();
 
-        for (StringRenderable line : getFont().wrapLines(text, maxWidth)) {
+        for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
             getFont().draw(line, left, y, color, false, matrices.peek().getModel(), immediate, true, 0, 0xF000F0);

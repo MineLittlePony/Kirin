@@ -14,7 +14,7 @@ import net.minecraft.client.render.VertexConsumerProvider.Immediate;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 
 /**
  * Renders a stylised tooltip with borders and backgrounds.
@@ -70,7 +70,7 @@ public class ToolTipRenderer extends DrawableHelper {
      * @param x The left X position (in pixels) of the tooltip
      * @param y The top Y position (in pixels) of the tooltip
      */
-    public void render(MatrixStack matrices, List<? extends StringRenderable> text, int x, int y) {
+    public void render(MatrixStack matrices, List<? extends OrderedText> text, int x, int y) {
         if (text.isEmpty()) {
             return;
         }
@@ -83,7 +83,7 @@ public class ToolTipRenderer extends DrawableHelper {
 
         int labelWidth = 0;
 
-        for (StringRenderable string : text) {
+        for (OrderedText string : text) {
             labelWidth = Math.max(labelWidth, font.getWidth(string));
         }
 
@@ -129,7 +129,7 @@ public class ToolTipRenderer extends DrawableHelper {
         int color = getTextColor();
 
         for(int r = 0; r < text.size(); ++r) {
-            StringRenderable line = text.get(r);
+            OrderedText line = text.get(r);
             if (line != null) {
                 font.draw(line, left, top, -1, true, matrix, immediate, true, 0, color);
             }
