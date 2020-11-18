@@ -47,7 +47,7 @@ public class MotionCompositor {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
 
-        if (entity instanceof PlayerEntity && !((PlayerEntity)entity).abilities.allowFlying) {
+        if (entity instanceof PlayerEntity && !((PlayerEntity)entity).getAbilities().allowFlying) {
             angle /= 2;
         }
 

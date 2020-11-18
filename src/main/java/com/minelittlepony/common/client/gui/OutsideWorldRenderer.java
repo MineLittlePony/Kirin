@@ -28,14 +28,12 @@ public class OutsideWorldRenderer {
      * @return a pre-configured BlockEntityRenderDispatcher
      */
     public static BlockEntityRenderDispatcher configure(@Nullable World world) {
-        BlockEntityRenderDispatcher dispatcher = BlockEntityRenderDispatcher.INSTANCE;
         MinecraftClient mc = MinecraftClient.getInstance();
+        BlockEntityRenderDispatcher dispatcher = mc.method_31975();
 
         world = ObjectUtils.firstNonNull(dispatcher.world, world, mc.world);
 
         dispatcher.configure(world,
-                mc.getTextureManager(),
-                mc.getEntityRenderDispatcher().getTextRenderer(),
                 mc.gameRenderer.getCamera(),
                 mc.crosshairTarget);
 
