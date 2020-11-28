@@ -131,7 +131,7 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
         super.render(matrices, mouseX, mouseY, delta);
 
         buttons.forEach(button -> {
-            if (button instanceof ITooltipped && button.isMouseOver(mouseX, mouseY)) {
+            if (button instanceof ITooltipped && button.isHovered()) {
                 ((ITooltipped<?>)button).renderToolTip(matrices, this, mouseX, mouseY);
             }
         });
