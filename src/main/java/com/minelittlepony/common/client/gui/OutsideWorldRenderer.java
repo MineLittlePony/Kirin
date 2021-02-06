@@ -29,7 +29,7 @@ public class OutsideWorldRenderer {
      */
     public static BlockEntityRenderDispatcher configure(@Nullable World world) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        BlockEntityRenderDispatcher dispatcher = mc.method_31975();
+        BlockEntityRenderDispatcher dispatcher = mc.getBlockEntityRenderDispatcher();
 
         world = ObjectUtils.firstNonNull(dispatcher.world, world, mc.world);
 
