@@ -1,8 +1,8 @@
 package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
+import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -51,11 +51,7 @@ public class TextureSprite implements ISprite {
 
     @Override
     public void render(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float partialTicks) {
-
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        mc.getTextureManager().bindTexture(texture);
-
+        RenderSystem.setShaderTexture(0, texture);
         DrawableHelper.drawTexture(
                 matrices,
                 x + bounds.left, y + bounds.top,
@@ -63,8 +59,7 @@ public class TextureSprite implements ISprite {
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
                 textureBounds.width, textureBounds.height);
-
-        mc.getTextureManager().bindTexture(AbstractButtonWidget.WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, AbstractButtonWidget.WIDGETS_LOCATION);
     }
 
     @Override
