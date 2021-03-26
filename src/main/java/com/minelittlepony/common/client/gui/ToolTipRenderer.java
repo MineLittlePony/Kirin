@@ -8,6 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexConsumerProvider.Immediate;
@@ -78,7 +79,7 @@ public class ToolTipRenderer extends DrawableHelper {
         TextRenderer font = MinecraftClient.getInstance().textRenderer;
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
-        RenderSystem.disableRescaleNormal();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.disableDepthTest();
 
         int labelWidth = 0;
@@ -146,6 +147,5 @@ public class ToolTipRenderer extends DrawableHelper {
         setZOffset(0);
         itemRenderer.zOffset = 0;
         RenderSystem.enableDepthTest();
-        RenderSystem.enableRescaleNormal();
     }
 }

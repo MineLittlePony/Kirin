@@ -4,7 +4,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
@@ -73,8 +72,6 @@ public interface ITextContext {
      * @param color The font colour
      */
     default void drawTextBlock(MatrixStack matrices, StringVisitable text, int x, int y, int maxWidth, int color) {
-        AffineTransformation.identity().getMatrix();
-
         for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
