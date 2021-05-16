@@ -55,7 +55,6 @@ public class Style {
         return color;
     }
 
-
     /**
      * Sets the text label to display. Accepts raw text, or a translation string.
      * Translations are done internally.

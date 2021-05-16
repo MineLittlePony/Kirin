@@ -7,9 +7,12 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 import com.minelittlepony.common.client.gui.IField;
+import com.minelittlepony.common.client.gui.Tooltip;
 
 import java.util.function.Function;
 
@@ -31,7 +34,9 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     private IChangeCallback<T> action = IChangeCallback::none;
 
     @Nullable
-    private Function<T, String> formatter;
+    private Function<AbstractSlider<T>, Text> textFunc;
+    @Nullable
+    private Function<AbstractSlider<T>, Tooltip> tooltipFunc;
 
     public AbstractSlider(int x, int y, float min, float max, T value) {
         super(x, y);
@@ -57,11 +62,28 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
      * @param formatter The formatting function to call.
      * @return {@code this} for chaining purposes
      */
-    public AbstractSlider<T> setFormatter(@Nonnull Function<T, String> formatter) {
-        this.formatter = formatter;
-        getStyle().setText(formatter.apply(getValue()));
+    public AbstractSlider<T> setTextFormat(@Nonnull Function<AbstractSlider<T>, Text> formatter) {
+        this.textFunc = formatter;
+        getStyle().setText(formatter.apply(this));
 
         return this;
+    }
+    /**
+     * Sets a function to use when formatting the slider's current value for display in its tooltip.
+     *
+     * @param formatter The formatting function to call.
+     * @return {@code this} for chaining purposes
+     */
+    public AbstractSlider<T> setTooltipFormat(@Nonnull Function<AbstractSlider<T>, Tooltip> formatter) {
+        this.tooltipFunc = formatter;
+        getStyle().setTooltip(formatter.apply(this));
+
+        return this;
+    }
+
+    @Deprecated
+    public AbstractSlider<T> setFormatter(@Nonnull Function<T, String> formatter) {
+        return setTextFormat(sender -> new TranslatableText(formatter.apply(getValue())));
     }
 
     @Override
@@ -99,8 +121,11 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
             this.value = convertFromRange(valueToFloat(action.perform(getValue())), min, max);
 
             if (this.value != initial) {
-                if (formatter != null) {
-                    getStyle().setText(formatter.apply(getValue()));
+                if (textFunc != null) {
+                    getStyle().setText(textFunc.apply(this));
+                }
+                if (tooltipFunc != null) {
+                    getStyle().setTooltip(tooltipFunc.apply(this));
                 }
             }
         }

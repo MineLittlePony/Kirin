@@ -1,5 +1,7 @@
 package com.minelittlepony.common.client.gui.element;
 
+import net.minecraft.text.Text;
+
 /**
  * Also a slider, but conveniently works with Enum values.
  *
@@ -14,7 +16,7 @@ public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
         super(x, y, 0, value.getClass().getEnumConstants().length - 1, value);
         values = (T[])value.getClass().getEnumConstants();
 
-        setFormatter(t -> t.name());
+        setTextFormat(s -> Text.of(getValue().name()));
     }
 
     @Override
