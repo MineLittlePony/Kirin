@@ -8,8 +8,11 @@ import java.util.stream.Stream;
 
 import com.google.common.base.Splitter;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.StringVisitable;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -33,10 +36,6 @@ public interface Tooltip {
         return getLines().stream();
     }
 
-    static Tooltip of(String text) {
-        return of(new TranslatableText(text));
-    }
-
     static Tooltip of(List<Text> lines) {
         List<Text> flines = lines.stream()
                 .map(Tooltip::of)
@@ -45,8 +44,23 @@ public interface Tooltip {
         return () -> flines;
     }
 
-    static Tooltip of(Text text) {
+    static Tooltip of(List<StringVisitable> lines, Style style) {
+        List<Text> flines = lines.stream()
+                .map(line -> of(line, style))
+                .flatMap(Tooltip::stream)
+                .collect(Collectors.toList());
+        return () -> flines;
+    }
 
+    static Tooltip of(String text) {
+        return of(new TranslatableText(text));
+    }
+
+    static Tooltip of(Text text) {
+        return of(text, text.getStyle());
+    }
+
+    static Tooltip of(StringVisitable text, Style styl) {
         List<Text> lines = new ArrayList<>();
         lines.add(new LiteralText(""));
 
@@ -60,8 +74,20 @@ public interface Tooltip {
             lines.addAll(parts);
 
             return Optional.empty();
-        }, text.getStyle());
+        }, styl);
 
         return () -> lines;
+    }
+
+    static Tooltip of(String text, int maxWidth) {
+        return of(new TranslatableText(text), maxWidth);
+    }
+
+    static Tooltip of(Text text, int maxWidth) {
+        return of(text, text.getStyle(), maxWidth);
+    }
+
+    static Tooltip of(StringVisitable text, Style style, int maxWidth) {
+        return of(MinecraftClient.getInstance().textRenderer.getTextHandler().wrapLines(text, maxWidth, style), style);
     }
 }
