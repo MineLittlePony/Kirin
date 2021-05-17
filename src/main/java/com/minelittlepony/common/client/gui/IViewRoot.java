@@ -40,5 +40,4 @@ public interface IViewRoot extends IBounded {
     Padding getContentPadding();
 
     List<Element> getChildElements();
-
 }

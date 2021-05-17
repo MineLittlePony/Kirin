@@ -14,17 +14,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 /**
  * Optional root element for a screen using Kirin functionality.
  * <p>
- * This class implements some QOL features, such as bounds, text utilities,
- * and is required to make use of the built-in tooltip rendering capabilities
- * of Kirin UI elements.
+ * This class implements some QOL features, such as bounds, text utilities, etc of Kirin UI elements.
  *
  * @author     Sollace
  *
@@ -34,8 +30,6 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 
     private final Padding padding = new Padding(0, 0, 0, 0);
-
-    private final ToolTipRenderer tooltip = new ToolTipRenderer(this);
 
     /**
      * The parent screen that existed prior to opening this Screen.
@@ -120,31 +114,10 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
     }
 
     @Override
-    public void init(MinecraftClient mc, int width, int height) {
+    public void init(MinecraftClient client, int width, int height) {
         bounds.width = width;
         bounds.height = height;
-        super.init(mc, width, height);
-    }
-
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
-
-        buttons.forEach(button -> {
-            if (button instanceof ITooltipped && button.isHovered()) {
-                ((ITooltipped<?>)button).renderToolTip(matrices, this, mouseX, mouseY);
-            }
-        });
-    }
-
-    /**
-     * Closes this screen and returns to the parent.
-     *
-     * Implementors should explicitly call this method when they want this behavior.
-     */
-    public void finish() {
-        onClose();
-        client.openScreen(parent);
+        super.init(client, width, height);
     }
 
     @Override
@@ -164,11 +137,16 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
 
     @Override
     public List<Element> getChildElements() {
-        return children();
+        return children;
     }
 
-    @Override
-    public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> text, int x, int y) {
-        tooltip.render(matrices, text, x, y);
+    /**
+     * Closes this screen and returns to the parent.
+     *
+     * Implementors should explicitly call this method when they want this behavior.
+     */
+    public void finish() {
+        onClose();
+        client.openScreen(parent);
     }
 }
