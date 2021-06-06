@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 import com.google.common.base.Splitter;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
@@ -20,6 +22,10 @@ public interface Tooltip {
     Splitter LINE_SPLITTER = Splitter.onPattern("\r?\n|\\\\n");
 
     List<Text> getLines();
+
+    default void appendNarrations(NarrationMessageBuilder narrationMsg) {
+        getLines().forEach(line -> narrationMsg.put(NarrationPart.HINT, line));
+    }
 
     default CharSequence getString() {
         StringBuilder builder = new StringBuilder();

@@ -16,7 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -31,7 +31,7 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends ButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
+public class Button extends PressableWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -46,7 +46,7 @@ public class Button extends ButtonWidget implements ITooltipped<Button>, IBounde
     }
 
     public Button(int x, int y, int width, int height) {
-        super(x, y, width, height, LiteralText.EMPTY, v -> {});
+        super(x, y, width, height, LiteralText.EMPTY);
 
         bounds = new Bounds(y, x, width, height);
     }
@@ -103,6 +103,17 @@ public class Button extends ButtonWidget implements ITooltipped<Button>, IBounde
         y = bounds.top;
         width = bounds.width;
         height = bounds.height;
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder narrationMsg) {
+        method_37021(narrationMsg);
+        getStyle().getTooltip().ifPresent(tooltip -> tooltip.appendNarrations(narrationMsg));
+    }
+
+    @Override
+    public void onPress() {
+        action.accept(this);
     }
 
     @Override
@@ -174,11 +185,5 @@ public class Button extends ButtonWidget implements ITooltipped<Button>, IBounde
                 x + blockWidth/2, y + blockHeight/2,
                 endV, endU,
                 blockWidth/2, blockHeight/2);
-    }
-
-    @Override
-    public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-        // TODO Auto-generated method stub
-
     }
 }
