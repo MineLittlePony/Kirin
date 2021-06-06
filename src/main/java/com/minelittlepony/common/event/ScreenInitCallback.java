@@ -19,6 +19,11 @@ public interface ScreenInitCallback {
     void init(Screen screen, ButtonList buttons);
 
     interface ButtonList {
-        <T extends Element & Drawable & Selectable> T add(T button);
+        /**
+         * Adds a button to this screen.
+         * <p>
+         * Made public to help with mod development.
+         */
+        <T extends Element & Drawable & Selectable> T addButton(T button);
     }
 }

@@ -7,12 +7,13 @@ import java.util.Set;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
+import com.minelittlepony.common.event.ScreenInitCallback;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 
-public interface IViewRoot extends IBounded {
+public interface IViewRoot extends IBounded, ScreenInitCallback.ButtonList {
     /**
      * Gets the total bounds of all the elements inside this container.
      */
@@ -40,13 +41,6 @@ public interface IViewRoot extends IBounded {
      * Any extra padding this view adds around its contents.
      */
     Padding getContentPadding();
-
-    /**
-     * Adds a button to this screen.
-     * <p>
-     * Made public to help with mod development.
-     */
-    <T extends Element & Drawable & Selectable> T addButton(T button);
 
     /**
      * The list of all child elements, buttons included, present on this screen.
