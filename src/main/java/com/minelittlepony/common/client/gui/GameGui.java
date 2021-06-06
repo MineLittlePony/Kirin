@@ -1,17 +1,11 @@
 package com.minelittlepony.common.client.gui;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.minelittlepony.common.client.gui.dimension.Bounds;
-import com.minelittlepony.common.client.gui.dimension.Padding;
-
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvent;
@@ -25,12 +19,7 @@ import net.minecraft.text.Text;
  * @author     Sollace
  *
  */
-public abstract class GameGui extends Screen implements IViewRoot, ITextContext {
-
-    private final Bounds bounds = new Bounds(0, 0, 0, 0);
-
-    private final Padding padding = new Padding(0, 0, 0, 0);
-
+public class GameGui extends Screen implements IViewRootDefaultImpl {
     /**
      * The parent screen that existed prior to opening this Screen.
      * If present, this screen will replace this one upon closing.
@@ -86,58 +75,6 @@ public abstract class GameGui extends Screen implements IViewRoot, ITextContext 
      */
     public static Supplier<Boolean> keyCheck(int key) {
         return () -> isKeyDown(key);
-    }
-
-    /**
-     * The list of buttons present on this screen.
-     */
-    public List<AbstractButtonWidget> buttons() {
-        return buttons;
-    }
-
-    /**
-     * The list of all child elements, buttons included, present on this screen.
-     */
-    @Override
-    public List<Element> children() {
-        return children;
-    }
-
-    /**
-     * Adds a button to this screen.
-     * <p>
-     * Made public to help with mod development.
-     */
-    @Override
-    public <T extends AbstractButtonWidget> T addButton(T button) {
-        return super.addButton(button);
-    }
-
-    @Override
-    public void init(MinecraftClient client, int width, int height) {
-        bounds.width = width;
-        bounds.height = height;
-        super.init(client, width, height);
-    }
-
-    @Override
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    @Override
-    public void setBounds(Bounds bounds) {
-
-    }
-
-    @Override
-    public Padding getContentPadding() {
-        return padding;
-    }
-
-    @Override
-    public List<Element> getChildElements() {
-        return children;
     }
 
     /**

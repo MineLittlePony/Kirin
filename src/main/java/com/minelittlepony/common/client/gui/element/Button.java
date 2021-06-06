@@ -15,7 +15,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -30,7 +31,7 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends AbstractPressableButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
+public class Button extends ButtonWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
 
     private Style style = new Style();
 
@@ -45,7 +46,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
     }
 
     public Button(int x, int y, int width, int height) {
-        super(x, y, width, height, LiteralText.EMPTY);
+        super(x, y, width, height, LiteralText.EMPTY, v -> {});
 
         bounds = new Bounds(y, x, width, height);
     }
@@ -118,7 +119,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
         MinecraftClient mc = MinecraftClient.getInstance();
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
         RenderSystem.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -130,7 +131,7 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
 
         renderButtonBlit(matrices, x, y, state, width, height);
 
-        renderBg(matrices, mc, mouseX, mouseY);
+        renderBackground(matrices, mc, mouseX, mouseY);
 
         int foreColor = getStyle().getColor();
         if (!active) {
@@ -149,11 +150,6 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
 
     protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         drawCenteredLabel(matrices, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
-    }
-
-    @Override
-    public void onPress() {
-        action.accept(this);
     }
 
     protected final void renderButtonBlit(MatrixStack matrices, int x, int y, int state, int blockWidth, int blockHeight) {
@@ -178,5 +174,11 @@ public class Button extends AbstractPressableButtonWidget implements ITooltipped
                 x + blockWidth/2, y + blockHeight/2,
                 endV, endU,
                 blockWidth/2, blockHeight/2);
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -153,8 +153,8 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected void renderBg(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
-        mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+    protected void renderBackground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
+        mc.getTextureManager().bindTexture(WIDGETS_TEXTURE);
 
         int i = 46 + (isHovered() ? 2 : 1) * 20;
         int sliderX = x + (int)(value * (width - 8));

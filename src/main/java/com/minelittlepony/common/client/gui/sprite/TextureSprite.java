@@ -4,13 +4,13 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class TextureSprite implements ISprite {
 
-    private Identifier texture = AbstractButtonWidget.WIDGETS_LOCATION;
+    private Identifier texture = ClickableWidget.WIDGETS_TEXTURE;
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
     private final Bounds textureBounds = new Bounds(0, 0, 256, 256);
@@ -59,7 +59,7 @@ public class TextureSprite implements ISprite {
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
                 textureBounds.width, textureBounds.height);
-        RenderSystem.setShaderTexture(0, AbstractButtonWidget.WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
     }
 
     @Override

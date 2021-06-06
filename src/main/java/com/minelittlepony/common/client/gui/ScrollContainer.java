@@ -7,7 +7,6 @@ import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.util.render.ClippingSpace;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
@@ -22,8 +21,7 @@ import net.minecraft.text.OrderedText;
  * @author     Sollace
  *
  */
-public class ScrollContainer extends GameGui implements IViewRoot {
-
+public class ScrollContainer extends GameGui {
     /**
      * The scrollbar for this container.
      */
@@ -33,10 +31,6 @@ public class ScrollContainer extends GameGui implements IViewRoot {
      * The external padding around this container. (default: [0,0,0,0])
      */
     public final Padding margin = new Padding(0, 0, 0, 0);
-    /**
-     * The external padding around the content inside this container. (default: [0,0,0,0])
-     */
-    public final Padding padding = new Padding(0, 0, 0, 0);
 
     public ScrollContainer() {
         super(LiteralText.EMPTY);
@@ -56,8 +50,7 @@ public class ScrollContainer extends GameGui implements IViewRoot {
      * @param contentInitializer A method to call to initialise this element's contents.
      */
     public void init(Runnable contentInitializer) {
-        buttons.clear();
-        children.clear();
+        clearChildren();
 
         width = getBounds().width = client.getWindow().getScaledWidth() - margin.left - margin.right;
         height = getBounds().height = client.getWindow().getScaledHeight() - margin.top - margin.bottom;
@@ -67,7 +60,8 @@ public class ScrollContainer extends GameGui implements IViewRoot {
         contentInitializer.run();
 
         scrollbar.reposition();
-        children.add(scrollbar);
+        addDrawable(scrollbar);
+        getChildElements().add(scrollbar);
     }
 
     @Override
@@ -81,6 +75,7 @@ public class ScrollContainer extends GameGui implements IViewRoot {
 
             fill(matrices, 0, 0, width, height, 0x66000000);
 
+            Padding padding = getContentPadding();
             matrices.push();
             matrices.translate(padding.left, 0, 0);
 
@@ -114,11 +109,11 @@ public class ScrollContainer extends GameGui implements IViewRoot {
     }
 
     public int getMouseYOffset() {
-        return -margin.top - padding.top + scrollbar.getVerticalScrollAmount();
+        return -margin.top - getContentPadding().top + scrollbar.getVerticalScrollAmount();
     }
 
     public int getMouseXOffset() {
-        return -margin.left - padding.left + scrollbar.getHorizontalScrollAmount();
+        return -margin.left - getContentPadding().left + scrollbar.getHorizontalScrollAmount();
     }
 
     @Override
@@ -147,6 +142,7 @@ public class ScrollContainer extends GameGui implements IViewRoot {
     public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> tooltip, int mouseX, int mouseY) {
         matrices.push();
 
+        Padding padding = getContentPadding();
         matrices.translate(-margin.left, -margin.top, 0);
         matrices.translate(-padding.left, 0, 0);
         matrices.translate(0, scrollbar.getVerticalScrollAmount() - padding.top, 0);
@@ -162,18 +158,8 @@ public class ScrollContainer extends GameGui implements IViewRoot {
     }
 
     @Override
-    public Padding getContentPadding() {
-        return padding;
-    }
-
-    @Override
     public void setBounds(Bounds bounds) {
         margin.top = bounds.top;
         margin.left = bounds.left;
-    }
-
-    @Override
-    public List<Element> getChildElements() {
-        return children();
     }
 }

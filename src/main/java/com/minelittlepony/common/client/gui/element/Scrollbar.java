@@ -6,6 +6,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
  *
  * @author     Sollace
  */
-public class Scrollbar extends DrawableHelper implements Element, IBounded {
+public class Scrollbar extends DrawableHelper implements Element, Drawable, IBounded {
 
     private boolean dragging = false;
     private boolean touching = false;
@@ -81,6 +82,7 @@ public class Scrollbar extends DrawableHelper implements Element, IBounded {
         return 0;
     }
 
+    @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
 
         if (maxScrollY <= 0) {

@@ -2,8 +2,10 @@ package com.minelittlepony.common.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 @FunctionalInterface
 public interface ScreenInitCallback {
@@ -17,6 +19,6 @@ public interface ScreenInitCallback {
     void init(Screen screen, ButtonList buttons);
 
     interface ButtonList {
-        <T extends AbstractButtonWidget> T add(T button);
+        <T extends Element & Drawable & Selectable> T add(T button);
     }
 }
