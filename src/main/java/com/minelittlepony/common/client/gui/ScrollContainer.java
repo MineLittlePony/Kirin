@@ -60,7 +60,6 @@ public class ScrollContainer extends GameGui {
         contentInitializer.run();
 
         scrollbar.reposition();
-        addDrawable(scrollbar);
         getChildElements().add(scrollbar);
     }
 
