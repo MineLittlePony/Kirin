@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import com.minelittlepony.common.client.gui.dimension.IBounded;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -19,7 +21,7 @@ import net.minecraft.text.Text;
  * @author     Sollace
  *
  */
-public class GameGui extends Screen implements IViewRootDefaultImpl {
+public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext, IViewRootDefaultImpl {
     /**
      * The parent screen that existed prior to opening this Screen.
      * If present, this screen will replace this one upon closing.

@@ -1,7 +1,8 @@
 package com.minelittlepony.common.mixin;
 
+import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITooltipped;
-import com.minelittlepony.common.client.gui.IViewRootDefaultImpl;
+import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.event.ScreenInitCallback;
@@ -23,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Screen.class)
-public abstract class MixinScreen implements IViewRootDefaultImpl {
+abstract class MixinScreen implements IViewRoot, ITextContext {
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
 
@@ -40,6 +41,15 @@ public abstract class MixinScreen implements IViewRootDefaultImpl {
     @Override
     public Bounds getBounds() {
         return bounds;
+    }
+
+    @Override
+    public void setBounds(Bounds bounds) { }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Element> getChildElements() {
+        return (List<Element>) ((Screen) (Object)this).children();
     }
 
     @Override
