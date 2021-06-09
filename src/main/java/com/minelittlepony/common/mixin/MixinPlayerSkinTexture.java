@@ -23,12 +23,12 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
     private static boolean isLegacy;
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
-    private static void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
+    private void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
         isLegacy = image.getHeight() == 32;
     }
 
     @Inject(method = FILTER_IMAGE, at = @At("RETURN"))
-    private static void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
+    private void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
         // convert skins from mojang server
         SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), isLegacy);
     }

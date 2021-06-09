@@ -20,6 +20,7 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,11 +34,6 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
 
     @Shadow
     private @Final List<Drawable> drawables;
-    @Shadow
-    private @Final List<Selectable> selectables;
-
-    @Shadow
-    protected abstract <T extends Element & Drawable & Selectable> T addDrawableChild(T element);
 
     @Override
     public Bounds getBounds() {
@@ -59,13 +55,15 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
     }
 
     @Override
-    public List<Selectable> buttons() {
-        return selectables;
-    }
+    @Accessor("selectables")
+    public abstract List<Selectable> buttons();
 
     @Override
     public <T extends Element & Drawable & Selectable> T addButton(T button) {
-        return addDrawableChild(button);
+        buttons().add(button);
+        drawables.add(button);
+        getChildElements().add(button);
+        return button;
     }
 
     @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("RETURN"))
