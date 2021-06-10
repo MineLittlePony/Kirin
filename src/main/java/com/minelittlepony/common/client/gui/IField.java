@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an input field that holds a value.
@@ -20,7 +20,7 @@ public interface IField<T, V extends IField<T, V>> {
      *
      * @return {@code this} for chaining purposes.
      */
-    V onChange(@Nonnull IChangeCallback<T> action);
+    V onChange(@NotNull IChangeCallback<T> action);
 
     /**
      * Sets the value of this field.

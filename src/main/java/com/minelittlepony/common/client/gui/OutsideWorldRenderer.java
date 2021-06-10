@@ -1,8 +1,7 @@
 package com.minelittlepony.common.client.gui;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.ObjectUtils;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;

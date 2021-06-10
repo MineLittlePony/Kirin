@@ -2,7 +2,7 @@ package com.minelittlepony.common.client.gui.element;
 
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITooltipped;
@@ -38,7 +38,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     private final Bounds bounds;
 
     private static final Consumer<Button> NONE = v -> {};
-    @Nonnull
+    @NotNull
     private Consumer<Button> action = NONE;
 
     public Button(int x, int y) {
@@ -58,7 +58,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
      * @return {@code this} for chaining purposes.
      */
     @SuppressWarnings("unchecked")
-    public Button onClick(@Nonnull Consumer<? extends Button> callback) {
+    public Button onClick(@NotNull Consumer<? extends Button> callback) {
         action = (Consumer<Button>)callback;
 
         return this;

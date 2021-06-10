@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui.element;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
@@ -18,7 +18,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     private boolean on;
 
-    @Nonnull
+    @NotNull
     private IChangeCallback<Boolean> action = IChangeCallback::none;
 
     public Toggle(int x, int y, boolean value) {
@@ -28,7 +28,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    public Toggle onChange(@Nonnull IChangeCallback<Boolean> action) {
+    public Toggle onChange(@NotNull IChangeCallback<Boolean> action) {
         this.action = action;
         return this;
     }

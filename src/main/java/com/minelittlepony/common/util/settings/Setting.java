@@ -1,7 +1,7 @@
 package com.minelittlepony.common.util.settings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 
@@ -13,13 +13,13 @@ import java.util.function.Consumer;
 public interface Setting<T> extends IChangeCallback<T> {
     String name();
 
-    @Nonnull
+    @NotNull
     T getDefault();
 
     /**
      * Gets the config value associated with this entry.
      */
-    @Nonnull
+    @NotNull
     T get();
 
     /**

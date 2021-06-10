@@ -2,8 +2,8 @@ package com.minelittlepony.common.util;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.minelittlepony.common.client.gui.element;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -30,7 +30,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     private float value;
 
-    @Nonnull
+    @NotNull
     private IChangeCallback<T> action = IChangeCallback::none;
 
     @Nullable
@@ -51,7 +51,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     protected abstract T floatToValue(float value);
 
     @Override
-    public AbstractSlider<T> onChange(@Nonnull IChangeCallback<T> action) {
+    public AbstractSlider<T> onChange(@NotNull IChangeCallback<T> action) {
         this.action = action;
         return this;
     }
@@ -62,7 +62,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
      * @param formatter The formatting function to call.
      * @return {@code this} for chaining purposes
      */
-    public AbstractSlider<T> setTextFormat(@Nonnull Function<AbstractSlider<T>, Text> formatter) {
+    public AbstractSlider<T> setTextFormat(@NotNull Function<AbstractSlider<T>, Text> formatter) {
         this.textFunc = formatter;
         getStyle().setText(formatter.apply(this));
 
@@ -74,7 +74,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
      * @param formatter The formatting function to call.
      * @return {@code this} for chaining purposes
      */
-    public AbstractSlider<T> setTooltipFormat(@Nonnull Function<AbstractSlider<T>, Tooltip> formatter) {
+    public AbstractSlider<T> setTooltipFormat(@NotNull Function<AbstractSlider<T>, Tooltip> formatter) {
         this.tooltipFunc = formatter;
         getStyle().setTooltip(formatter.apply(this));
 
@@ -82,7 +82,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Deprecated
-    public AbstractSlider<T> setFormatter(@Nonnull Function<T, String> formatter) {
+    public AbstractSlider<T> setFormatter(@NotNull Function<T, String> formatter) {
         return setTextFormat(sender -> new TranslatableText(formatter.apply(getValue())));
     }
 

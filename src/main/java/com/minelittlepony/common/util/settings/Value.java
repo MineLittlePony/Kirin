@@ -1,7 +1,7 @@
 package com.minelittlepony.common.util.settings;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Preconditions;
 
@@ -35,7 +35,7 @@ class Value<T> implements Setting<T> {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public T get() {
         if (value == null) {
             return set(getDefault());
@@ -56,7 +56,7 @@ class Value<T> implements Setting<T> {
         return name;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public T getDefault() {
         return def;

@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Provides extra utilities for working with streams in a less annoying way.

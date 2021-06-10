@@ -2,7 +2,7 @@ package com.minelittlepony.common.client.gui;
 
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 

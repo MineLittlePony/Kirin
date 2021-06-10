@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui.element;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
@@ -23,7 +23,7 @@ public class Cycler extends Button implements IMultiStyled<Cycler>, IField<Integ
 
     private int value;
 
-    @Nonnull
+    @NotNull
     private IChangeCallback<Integer> action = IChangeCallback::none;
 
     public Cycler(int x, int y, int width, int height) {
