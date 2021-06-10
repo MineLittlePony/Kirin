@@ -81,11 +81,6 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         return this;
     }
 
-    @Deprecated
-    public AbstractSlider<T> setFormatter(@NotNull Function<T, String> formatter) {
-        return setTextFormat(sender -> new TranslatableText(formatter.apply(getValue())));
-    }
-
     @Override
     public AbstractSlider<T> setValue(T value) {
         setClampedValue(convertFromRange(valueToFloat(value), min, max));
