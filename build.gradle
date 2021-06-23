@@ -90,7 +90,7 @@ publishing {
     repositories {
 	    maven {
 	        name = "GitHubPackages"
-	        url = "https://maven.pkg.github.com/MineLittlePony/Mson"
+	        url = "https://maven.pkg.github.com/MineLittlePony/Kirin"
 	        credentials {
 	            username = System.env.GITHUB_ACTOR
 	            password = System.env.GITHUB_TOKEN
