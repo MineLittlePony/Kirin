@@ -1,7 +1,10 @@
 # Kirin UI
 
-[![Build Status](https://travis-ci.org/MineLittlePony/Kirin.svg?branch=1.16)](https://travis-ci.org/MineLittlePony/Kirin)
-[![Jitpack](https://jitpack.io/v/MineLittlePony/Kirin.svg)](https://jitpack.io/#MineLittlePony/Kirin)
+ 
+[![Build Status](https://img.shields.io/github/workflow/status/MineLittlePony/Kirin/Build%20on%20Push)](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml)
+![Version](https://img.shields.io/github/v/release/MineLittlePony/Kirin)
+![License](https://img.shields.io/github/license/MineLittlePony/Mson)
+![](https://img.shields.io/badge/api-fabric-orange.svg)
 
 
 Embedded common code used across several Mine Little Pony projects to create their GUIs.
