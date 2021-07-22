@@ -6,13 +6,33 @@ import net.minecraft.client.texture.NativeImage;
 
 public interface SkinFilterCallback {
 
-    Event<SkinFilterCallback> EVENT = EventFactory.createArrayBacked(SkinFilterCallback.class, listeners -> (image, legacy) -> {
-        for (SkinFilterCallback event : listeners) {
-            event.processImage(image, legacy);
-        }
+    Event<SkinFilterCallback> EVENT = EventFactory.createArrayBacked(SkinFilterCallback.class, listeners -> {
+        return new SkinFilterCallback() {
+            @Override
+            public void processImage(NativeImage image, boolean legacy) {
+                for (SkinFilterCallback event : listeners) {
+                    event.processImage(image, legacy);
+                }
+            }
+
+            @Override
+            public boolean shouldAllowTransparency(NativeImage image, boolean legacy) {
+                for (SkinFilterCallback event : listeners) {
+                    if (event.shouldAllowTransparency(image, legacy)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        };
     });
 
     void processImage(NativeImage image, boolean legacy);
+
+    default boolean shouldAllowTransparency(NativeImage image, boolean legacy) {
+        return true; // default is true since in most cases this is the desired effect
+    }
 
     /**
      * Copies a scaled section from one region to another.

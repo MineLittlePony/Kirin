@@ -33,15 +33,19 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
         SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), isLegacy);
     }
 
-    // Sorry, Mahjon. Input validation is good 'n all, but this interferes with out other mods.
+    // Sorry, Mahjon. Input validation is good 'n all, but this interferes with our other mods.
     @Inject(method = STRIP_ALPHA, at = @At("HEAD"), cancellable = true)
     private static void cancelAlphaStrip(NativeImage image, int beginX, int beginY, int endX, int endY, CallbackInfo info) {
-        info.cancel();
+        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, isLegacy)) {
+            info.cancel();
+        }
     }
 
     @Inject(method = STRIP_COLOR, at = @At("HEAD"), cancellable = true)
     private static void cancelColorStrip(NativeImage image, int beginX, int beginY, int endX, int endY, CallbackInfo info) {
-        info.cancel();
+        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, isLegacy)) {
+            info.cancel();
+        }
     }
     // -
 }
