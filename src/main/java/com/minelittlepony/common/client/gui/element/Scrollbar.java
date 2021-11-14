@@ -41,6 +41,11 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
 
     private double initialMouseY;
 
+    /**
+     * Whether the scrollbar must position itself at the far right of its assigned container rather than the right-most edge of the content.
+     */
+    public boolean layoutToEnd;
+
     public Scrollbar(IViewRoot rootView) {
         this.rootView = rootView;
     }
@@ -55,7 +60,7 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
         contentBounds = rootView.getContentBounds();
         contentPadding = rootView.getContentPadding();
 
-        bounds.left = contentBounds.left + contentBounds.width;
+        bounds.left = layoutToEnd ? rootView.getBounds().width - 5 : contentBounds.left + contentBounds.width;
         bounds.top = 0;
         bounds.height = rootView.getBounds().height;
 

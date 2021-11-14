@@ -25,12 +25,21 @@ public class ScrollContainer extends GameGui {
     /**
      * The scrollbar for this container.
      */
-    protected final Scrollbar scrollbar = new Scrollbar(this);
+    public final Scrollbar scrollbar = new Scrollbar(this);
 
     /**
      * The external padding around this container. (default: [0,0,0,0])
      */
     public final Padding margin = new Padding(0, 0, 0, 0);
+
+    /**
+     * The ARGB colour of the background
+     */
+    public int backgroundColor = 0x66000000;
+    /**
+     * The ARGB colour of the fade at the top and bottom of this container.
+     */
+    public int decorationColor = 0xEE000000;
 
     public ScrollContainer() {
         super(LiteralText.EMPTY);
@@ -64,15 +73,14 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-
+    public final void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
             int scroll = scrollbar.getVerticalScrollAmount();
 
             matrices.push();
             matrices.translate(margin.left, margin.top, 0);
 
-            fill(matrices, 0, 0, width, height, 0x66000000);
+            drawBackground(matrices, mouseX, mouseY, partialTicks);
 
             Padding padding = getContentPadding();
             matrices.push();
@@ -85,7 +93,7 @@ public class ScrollContainer extends GameGui {
 
             matrices.translate(0, -scroll + padding.top, 0);
 
-            super.render(matrices,
+            renderContents(matrices,
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
@@ -97,7 +105,19 @@ public class ScrollContainer extends GameGui {
 
             matrices.pop();
         });
+    }
 
+    protected void renderContents(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrices, mouseX, mouseY, partialTicks);
+    }
+
+    protected void drawBackground(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        fill(matrices, 0, 0, width, height, backgroundColor);
+    }
+
+    protected void drawDecorations(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        fillGradient(matrices, 0, -3, width, 5, decorationColor, 0);
+        fillGradient(matrices, 0, height - 6, width, height + 3, 0, decorationColor);
     }
 
     @Override
