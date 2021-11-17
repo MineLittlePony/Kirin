@@ -1,15 +1,21 @@
 package com.minelittlepony.common.client.gui;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.util.render.ClippingSpace;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 
 /**
  * A container implementing proper overflow mechanics and smooth scrolling.
@@ -40,6 +46,8 @@ public class ScrollContainer extends GameGui {
      * The ARGB colour of the fade at the top and bottom of this container.
      */
     public int decorationColor = 0xEE000000;
+
+    private final Deque<Runnable> delayedCalls = new ArrayDeque<>();
 
     public ScrollContainer() {
         super(LiteralText.EMPTY);
@@ -100,11 +108,12 @@ public class ScrollContainer extends GameGui {
 
             matrices.pop();
 
-            fillGradient(matrices, 0, -3, width, 5, 0xFF000000, 0);
-            fillGradient(matrices, 0, height - 6, width, height + 3, 0, 0xEE000000);
+            drawDecorations(matrices, mouseX, mouseY, partialTicks);
 
             matrices.pop();
         });
+
+        drawOverlays(matrices, mouseX, mouseY, partialTicks);
     }
 
     protected void renderContents(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
@@ -118,6 +127,13 @@ public class ScrollContainer extends GameGui {
     protected void drawDecorations(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         fillGradient(matrices, 0, -3, width, 5, decorationColor, 0);
         fillGradient(matrices, 0, height - 6, width, height + 3, 0, decorationColor);
+    }
+
+    protected void drawOverlays(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        Runnable task;
+        while ((task = delayedCalls.poll()) != null) {
+            task.run();
+        }
     }
 
     @Override
@@ -158,17 +174,35 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
+    public void renderTooltip(MatrixStack matrices, List<Text> tooltip, Optional<TooltipData> data, int mouseX, int mouseY) {
+        renderOutside(matrices, mouseX, mouseY, (x, y) -> {
+            if (client.currentScreen == this) {
+                super.renderTooltip(matrices, tooltip, data, x, y);
+            } else {
+                client.currentScreen.renderTooltip(matrices, tooltip, x, y);
+            }
+        });
+    }
+
+    @Override
     public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> tooltip, int mouseX, int mouseY) {
-        matrices.push();
+        renderOutside(matrices, mouseX, mouseY, (x, y) -> {
+            if (client.currentScreen == this) {
+                super.renderOrderedTooltip(matrices, tooltip, x, y);
+            } else {
+                client.currentScreen.renderOrderedTooltip(matrices, tooltip, x, y);
+            }
+        });
+    }
 
-        Padding padding = getContentPadding();
-        matrices.translate(-margin.left, -margin.top, 0);
-        matrices.translate(-padding.left, 0, 0);
-        matrices.translate(0, scrollbar.getVerticalScrollAmount() - padding.top, 0);
-
-        client.currentScreen.renderOrderedTooltip(matrices, tooltip, mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
-
-        matrices.pop();
+    protected void renderOutside(MatrixStack matrices, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
+        delayedCalls.add(() -> {
+            ClippingSpace.renderUnclipped(() -> {
+                matrices.push();
+                renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
+                matrices.pop();
+            });
+        });
     }
 
     @Override
