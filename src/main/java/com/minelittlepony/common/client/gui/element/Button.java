@@ -107,7 +107,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
 
     @Override
     public void appendNarrations(NarrationMessageBuilder narrationMsg) {
-        method_37021(narrationMsg);
+        appendDefaultNarrations(narrationMsg);
         getStyle().getTooltip().ifPresent(tooltip -> tooltip.appendNarrations(narrationMsg));
     }
 
