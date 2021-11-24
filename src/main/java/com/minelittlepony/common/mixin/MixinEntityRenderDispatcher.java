@@ -7,14 +7,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 
 @Mixin(EntityRenderDispatcher.class)
 public interface MixinEntityRenderDispatcher {
 
     @Accessor("modelRenderers")
-    Map<String, PlayerEntityRenderer> getPlayerRenderers();
+    Map<String, EntityRenderer<? extends PlayerEntity>> getPlayerRenderers();
 
     @Accessor("renderers")
     Map<EntityType<?>, EntityRenderer<?>> getEntityRenderers();
