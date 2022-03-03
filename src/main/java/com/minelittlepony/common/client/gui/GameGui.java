@@ -85,7 +85,7 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      * Implementors should explicitly call this method when they want this behavior.
      */
     public void finish() {
-        onClose();
+        close();
         client.setScreen(parent);
     }
 }
