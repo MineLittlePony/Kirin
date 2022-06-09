@@ -19,7 +19,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -46,7 +46,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     public Button(int x, int y, int width, int height) {
-        super(x, y, width, height, LiteralText.EMPTY);
+        super(x, y, width, height, ScreenTexts.EMPTY);
 
         bounds = new Bounds(y, x, width, height);
     }

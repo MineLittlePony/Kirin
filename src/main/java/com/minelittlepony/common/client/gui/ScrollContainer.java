@@ -13,7 +13,7 @@ import com.minelittlepony.common.util.render.ClippingSpace;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
@@ -50,7 +50,7 @@ public class ScrollContainer extends GameGui {
     private final Deque<Runnable> delayedCalls = new ArrayDeque<>();
 
     public ScrollContainer() {
-        super(LiteralText.EMPTY);
+        super(ScreenTexts.EMPTY);
 
         init(MinecraftClient.getInstance(), 0, 0);
     }

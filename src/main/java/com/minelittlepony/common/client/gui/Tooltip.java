@@ -11,12 +11,10 @@ import com.google.common.base.Splitter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public interface Tooltip {
     Splitter LINE_SPLITTER = Splitter.onPattern("\r?\n|\\\\n");
@@ -33,7 +31,7 @@ public interface Tooltip {
             if (builder.length() > 0) {
                 builder.append('\n');
             }
-            builder.append(line.asString());
+            builder.append(line.getString());
         });
         return builder;
     }
@@ -59,7 +57,7 @@ public interface Tooltip {
     }
 
     static Tooltip of(String text) {
-        return of(new TranslatableText(text));
+        return of(Text.translatable(text));
     }
 
     static Tooltip of(Text text) {
@@ -68,12 +66,12 @@ public interface Tooltip {
 
     static Tooltip of(StringVisitable text, Style styl) {
         List<Text> lines = new ArrayList<>();
-        lines.add(new LiteralText(""));
+        lines.add(Text.empty());
 
         text.visit((style, part) -> {
             List<Text> parts = LINE_SPLITTER.splitToList(part)
                     .stream()
-                    .map(i -> new LiteralText(i).fillStyle(style))
+                    .map(i -> Text.literal(i).fillStyle(style))
                     .collect(Collectors.toList());
 
             lines.add(((MutableText)lines.remove(lines.size() - 1)).append(parts.remove(0)));
@@ -86,7 +84,7 @@ public interface Tooltip {
     }
 
     static Tooltip of(String text, int maxWidth) {
-        return of(new TranslatableText(text), maxWidth);
+        return of(Text.translatable(text), maxWidth);
     }
 
     static Tooltip of(Text text, int maxWidth) {

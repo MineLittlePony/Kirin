@@ -8,9 +8,8 @@ import com.minelittlepony.common.client.gui.sprite.ItemStackSprite;
 
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 /**
  * Controls the visual appearance of any elements in Kirin
@@ -28,7 +27,7 @@ public class Style {
 
     private Optional<Tooltip> tooltip = Optional.empty();
 
-    private Text text = LiteralText.EMPTY;
+    private Text text = ScreenTexts.EMPTY;
     private int color = 0xFFFFFFFF;
 
     /**
@@ -60,7 +59,7 @@ public class Style {
      * Translations are done internally.
      */
     public Style setText(String text) {
-        return setText(new TranslatableText(text));
+        return setText(Text.translatable(text));
     }
 
     /**
