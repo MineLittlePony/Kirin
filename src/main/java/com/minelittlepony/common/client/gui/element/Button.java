@@ -73,6 +73,14 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     /**
+     * Hides or shows this button.
+     */
+    public Button setVisible(boolean visible) {
+        this.visible = visible;
+        return this;
+    }
+
+    /**
      * Gets this button's current styling.
      */
     @Override
