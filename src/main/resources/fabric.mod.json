@@ -27,7 +27,11 @@
     "fabric-rendering-v1": ">=0.1.0"
   },
   "custom": {
-    "modmenu:clientsideOnly": true,
-    "modmenu:api": true
+    "modmenu": {
+      "badges": [ "library" ],
+      "links": {
+        "modmenu.discord": "https://discord.gg/zKSZ8Mg"
+      }
+    }
   }
 }
