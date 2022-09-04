@@ -38,10 +38,30 @@ public class Bounds {
      *
      * @param x The X position
      * @param y The Y Position
-     * @return True if the point overlaps of touches the edge of this rectangle
+     * @return True if the point overlaps or touches the edge of this rectangle
      */
     public boolean contains(double x, double y) {
-        return !isEmpty() && x >= left && x <= (left + width) && y >= top && y <= (top + height);
+        return !isEmpty() && containsX(x) && containsY(y);
+    }
+
+    /**
+     * Determines whether the given point is somewhere in this bounding rectangle along the X axis.
+     *
+     * @param x The X position
+     * @return True if the point overlaps or touches the edge of this rectangle
+     */
+    public boolean containsX(double x) {
+        return !isEmpty() && x >= left && x <= (left + width);
+    }
+
+    /**
+     * Determines whether the given point is somewhere in this bounding rectangle along the Y axis.
+     *
+     * @param y The Y position
+     * @return True if the point overlaps or touches the edge of this rectangle
+     */
+    public boolean containsY(double y) {
+        return !isEmpty() && y >= top && y <= (top + height);
     }
 
     /**
@@ -119,6 +139,13 @@ public class Bounds {
      */
     public void draw(MatrixStack matrices, int tint) {
         DrawableHelper.fill(matrices, left, top, left + width, top + height, tint);
+    }
+
+    /**
+     * Applies this bounds' offset as a translation to the passed in matrix stack.
+     */
+    public void translate(MatrixStack matrices) {
+        matrices.translate(left, top, 0);
     }
 
     public void debugMeasure(MatrixStack matrices) {
