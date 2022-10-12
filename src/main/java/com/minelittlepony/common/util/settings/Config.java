@@ -79,11 +79,11 @@ public abstract class Config implements Iterable<Grouping> {
     /**
      * Commits any unsaved changes for this config.
      */
-    public final void save() {
+    public void save() {
         adapter.save(this, path);
     }
 
-    public final void load() {
+    public void load() {
         adapter.load(this, path);
     }
 
