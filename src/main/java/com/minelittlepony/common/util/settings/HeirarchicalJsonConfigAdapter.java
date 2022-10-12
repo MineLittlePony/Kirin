@@ -35,9 +35,9 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
     @Override
     public void save(Config config, Path file) {
         try (JsonWriter writer = gson.newJsonWriter(Files.newBufferedWriter(file))) {
-            for (var category : config) {
-                writer.beginObject();
-                for (var setting : category) {
+            for (var category : config.categoryNames()) {
+                writer.name(category);
+                for (var setting : config.getCategory(category)) {
                     for (var comment : setting.getValue().getComments()) {
                         writer.name("!!" + setting.getKey());
                         writer.value(comment);
