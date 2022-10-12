@@ -34,22 +34,31 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
 
     @Override
     public void save(Config config, Path file) {
-        try (JsonWriter writer = gson.newJsonWriter(Files.newBufferedWriter(file))) {
-            for (var category : config.categoryNames()) {
-                writer.name(category);
-                for (var setting : config.getCategory(category)) {
-                    for (var comment : setting.getValue().getComments()) {
-                        writer.name("!!" + setting.getKey());
-                        writer.value(comment);
-                    }
-                    writer.name(setting.getKey());
-                    writer.value(gson.toJson(setting.getValue()));
-                }
-                writer.endObject();
-            }
-        } catch (IOException e) {
-            logger.warn("Error whilst saving Json config", e);
-        }
+        try (BufferedWriter buffer = Files.newBufferedWriter(file);
+             JsonWriter writer = gson.newJsonWriter(buffer)) {
+           writer.beginObject();
+           for (var category : config.categoryNames()) {
+               writer.name(category);
+               writer.beginObject();
+               boolean second = false;
+               for (var setting : config.getCategory(category)) {
+                   for (var comment : setting.getValue().getComments()) {
+                       if (second) {
+                           buffer.write(',');
+                       }
+                       buffer.write(System.lineSeparator());
+                       buffer.write("    // " + comment);
+                   }
+                   writer.name(setting.getKey());
+                   gson.toJson(setting.getValue(), Setting.class, writer);
+                   second = true;
+               }
+               writer.endObject();
+           }
+           writer.endObject();
+       } catch (IOException e) {
+           logger.warn("Error whilst saving Json config", e);
+       }
     }
 
     @Override
