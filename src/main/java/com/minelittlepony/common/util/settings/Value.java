@@ -5,28 +5,26 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
  * Any value that can be stored in this config file.
  */
 class Value<T> implements Setting<T> {
-
     private T value;
 
     private transient final T def;
     private transient final String name;
 
+    private transient List<String> comment = new ArrayList<>();
+
     private transient final List<Consumer<T>> listeners = new ArrayList<>();
 
-    public Value(Config config, String name, T def) {
+    public Value(String name, T def) {
         this.name = name;
         this.def = Preconditions.checkNotNull(def);
         this.value = def;
-
-        config.entries.putIfAbsent(name().toLowerCase(), this);
     }
 
     @Override
@@ -65,5 +63,16 @@ class Value<T> implements Setting<T> {
     @Override
     public String toString() {
         return name();
+    }
+
+    @Override
+    public List<String> getComments() {
+        return comment;
+    }
+
+    @Override
+    public Setting<T> addComment(String comment) {
+        this.comment.add(comment);
+        return this;
     }
 }

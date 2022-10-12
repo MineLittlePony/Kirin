@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.client.gui.IField.IChangeCallback;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +27,16 @@ public interface Setting<T> extends IChangeCallback<T> {
      * Sets the config value associated with this entry.
      */
     T set(@Nullable T value);
+
+    /**
+     * An optional comment to include alongside this setting.
+     */
+    List<String> getComments();
+
+    /**
+     * Adds a comment to this setting. If a comment already exists, will append as another line.
+     */
+    Setting<T> addComment(String comment);
 
     /**
      * Adds a change listener which gets called when {@link #set} is called.
