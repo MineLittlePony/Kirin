@@ -3,8 +3,6 @@ package com.minelittlepony.common.util.settings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -14,17 +12,17 @@ import java.util.function.Consumer;
 class Value<T> implements Setting<T> {
     private T value;
 
-    private transient final T def;
+    private transient final Type<T> type;
     private transient final String name;
 
     private transient List<String> comment = new ArrayList<>();
 
     private transient final List<Consumer<T>> listeners = new ArrayList<>();
 
-    public Value(String name, T def) {
+    public Value(String name, Type<T> type) {
         this.name = name;
-        this.def = Preconditions.checkNotNull(def);
-        this.value = def;
+        this.type = type;
+        this.value = getDefault();
     }
 
     @Override
@@ -54,10 +52,9 @@ class Value<T> implements Setting<T> {
         return name;
     }
 
-    @NotNull
     @Override
-    public T getDefault() {
-        return def;
+    public Type<T> getType() {
+        return type;
     }
 
     @Override

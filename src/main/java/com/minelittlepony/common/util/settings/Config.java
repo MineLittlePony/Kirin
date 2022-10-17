@@ -2,6 +2,7 @@ package com.minelittlepony.common.util.settings;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -36,7 +37,17 @@ public abstract class Config implements Iterable<Grouping> {
     protected <T> Setting<T> value(String category, String key, T def) {
         return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>())))
                 .map()
-                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, def));
+                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, new Value.Type<>(() -> def, Optional.empty())));
+    }
+
+    /**
+     * Initializes a new value for this config and assigns it to a named category.
+     */
+    @SuppressWarnings("unchecked")
+    protected <T, C extends Collection<T>> Setting<C> value(String category, String key, Supplier<C> def, Class<T> elementType) {
+        return (Setting<C>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>())))
+                .map()
+                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, new Value.Type<>(def, Optional.of(elementType))));
     }
 
     @Deprecated

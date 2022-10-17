@@ -71,7 +71,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
                             entry.getValue().getAsJsonObject().entrySet().forEach(tuple -> {
                                 category.getOrEmpty(tuple.getKey().toLowerCase()).ifPresent(setting -> {
                                     setting.set(
-                                        gson.getAdapter(setting.getDefault().getClass()).fromJsonTree(tuple.getValue())
+                                        gson.getAdapter(setting.getType().token()).fromJsonTree(tuple.getValue())
                                     );
                                 });
                             });

@@ -55,7 +55,7 @@ public class LegacyJsonConfigAdapter implements Config.Adapter {
 
                         Setting<Object> setting = config.get(key);
                         if (setting != null) {
-                            setting.set(gson.getAdapter(setting.getDefault().getClass()).fromJsonTree(entry.getValue()));
+                            setting.set(gson.getAdapter(setting.getType().token()).fromJsonTree(entry.getValue()));
                         }
                     });
                 } catch (IOException | JsonParseException e) {
