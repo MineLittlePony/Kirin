@@ -34,7 +34,7 @@ public class Label extends Button {
 
         bounds.width = fonts.getWidth(getStyle().getText());
         if (this.center) {
-            bounds.left = x - bounds.width/2;
+            bounds.left = getX() - bounds.width/2;
         }
 
         return bounds;
@@ -52,12 +52,12 @@ public class Label extends Button {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        int textY = (int)(y + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
+        int textY = (int)(getY() + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
 
         if (center) {
-            drawCenteredLabel(matrices, getStyle().getText(), x, textY, getStyle().getColor(), 0);
+            drawCenteredLabel(matrices, getStyle().getText(), getX(), textY, getStyle().getColor(), 0);
         } else {
-            drawLabel(matrices, getStyle().getText(), x, textY, getStyle().getColor(), 0);
+            drawLabel(matrices, getStyle().getText(), getX(), textY, getStyle().getColor(), 0);
         }
     }
 }

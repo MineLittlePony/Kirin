@@ -72,15 +72,15 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
         mc.getTextureManager().bindTexture(WIDGETS_TEXTURE);
 
         int i = 46 + super.getYImage(isHovered()) * 20;
-        int sliderX = x + (on ? 1 : 0) * (width - 8);
+        int sliderX = getX() + (on ? 1 : 0) * (width - 8);
 
-        renderButtonBlit(matrices, sliderX, y, i, 8, height);
+        renderButtonBlit(matrices, sliderX, getY(), i, 8, height);
     }
 
     @Override
     protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        int textY = y + mc.textRenderer.fontHeight / 2;
-        int textX = x + width + 10;
+        int textY = getY() + mc.textRenderer.fontHeight / 2;
+        int textX = getX() + width + 10;
 
         drawLabel(matrices, getStyle().getText(), textX, textY, foreColor, 0);
     }

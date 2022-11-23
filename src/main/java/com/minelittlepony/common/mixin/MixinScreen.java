@@ -13,7 +13,6 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.List;
@@ -77,7 +76,7 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
     @Inject(method = "render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V", at = @At("RETURN"))
     private void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         drawables.forEach(button -> {
-            if (button instanceof ITooltipped && button instanceof ClickableWidget && ((ClickableWidget)button).isHovered()) {
+            if (button instanceof ITooltipped) {
                 ((ITooltipped<?>)button).renderToolTip(matrices, (Screen)(Object)this, mouseX, mouseY);
             }
         });

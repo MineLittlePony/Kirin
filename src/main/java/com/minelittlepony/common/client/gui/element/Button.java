@@ -20,6 +20,7 @@ import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -40,6 +41,10 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     private static final Consumer<Button> NONE = v -> {};
     @NotNull
     private Consumer<Button> action = NONE;
+
+    private boolean wasHovered;
+    private long lastHoveredStateChanged;
+    private long tooltipDelay;
 
     public Button(int x, int y) {
         this(x, y, 200, 20);
@@ -107,15 +112,37 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     public void setBounds(Bounds bounds) {
         this.bounds.copy(bounds);
 
-        x = bounds.left;
-        y = bounds.top;
-        width = bounds.width;
-        height = bounds.height;
+        setX(bounds.left);
+        setY(bounds.top);
+        setWidth(bounds.width);
+        setHeight(bounds.height);
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder narrationMsg) {
-        appendDefaultNarrations(narrationMsg);
+    public void setX(int x) {
+        bounds.left = x;
+        super.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        bounds.top = y;
+        super.setY(y);
+    }
+
+    @Override
+    public void setWidth(int width) {
+        bounds.width = width;
+        super.setWidth(width);
+    }
+
+    public void setHeight(int height) {
+        bounds.height = height;
+        this.height = height;
+    }
+
+    @Override
+    public void appendClickableNarrations(NarrationMessageBuilder narrationMsg) {
         getStyle().getTooltip().ifPresent(tooltip -> tooltip.appendNarrations(narrationMsg));
     }
 
@@ -126,7 +153,16 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
 
     @Override
     public void renderToolTip(MatrixStack matrices, Screen parent, int mouseX, int mouseY) {
-        if (visible) {
+
+
+        boolean hovered = this.isHovered();
+
+        if (hovered != wasHovered) {
+            wasHovered = hovered;
+            lastHoveredStateChanged = Util.getMeasuringTimeMs();
+        }
+
+        if (hovered && visible && Util.getMeasuringTimeMs() - lastHoveredStateChanged > tooltipDelay) {
             getStyle().getTooltip().ifPresent(tooltip -> {
                 parent.renderTooltip(matrices, tooltip.getLines(), mouseX + getStyle().toolTipX, mouseY + getStyle().toolTipY);
             });
@@ -134,10 +170,16 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     @Override
+    public void setTooltipDelay(int delay) {
+        super.setTooltipDelay(delay);
+        this.tooltipDelay = delay;
+    }
+
+    @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
         RenderSystem.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
@@ -148,7 +190,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
 
         int state = 46 + getYImage(isHovered()) * 20;
 
-        renderButtonBlit(matrices, x, y, state, width, height);
+        renderButtonBlit(matrices, getX(), getY(), state, getWidth(), height);
 
         renderBackground(matrices, mc, mouseX, mouseY);
 
@@ -160,7 +202,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
         }
 
         if (getStyle().hasIcon()) {
-            getStyle().getIcon().render(matrices, x, y, mouseX, mouseY, partialTicks);
+            getStyle().getIcon().render(matrices, getX(), getY(), mouseX, mouseY, partialTicks);
         }
 
         setMessage(getStyle().getText());
@@ -168,7 +210,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        drawCenteredLabel(matrices, getMessage(), x + width / 2, y + (height - 8) / 2, foreColor, 0);
+        drawCenteredLabel(matrices, getMessage(), getX() + getWidth() / 2, getY() + (height - 8) / 2, foreColor, 0);
     }
 
     protected final void renderButtonBlit(MatrixStack matrices, int x, int y, int state, int blockWidth, int blockHeight) {

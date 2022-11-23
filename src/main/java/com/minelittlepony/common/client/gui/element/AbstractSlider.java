@@ -127,7 +127,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     private void onChange(double mouseX) {
         // convert pixel coordinate to range (0 - 1)
-        setClampedValue((float)(mouseX - (x + 4)) / (width - 8));
+        setClampedValue((float)(mouseX - (getX() + 4)) / (getWidth() - 8));
     }
 
     @Override
@@ -151,10 +151,10 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         mc.getTextureManager().bindTexture(WIDGETS_TEXTURE);
 
         int i = 46 + (isHovered() ? 2 : 1) * 20;
-        int sliderX = x + (int)(value * (width - 8));
+        int sliderX = getX() + (int)(value * (getWidth() - 8));
 
-        drawTexture(matrices, sliderX,     y, 0,   i, 4, 20);
-        drawTexture(matrices, sliderX + 4, y, 196, i, 4, 20);
+        drawTexture(matrices, sliderX,     getY(), 0,   i, 4, 20);
+        drawTexture(matrices, sliderX + 4, getY(), 196, i, 4, 20);
     }
 
     @Override
