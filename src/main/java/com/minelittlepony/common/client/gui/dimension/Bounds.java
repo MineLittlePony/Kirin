@@ -29,6 +29,14 @@ public class Bounds {
         this.height = height;
     }
 
+    public int right() {
+        return left + width;
+    }
+
+    public int bottom() {
+        return top + height;
+    }
+
     public boolean isEmpty() {
         return width <= 0 || height <= 0;
     }
