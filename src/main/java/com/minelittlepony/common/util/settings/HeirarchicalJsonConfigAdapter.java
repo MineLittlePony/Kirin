@@ -25,6 +25,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
 
     public HeirarchicalJsonConfigAdapter(GsonBuilder builder) {
         this.gson = builder
+                .setLenient()
                 .setPrettyPrinting()
                 .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
                 .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
