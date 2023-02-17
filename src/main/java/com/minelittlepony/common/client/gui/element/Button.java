@@ -118,16 +118,34 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
         setHeight(bounds.height);
     }
 
-    @Override
-    public void setX(int x) {
-        bounds.left = x;
-        super.setX(x);
+    /**
+     * @since mc1.19.3
+     */
+    public int getX() {
+        return x;
     }
 
-    @Override
+    /**
+     * @since mc1.19.3
+     */
+    public void setX(int x) {
+        bounds.left = x;
+        this.x = x;
+    }
+
+    /**
+     * @since mc1.19.3
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * @since mc1.19.3
+     */
     public void setY(int y) {
         bounds.top = y;
-        super.setY(y);
+        this.y = y;
     }
 
     @Override
@@ -142,7 +160,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     @Override
-    public void appendClickableNarrations(NarrationMessageBuilder narrationMsg) {
+    public void appendNarrations(NarrationMessageBuilder narrationMsg) {
         getStyle().getTooltip().ifPresent(tooltip -> tooltip.appendNarrations(narrationMsg));
     }
 
@@ -169,9 +187,10 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
         }
     }
 
-    @Override
+    /**
+     * @since mc1.19.3
+     */
     public void setTooltipDelay(int delay) {
-        super.setTooltipDelay(delay);
         this.tooltipDelay = delay;
     }
 
@@ -179,7 +198,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
         RenderSystem.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();

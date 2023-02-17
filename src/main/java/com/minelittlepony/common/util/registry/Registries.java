@@ -4,8 +4,7 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.registry.*;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.registry.*;
 import net.minecraft.util.Identifier;
 
 public interface Registries {
@@ -20,15 +19,6 @@ public interface Registries {
      * @return A new registry.
      */
     static <T> Registry<T> createDefaulted(Identifier id, Function<T, Identifier> defaultIdFactory, T defaultValue) {
-        return new SimpleDefaultedRegistry<>(defaultIdFactory.apply(defaultValue).toString(), RegistryKey.ofRegistry(id), Lifecycle.stable(), true) {
-            {
-                Registry.register(this, getDefaultId(), defaultValue);
-            }
-
-            public RegistryEntry.Reference<T> set(int i, RegistryKey<T> registryKey, T object, Lifecycle lifecycle) {
-                createEntry(object);
-                return super.set(i, registryKey, object, lifecycle);
-            }
-        };
+        return new DefaultedRegistry<>(defaultIdFactory.apply(defaultValue).toString(), RegistryKey.ofRegistry(id), Lifecycle.stable(), null);
     }
 }
