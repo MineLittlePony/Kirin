@@ -8,7 +8,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import org.joml.Vector4f;
+import net.minecraft.util.math.Vector4f;
 
 /**
  * Utility for rendering objects such as ItemStacks, Entities, and BlockEntities, when there is no client world running.
@@ -72,7 +72,7 @@ public class OutsideWorldRenderer {
     public static void renderStack(MatrixStack matrices, ItemStack stack, int x, int y) {
         configure(null);
         Vector4f v = new Vector4f(x, y, 0, 1);
-        matrices.peek().getPositionMatrix().transform(v);
-        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(stack, (int)v.x, (int)v.y);
+        v.transform(matrices.peek().getPositionMatrix());
+        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(stack, (int)v.getX(), (int)v.getY());
     }
 }

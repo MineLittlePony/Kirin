@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 
@@ -71,9 +71,10 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      * Plays a sound event.
      *
      * @param event The sound event to play.
+     * @since mc1.19.3
      */
     public static void playSound(RegistryEntry.Reference<SoundEvent> event) {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1));
+        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event.value(), 1));
     }
 
     /**
