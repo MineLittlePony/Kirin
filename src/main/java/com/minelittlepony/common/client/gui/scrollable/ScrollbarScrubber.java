@@ -2,6 +2,7 @@ package com.minelittlepony.common.client.gui.scrollable;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 
 public class ScrollbarScrubber {
@@ -12,8 +13,10 @@ public class ScrollbarScrubber {
 
     private int maximumPosition;
 
-    private int shiftDirection;
-    private int scrollFactor;
+    private float scrollSpeed;
+
+    private int scrubberLength;
+    private int gapLength;
 
     private final ScrollOrientation orientation;
 
@@ -29,8 +32,16 @@ public class ScrollbarScrubber {
         return maximumPosition;
     }
 
-    public void scrollBy(int amount) {
-        scrollTo(currentPosition + (amount * scrollFactor), true);
+    public int getStart() {
+        return maximumPosition <= 0 ? 0 : (int)Math.max(0, (getPosition() / (float)maximumPosition) * gapLength);
+    }
+
+    public int getLength() {
+        return scrubberLength;
+    }
+
+    public void scrollBy(double amount, boolean animate) {
+        scrollTo(currentPosition + (int)(amount * scrollSpeed), animate);
     }
 
     /**
@@ -59,78 +70,44 @@ public class ScrollbarScrubber {
         this.momentum = momentum;
     }
 
-    public void setShiftDirection(int shiftDirection) {
-        this.shiftDirection = shiftDirection;
-    }
-
     public void reposition(Bounds containerBounds, Bounds contentBounds) {
-        int containerLength = orientation.getLength(containerBounds);
-        int contentLength = orientation.getLength(contentBounds);
+        float containerLength = orientation.getLength(containerBounds);
+        float contentLength = orientation.getLength(contentBounds);
 
-        maximumPosition = Math.max(0, containerLength - contentLength);
-        scrollFactor = contentLength == 0 ? 1 : containerLength / contentLength;
+        maximumPosition = (int)Math.max(0, contentLength - containerLength);
+        scrollSpeed = containerLength == 0 ? 1 : contentLength / containerLength;
+        scrollSpeed *= (float)MinecraftClient.getInstance().getWindow().getScaleFactor() / 3F;
+
+        scrubberLength = (int)MathHelper.clamp(containerLength - (float)Math.sqrt(maximumPosition), 15, containerLength / 2);
+        gapLength = (int)containerLength - scrubberLength;
 
         scrollTo(targetPosition, false);
     }
 
     public void update(Bounds containerBounds, Bounds contentBounds, double mouseX, double mouseY, float partialTicks, boolean grabbed) {
         if (currentPosition < targetPosition) {
-            currentPosition++;
+            currentPosition += Math.max(1, (targetPosition - currentPosition) / 2);
         }
         if (currentPosition > targetPosition) {
-            currentPosition--;
+            currentPosition -= Math.max(1, (currentPosition - targetPosition) / 2);
         }
 
-        if (!grabbed) {
-            momentum *= 0.6;
-            if (momentum > 0) {
-                scrollBy(momentum);
-            }
-
-            if (shiftDirection != 0) {
-                scrollBy(shiftDirection);
-                shiftDirection = getShiftDirection(containerBounds, contentBounds, orientation.pick(mouseX, mouseY));
-            }
+        if (!grabbed && (momentum *= 0.6) > 0) {
+            scrollBy(momentum, false);
         }
     }
 
-    public int getShiftDirection(Bounds containerBounds, Bounds contentBounds, double coord) {
-        int scrubberLength = getLength(containerBounds, contentBounds);
-        int scrubberStart = getStart(scrubberLength, containerBounds);
+    public float getGrabPosition(double coord) {
+        int scrubberStart = getStart();
 
         if (coord < scrubberStart) {
-            return 1;
-        }
-
-        if (coord > scrubberStart + scrubberLength) {
             return -1;
         }
 
-        return 0;
-    }
-
-    public int getStart(int scrubberLength, Bounds elementBounds) {
-        if (maximumPosition <= 0) {
-            return 0;
+        if (coord > (scrubberStart + scrubberLength)) {
+            return 2;
         }
 
-        int elementLength = orientation.getLength(elementBounds);
-        float position = (getPosition() / maximumPosition) * elementLength;
-
-        return (int)MathHelper.clamp(position - (scrubberLength / 2F),
-                0,
-                elementLength - scrubberLength
-        );
+        return MathHelper.clamp((float)(coord - scrubberStart) / scrubberLength, 0, 1);
     }
-
-    public int getLength(Bounds elementBounds, Bounds contentBounds) {
-        int elementLength = orientation.getLength(elementBounds);
-        int contentLength = orientation.getLength(contentBounds);
-
-        return MathHelper.clamp(elementLength * (elementLength / contentLength),
-                32,
-                elementLength - 8
-        );
-    }
-
 }

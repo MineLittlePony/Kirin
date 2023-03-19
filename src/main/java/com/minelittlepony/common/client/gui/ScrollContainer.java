@@ -160,12 +160,12 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public int getScrollX() {
-        return getContentPadding().top - verticalScrollbar.getScrubber().getPosition();
+        return getContentPadding().top - horizontalScrollbar.getScrubber().getPosition();
     }
 
     @Override
     public int getScrollY() {
-        return getContentPadding().left - horizontalScrollbar.getScrubber().getPosition();
+        return getContentPadding().left - verticalScrollbar.getScrubber().getPosition();
     }
 
     @Override
@@ -185,7 +185,7 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        verticalScrollbar.scrollBy((float)amount * 2);
+        verticalScrollbar.scrollBy((float)Math.signum(amount) * 12);
 
         return isMouseOver(mouseX, mouseY) && super.mouseScrolled(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), amount);
     }

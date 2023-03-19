@@ -33,8 +33,6 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     private final ScrollbarScrubber scrubber;
     private final ScrollOrientation orientation;
 
-    private float scrollFactor = 0;
-
     private final IViewRoot rootView;
     private final Bounds bounds;
     private Bounds containerBounds;
@@ -105,14 +103,13 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
             return;
         }
 
-        scrubber.update(rootView.getBounds(), contentBounds, mouseX, mouseY, partialTicks, !touching && !dragging);
+        scrubber.update(rootView.getBounds(), contentBounds, mouseX, mouseY, partialTicks, touching || dragging);
         renderScrubber(scrubber, orientation, matrices);
     }
 
     private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, MatrixStack matrices) {
-        int scrubberLength = scrubber.getLength(containerBounds, contentBounds);
-        int scrubberStart = scrubber.getStart(scrubberLength, bounds);
-        int scrubberEnd = scrubberStart + scrubberLength;
+        int scrubberStart = scrubber.getStart();
+        int scrubberEnd = scrubberStart + scrubber.getLength();
 
         renderBackground(matrices, bounds.top, bounds.left, bounds.bottom(), bounds.right());
         renderBar(matrices,
@@ -135,6 +132,8 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
         mouseY = calculateInternalYPosition(mouseY);
         mouseX = calculateInternalXPosition(mouseX);
 
+        double mousePosition = orientation.pick(mouseX, mouseY);
+
         touching = dragging = false;
 
         if (!isMouseOver(mouseX, mouseY)) {
@@ -142,25 +141,25 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
             return isMouseOver(mouseX, mouseY);
         }
 
-        int shiftFactor = scrubber.getShiftDirection(containerBounds, contentBounds, orientation.pick(mouseX, mouseY));
-        scrubber.setShiftDirection(shiftFactor);
+        float grabPosition = scrubber.getGrabPosition(mousePosition);
 
-        if (shiftFactor == 0) {
+        if (grabPosition < 0 || grabPosition > 1) {
+            scrubber.scrollBy((int)Math.signum(grabPosition) * 50, true);
+        } else {
             GameGui.playSound(SoundEvents.UI_BUTTON_CLICK);
             dragging = true;
         }
+        prevMousePosition = mousePosition;
 
         return isMouseOver(mouseX, mouseY);
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        mouseY += rootView.getScrollY();
-        return Math.max(0, Math.min(mouseY, containerBounds.height));
+        return orientation.pick(mouseY, Math.max(0, Math.min(mouseY + rootView.getScrollY(), containerBounds.height)));
     }
 
     private double calculateInternalXPosition(double mouseX) {
-        mouseX += rootView.getScrollX();
-        return Math.max(0, Math.min(mouseX, containerBounds.width));
+        return orientation.pick(Math.max(0, Math.min(mouseX + rootView.getScrollX(), containerBounds.width)), mouseX);
     }
 
     @Override
@@ -171,9 +170,9 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
         double mousePosition = orientation.pick(mouseX, mouseY);
 
         if (dragging) {
-            scrollBy(prevMousePosition - mousePosition);
+            scrubber.scrollBy(-(int)(prevMousePosition - mousePosition), false);
         } else if (touching) {
-            scrubber.scrollBy((int)(mousePosition - prevMousePosition) / 4);
+            scrubber.scrollBy((int)(mousePosition - prevMousePosition) / 16, true);
             scrubber.setMomentum((int)(mousePosition - prevMousePosition));
         }
 
@@ -185,7 +184,6 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = touching = false;
-        scrubber.setShiftDirection(0);
 
         return isMouseOver(
             calculateInternalXPosition(mouseX),
@@ -197,7 +195,7 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
      * Scrolls this bar by the given amount.
      */
     public void scrollBy(double amount) {
-        scrubber.scrollBy((int)Math.floor(-amount * scrollFactor));
+        scrubber.scrollBy(-amount, true);
     }
 
     @Override
@@ -219,11 +217,11 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (isFocused()) {
             if (keyCode == orientation.pick(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_UP)) {
-                scrollBy(-10);
+                scrubber.scrollBy(-10, true);
                 return true;
             }
             if (keyCode == orientation.pick(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_DOWN)) {
-                scrollBy(10);
+                scrubber.scrollBy(10, true);
                 return true;
             }
             if (keyCode == GLFW.GLFW_KEY_END) {
