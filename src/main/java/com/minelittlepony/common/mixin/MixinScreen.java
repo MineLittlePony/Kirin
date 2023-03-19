@@ -67,7 +67,7 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
     }
 
     @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("RETURN"))
-    private void onInit(MinecraftClient minecraftClient_1, int w, int h, CallbackInfo ci) {
+    private void onInit(MinecraftClient client, int w, int h, CallbackInfo ci) {
         bounds.width = w;
         bounds.height = h;
         ScreenInitCallback.EVENT.invoker().init((Screen) (Object) this, this);

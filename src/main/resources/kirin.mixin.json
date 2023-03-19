@@ -6,9 +6,10 @@
   "compatibilityLevel": "JAVA_16",
   "client": [
     "MixinEntityRenderDispatcher",
+    "MixinMinecraftClient",
     "MixinPlayerSkinProvider",
-    "MixinScreen",
-    "MixinPlayerSkinTexture"
+    "MixinPlayerSkinTexture",
+    "MixinScreen"
   ],
   "injectors": {
     "defaultRequire": 1
