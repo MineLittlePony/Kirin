@@ -1,17 +1,19 @@
 package com.minelittlepony.common.client.gui.element;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
-import com.minelittlepony.common.client.gui.dimension.Padding;
+import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
+import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * A scrollbar for interacting with scrollable UI elements.
@@ -22,117 +24,101 @@ import net.minecraft.util.math.MathHelper;
  */
 public class Scrollbar extends DrawableHelper implements Element, Drawable, IBounded {
 
-    private boolean dragging = false;
-    private boolean touching = false;
+    public static final int SCROLLBAR_THICKNESS = 6;
 
-    private int scrollY = 0;
+    private boolean dragging;
+    private boolean touching;
+    private boolean focused;
 
-    private double scrollMomentum = 0;
+    private final ScrollbarScrubber scrubber;
+    private final ScrollOrientation orientation;
+
     private float scrollFactor = 0;
 
     private final IViewRoot rootView;
-    private final Bounds bounds = new Bounds(0, 0, 6, 0);
+    private final Bounds bounds;
+    private Bounds containerBounds;
+    private Bounds contentBounds;
 
-    private Bounds contentBounds = bounds;
-    private Padding contentPadding = new Padding(0, 0, 0, 0);
-
-    private int maxScrollY = 0;
-    private int shiftFactor = 0;
-
-    private double initialMouseY;
+    private double prevMousePosition;
 
     /**
      * Whether the scrollbar must position itself at the far right of its assigned container rather than the right-most edge of the content.
      */
     public boolean layoutToEnd;
 
+    @Deprecated
     public Scrollbar(IViewRoot rootView) {
+        this(rootView, ScrollOrientation.VERTICAL);
+    }
+
+    public Scrollbar(IViewRoot rootView, ScrollOrientation orientation) {
         this.rootView = rootView;
+        this.orientation = orientation;
+        this.bounds = new Bounds(0, 0, orientation.pick(0, SCROLLBAR_THICKNESS), orientation.pick(SCROLLBAR_THICKNESS, 0));
+        this.contentBounds = bounds;
+        this.containerBounds = rootView.getBounds();
+        this.scrubber = new ScrollbarScrubber(orientation);
     }
 
     /**
      * Sets up this scrollbar's position based on content position and size, and viewport element size.
-     *
-     * @param x The left X position (in pixels) of this scrollbar
-     * @param y The top Y position (in pixels) of this scrollbar
      */
     public void reposition() {
         contentBounds = rootView.getContentBounds();
-        contentPadding = rootView.getContentPadding();
+        containerBounds = rootView.getBounds();
 
-        bounds.left = layoutToEnd ? rootView.getBounds().width - 5 : contentBounds.left + contentBounds.width;
-        bounds.top = 0;
-        bounds.height = rootView.getBounds().height;
+        int end = layoutToEnd ? orientation.getWidth(rootView.getBounds()) - 5 : orientation.pick(contentBounds.bottom(), contentBounds.right());
 
-        maxScrollY = contentBounds.height - bounds.height;
-        if (maxScrollY < 0) {
-            maxScrollY = 0;
-        }
-        scrollFactor = bounds.height == 0 ? 1 : contentBounds.height / bounds.height;
+        bounds.left = orientation.pick(0, end);
+        bounds.top = orientation.pick(end, 0);
+        bounds.height = orientation.pick(SCROLLBAR_THICKNESS, rootView.getBounds().height);
+        bounds.width = orientation.pick(rootView.getBounds().width, SCROLLBAR_THICKNESS);
 
-        scrollBy(0);
+        scrubber.reposition(containerBounds, contentBounds);
     }
 
     /**
      * Gets the vertical scroll amount.
      */
+    @Deprecated
     public int getVerticalScrollAmount() {
-        return scrollY;
+        return orientation == ScrollOrientation.VERTICAL ? scrubber.getPosition() : 0;
+    }
+
+    public ScrollbarScrubber getScrubber() {
+        return scrubber;
     }
 
     /**
      * Gets the vertical scroll amount.
      */
+    @Deprecated
     public int getHorizontalScrollAmount() {
-        return 0;
+        return orientation == ScrollOrientation.HORIZONTAL ? scrubber.getPosition() : 0;
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
 
-        if (maxScrollY <= 0) {
+        if (scrubber.getMaximum() <= 0) {
             return;
         }
 
-        if (!touching && !dragging) {
-            scrollMomentum *= partialTicks;
-            if (scrollMomentum > 0) {
-                scrollBy(scrollMomentum);
-            }
-
-            if (shiftFactor != 0) {
-                System.out.println("shifting by" + (shiftFactor * scrollFactor));
-                scrollBy(shiftFactor * scrollFactor);
-                shiftFactor = computeShiftFactor(mouseX, mouseY);
-                System.out.println("new shift factor " + shiftFactor);
-            }
-        }
-
-        renderVertical(matrices);
+        scrubber.update(rootView.getBounds(), contentBounds, mouseX, mouseY, partialTicks, !touching && !dragging);
+        renderScrubber(scrubber, orientation, matrices);
     }
 
-    protected void renderVertical(MatrixStack matrices) {
-        int scrollbarHeight = getScrubberLength(bounds.height, contentBounds.height);
-        int scrollbarTop = getScrubberStart(scrollbarHeight, bounds.height, contentBounds.height);
+    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, MatrixStack matrices) {
+        int scrubberLength = scrubber.getLength(containerBounds, contentBounds);
+        int scrubberStart = scrubber.getStart(scrubberLength, bounds);
+        int scrubberEnd = scrubberStart + scrubberLength;
 
-        renderBackground(matrices, bounds.top, bounds.left, bounds.top + bounds.height, bounds.left + bounds.width);
-        renderBar(matrices, bounds.left, bounds.left + bounds.width, scrollbarTop, scrollbarTop + scrollbarHeight);
-    }
-
-    protected int getScrubberStart(int scrollbarHeight, int elementHeight, int contentHeight) {
-        if (maxScrollY <= 0) {
-            return 0;
-        }
-
-        int scrollbarTop = bounds.top + getVerticalScrollAmount() * (elementHeight - scrollbarHeight) / maxScrollY;
-        if (scrollbarTop < 0) {
-            return 0;
-        }
-        return scrollbarTop;
-    }
-
-    protected int getScrubberLength(int elementL, int contentL) {
-        return MathHelper.clamp(elementL * elementL / contentL, 32, elementL - 8);
+        renderBackground(matrices, bounds.top, bounds.left, bounds.bottom(), bounds.right());
+        renderBar(matrices,
+            orientation.pick(scrubberStart, bounds.left), orientation.pick(scrubberEnd, bounds.right()),
+            orientation.pick(bounds.top, scrubberStart), orientation.pick(bounds.bottom(), scrubberEnd)
+        );
     }
 
     private void renderBackground(MatrixStack matrices, int top, int left, int bottom, int right) {
@@ -144,24 +130,10 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
         fill(matrices, left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
     }
 
-    private int computeShiftFactor(double mouseX, double mouseY) {
-        double pos = mouseY;
-
-        int scrubberLength = getScrubberLength(bounds.height, contentBounds.height);
-        int scrubberStart = getScrubberStart(scrubberLength, bounds.height, contentBounds.height);
-
-        if (pos < scrubberStart) {
-            return 1;
-        } else if (pos > scrubberStart + scrubberLength) {
-            return -1;
-        }
-
-        return 0;
-    }
-
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         mouseY = calculateInternalYPosition(mouseY);
+        mouseX = calculateInternalXPosition(mouseX);
 
         touching = dragging = false;
 
@@ -170,7 +142,8 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
             return isMouseOver(mouseX, mouseY);
         }
 
-        shiftFactor = computeShiftFactor(mouseX, mouseY);
+        int shiftFactor = scrubber.getShiftDirection(containerBounds, contentBounds, orientation.pick(mouseX, mouseY));
+        scrubber.setShiftDirection(shiftFactor);
 
         if (shiftFactor == 0) {
             GameGui.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -181,23 +154,30 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        mouseY += contentPadding.top - getVerticalScrollAmount();
-        return Math.max(0, Math.min(mouseY, bounds.height));
+        mouseY += rootView.getScrollY();
+        return Math.max(0, Math.min(mouseY, containerBounds.height));
+    }
+
+    private double calculateInternalXPosition(double mouseX) {
+        mouseX += rootView.getScrollX();
+        return Math.max(0, Math.min(mouseX, containerBounds.width));
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int int_1, double differX, double differY) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double differX, double differY) {
         mouseY = calculateInternalYPosition(mouseY);
+        mouseX = calculateInternalXPosition(mouseX);
+
+        double mousePosition = orientation.pick(mouseX, mouseY);
 
         if (dragging) {
-            scrollBy(initialMouseY - mouseY);
+            scrollBy(prevMousePosition - mousePosition);
         } else if (touching) {
-            scrollMomentum = mouseY - initialMouseY;
-
-            scrollBy((mouseY - initialMouseY) / 4);
+            scrubber.scrollBy((int)(mousePosition - prevMousePosition) / 4);
+            scrubber.setMomentum((int)(mousePosition - prevMousePosition));
         }
 
-        initialMouseY = mouseY;
+        prevMousePosition = mousePosition;
 
         return isMouseOver(mouseX, mouseY);
     }
@@ -205,22 +185,24 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = touching = false;
-        shiftFactor = 0;
-        System.out.println("release");
+        scrubber.setShiftDirection(0);
 
-        return isMouseOver(mouseX, calculateInternalYPosition(mouseY));
+        return isMouseOver(
+            calculateInternalXPosition(mouseX),
+            calculateInternalYPosition(mouseY)
+        );
     }
 
     /**
      * Scrolls this bar by the given amount.
      */
-    public void scrollBy(double y) {
-        scrollY = MathHelper.clamp((int)Math.floor(scrollY - y * scrollFactor), 0, maxScrollY);
+    public void scrollBy(double amount) {
+        scrubber.scrollBy((int)Math.floor(-amount * scrollFactor));
     }
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-       return maxScrollY > 0 && getBounds().contains(mouseX, mouseY);
+       return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
     }
 
     @Override
@@ -233,4 +215,36 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
 
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (isFocused()) {
+            if (keyCode == orientation.pick(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_UP)) {
+                scrollBy(-10);
+                return true;
+            }
+            if (keyCode == orientation.pick(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_DOWN)) {
+                scrollBy(10);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_END) {
+                scrubber.scrollToEnd(true);
+                return true;
+            }
+            if (keyCode == GLFW.GLFW_KEY_HOME) {
+                scrubber.scrollToBeginning(true);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
+    @Override
+    public boolean isFocused() {
+        return focused || dragging;
+    }
 }

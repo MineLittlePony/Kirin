@@ -51,4 +51,18 @@ public interface IViewRoot extends IBounded, ScreenInitCallback.ButtonList {
      * The list of buttons (selectable elements) present on this screen.
      */
     <T extends Element & Drawable & Selectable> List<Selectable> buttons();
+
+    /**
+     * Gets the horizonal scroll offset in pixels.
+     */
+    default int getScrollY() {
+        return 0;
+    }
+
+    /**
+     * Gets the vertical scroll offset in pixels.
+     */
+    default int getScrollX() {
+        return 0;
+    }
 }

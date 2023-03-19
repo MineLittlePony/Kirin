@@ -30,7 +30,7 @@ public class ItemStackSprite implements ISprite {
 
     @Override
     public void render(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float partialTicks) {
-        OutsideWorldRenderer.renderStack(stack, x + 2, y + 2);
+        OutsideWorldRenderer.renderStack(matrices, stack, x + 2, y + 2);
         RenderSystem.disableDepthTest();
     }
 }

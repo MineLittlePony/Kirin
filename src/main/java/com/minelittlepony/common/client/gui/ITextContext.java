@@ -42,7 +42,7 @@ public interface ITextContext {
     default void drawLabel(MatrixStack matrices, Text text, int x, int y, int color, double zIndex) {
         VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         matrices.translate(0, 0, zIndex);
-        getFont().draw(text, x, y, color, true, matrices.peek().getPositionMatrix(), immediate, true, 0, 0xF000F0);
+        getFont().draw(text, x, y, color, true, matrices.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
         immediate.draw();
     }
 
@@ -75,7 +75,7 @@ public interface ITextContext {
         for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-            getFont().draw(line, left, y, color, false, matrices.peek().getPositionMatrix(), immediate, true, 0, 0xF000F0);
+            getFont().draw(line, left, y, color, false, matrices.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
             immediate.draw();
 
             y += 9;

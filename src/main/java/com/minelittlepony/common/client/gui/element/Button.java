@@ -188,10 +188,9 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
                 GlStateManager.SrcFactor.SRC_ALPHA,
                 GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
-        int state = 46 + getYImage(isHovered()) * 20;
+        int state = getTextureY();
 
         renderButtonBlit(matrices, getX(), getY(), state, getWidth(), height);
-
         renderBackground(matrices, mc, mouseX, mouseY);
 
         int foreColor = getStyle().getColor();
@@ -201,39 +200,36 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
             foreColor = 16777120;
         }
 
+        setMessage(getStyle().getText());
+        drawIcon(matrices, mouseX, mouseY, partialTicks);
+        renderForground(matrices, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
+    }
+
+    protected void drawIcon(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         if (getStyle().hasIcon()) {
             getStyle().getIcon().render(matrices, getX(), getY(), mouseX, mouseY, partialTicks);
         }
-
-        setMessage(getStyle().getText());
-        renderForground(matrices, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255.0F) << 24);
     }
 
     protected void renderForground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        drawCenteredLabel(matrices, getMessage(), getX() + getWidth() / 2, getY() + (height - 8) / 2, foreColor, 0);
+        drawMessage(matrices, mc.textRenderer, foreColor);
+    }
+
+    protected void renderBackground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
+
+    }
+
+    protected int getTextureY() {
+        int i = 1;
+        if (!active) {
+            i = 0;
+        } else if (isSelected()) {
+            i = 2;
+        }
+        return 46 + i * 20;
     }
 
     protected final void renderButtonBlit(MatrixStack matrices, int x, int y, int state, int blockWidth, int blockHeight) {
-
-        int endV = 200 - blockWidth/2;
-        int endU = state + 20 - blockHeight/2;
-
-        drawTexture(matrices,
-                x,                y,
-                0, state,
-                blockWidth/2, blockHeight/2);
-        drawTexture(matrices,
-                x + blockWidth/2, y,
-                endV, state,
-                blockWidth/2, blockHeight/2);
-
-        drawTexture(matrices,
-                x,                y + blockHeight/2,
-                0, endU,
-                blockWidth/2, blockHeight/2);
-        drawTexture(matrices,
-                x + blockWidth/2, y + blockHeight/2,
-                endV, endU,
-                blockWidth/2, blockHeight/2);
+        PressableWidget.drawNineSlicedTexture(matrices, x, y, blockWidth, blockHeight, 20, 4, 200, 20, 0, state);
     }
 }

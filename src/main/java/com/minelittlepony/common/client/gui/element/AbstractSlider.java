@@ -158,8 +158,8 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected int getYImage(boolean mouseOver) {
-        return 0;
+    protected int getTextureY() {
+        return 46;
     }
 
     static float convertFromRange(float value, float min, float max) {
