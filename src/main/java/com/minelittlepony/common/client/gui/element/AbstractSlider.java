@@ -153,7 +153,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         int i = super.getTextureY();
         int sliderX = getX() + (int)(value * (getWidth() - 8));
 
-        renderButtonBlit(matrices, sliderX, getY(), i, 4, 20);
+        renderButtonBlit(matrices, sliderX, getY(), i, 8, 20);
     }
 
     @Override
