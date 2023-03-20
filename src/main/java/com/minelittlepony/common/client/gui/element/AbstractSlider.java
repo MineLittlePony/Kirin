@@ -150,11 +150,10 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     protected void renderBackground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
         mc.getTextureManager().bindTexture(WIDGETS_TEXTURE);
 
-        int i = 46 + (isHovered() ? 2 : 1) * 20;
+        int i = super.getTextureY();
         int sliderX = getX() + (int)(value * (getWidth() - 8));
 
-        drawTexture(matrices, sliderX,     getY(), 0,   i, 4, 20);
-        drawTexture(matrices, sliderX + 4, getY(), 196, i, 4, 20);
+        renderButtonBlit(matrices, sliderX, getY(), i, 4, 20);
     }
 
     @Override
