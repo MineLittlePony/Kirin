@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.base.Splitter;
+import com.minelittlepony.common.mixin.MixinTooltip;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Narratable;
@@ -40,6 +41,12 @@ public interface Tooltip extends Narratable {
 
     default Stream<Text> stream() {
         return getLines().stream();
+    }
+
+    default net.minecraft.client.gui.tooltip.Tooltip toTooltip() {
+        var tooltip = net.minecraft.client.gui.tooltip.Tooltip.of(Text.empty());
+        ((MixinTooltip)tooltip).setLines(stream().map(Text::asOrderedText).toList());
+        return tooltip;
     }
 
     static Tooltip of(List<Text> lines) {

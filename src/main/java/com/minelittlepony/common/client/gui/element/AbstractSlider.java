@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -147,13 +147,11 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected void renderBackground(MatrixStack matrices, MinecraftClient mc, int mouseX, int mouseY) {
-        mc.getTextureManager().bindTexture(WIDGETS_TEXTURE);
-
+    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
         int i = super.getTextureY();
         int sliderX = getX() + (int)(value * (getWidth() - 8));
 
-        renderButtonBlit(matrices, sliderX, getY(), i, 8, 20);
+        renderButtonBlit(context, sliderX, getY(), i, 8, 20);
     }
 
     @Override

@@ -10,9 +10,8 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 
 /**
@@ -22,7 +21,7 @@ import net.minecraft.sound.SoundEvents;
  *
  * @author     Sollace
  */
-public class Scrollbar extends DrawableHelper implements Element, Drawable, IBounded {
+public class Scrollbar implements Element, Drawable, IBounded {
 
     public static final int SCROLLBAR_THICKNESS = 6;
 
@@ -97,34 +96,34 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 
         if (scrubber.getMaximum() <= 0) {
             return;
         }
 
         scrubber.update(rootView.getBounds(), contentBounds, mouseX, mouseY, partialTicks, touching || dragging);
-        renderScrubber(scrubber, orientation, matrices);
+        renderScrubber(scrubber, orientation, context);
     }
 
-    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, MatrixStack matrices) {
+    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, DrawContext context) {
         int scrubberStart = scrubber.getStart();
         int scrubberEnd = scrubberStart + scrubber.getLength();
 
-        renderBackground(matrices, bounds.top, bounds.left, bounds.bottom(), bounds.right());
-        renderBar(matrices,
+        renderBackground(context, bounds.top, bounds.left, bounds.bottom(), bounds.right());
+        renderBar(context,
             orientation.pick(scrubberStart, bounds.left), orientation.pick(scrubberEnd, bounds.right()),
             orientation.pick(bounds.top, scrubberStart), orientation.pick(bounds.bottom(), scrubberEnd)
         );
     }
 
-    private void renderBackground(MatrixStack matrices, int top, int left, int bottom, int right) {
-        fill(matrices, left, top, right, bottom, 0x96000000);
+    private void renderBackground(DrawContext context, int top, int left, int bottom, int right) {
+        context.fill(left, top, right, bottom, 0x96000000);
     }
 
-    private void renderBar(MatrixStack matrices, int left, int right, int top, int bottom) {
-        fill(matrices, left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
-        fill(matrices, left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
+    private void renderBar(DrawContext context, int left, int right, int top, int bottom) {
+        context.fill(left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
+        context.fill(left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
     }
 
     @Override

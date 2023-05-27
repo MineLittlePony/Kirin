@@ -3,9 +3,8 @@ package com.minelittlepony.common.client.gui.sprite;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class TextureSprite implements ISprite {
@@ -50,10 +49,9 @@ public class TextureSprite implements ISprite {
     }
 
     @Override
-    public void render(MatrixStack matrices, int x, int y, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, texture);
-        DrawableHelper.drawTexture(
-                matrices,
+    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float partialTicks) {
+        context.drawTexture(
+                texture,
                 x + bounds.left, y + bounds.top,
                 0,
                 textureBounds.left, textureBounds.top,

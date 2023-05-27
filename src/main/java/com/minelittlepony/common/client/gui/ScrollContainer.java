@@ -2,21 +2,16 @@ package com.minelittlepony.common.client.gui;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
-
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.util.render.ClippingSpace;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 
 /**
  * A container implementing proper overflow mechanics and smooth scrolling.
@@ -88,18 +83,19 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public final void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    public final void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
+            MatrixStack matrices = context.getMatrices();
             matrices.push();
             matrices.translate(margin.left, margin.top, 0);
 
-            drawBackground(matrices, mouseX, mouseY, partialTicks);
+            drawBackground(context, mouseX, mouseY, partialTicks);
 
             Padding padding = getContentPadding();
             matrices.push();
             matrices.translate(padding.left, 0, 0);
 
-            verticalScrollbar.render(matrices,
+            verticalScrollbar.render(context,
                     mouseX - margin.left,
                     mouseY - margin.top,
                     partialTicks);
@@ -108,35 +104,35 @@ public class ScrollContainer extends GameGui {
                     getScrollX(),
                     getScrollY(), 0);
 
-            renderContents(matrices,
+            renderContents(context,
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
                     partialTicks);
 
             matrices.pop();
 
-            drawDecorations(matrices, mouseX, mouseY, partialTicks);
+            drawDecorations(context, mouseX, mouseY, partialTicks);
 
             matrices.pop();
         });
 
-        drawOverlays(matrices, mouseX, mouseY, partialTicks);
+        drawOverlays(context, mouseX, mouseY, partialTicks);
     }
 
-    protected void renderContents(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrices, mouseX, mouseY, partialTicks);
+    protected void renderContents(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        super.render(context, mouseX, mouseY, partialTicks);
     }
 
-    protected void drawBackground(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        fill(matrices, 0, 0, width, height, backgroundColor);
+    protected void drawBackground(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        context.fill(0, 0, width, height, backgroundColor);
     }
 
-    protected void drawDecorations(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        fillGradient(matrices, 0, -3, width, 5, decorationColor, 0);
-        fillGradient(matrices, 0, height - 6, width, height + 3, 0, decorationColor);
+    protected void drawDecorations(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        context.fillGradient(0, -3, width, 5, decorationColor, 0);
+        context.fillGradient(0, height - 6, width, height + 3, 0, decorationColor);
     }
 
-    protected void drawOverlays(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+    protected void drawOverlays(DrawContext context, int mouseX, int mouseY, float partialTicks) {
         Runnable task;
         while ((task = delayedCalls.poll()) != null) {
             task.run();
@@ -190,34 +186,12 @@ public class ScrollContainer extends GameGui {
         return isMouseOver(mouseX, mouseY) && super.mouseScrolled(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), amount);
     }
 
-    @Override
-    public void renderTooltip(MatrixStack matrices, List<Text> tooltip, Optional<TooltipData> data, int mouseX, int mouseY) {
-        renderOutside(matrices, mouseX, mouseY, (x, y) -> {
-            if (client.currentScreen == this) {
-                super.renderTooltip(matrices, tooltip, data, x, y);
-            } else {
-                client.currentScreen.renderTooltip(matrices, tooltip, x, y);
-            }
-        });
-    }
-
-    @Override
-    public void renderOrderedTooltip(MatrixStack matrices, List<? extends OrderedText> tooltip, int mouseX, int mouseY) {
-        renderOutside(matrices, mouseX, mouseY, (x, y) -> {
-            if (client.currentScreen == this) {
-                super.renderOrderedTooltip(matrices, tooltip, x, y);
-            } else {
-                client.currentScreen.renderOrderedTooltip(matrices, tooltip, x, y);
-            }
-        });
-    }
-
-    protected void renderOutside(MatrixStack matrices, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
+    protected void renderOutside(DrawContext context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
         delayedCalls.add(() -> {
             ClippingSpace.renderUnclipped(() -> {
-                matrices.push();
+                context.getMatrices().push();
                 renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
-                matrices.pop();
+                context.getMatrices().pop();
             });
         });
     }

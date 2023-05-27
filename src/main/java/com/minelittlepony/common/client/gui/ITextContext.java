@@ -2,9 +2,9 @@ package com.minelittlepony.common.client.gui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
@@ -39,10 +39,10 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawLabel(MatrixStack matrices, Text text, int x, int y, int color, double zIndex) {
+    default void drawLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
         VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-        matrices.translate(0, 0, zIndex);
-        getFont().draw(text, x, y, color, true, matrices.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
+        context.getMatrices().translate(0, 0, zIndex);
+        getFont().draw(text, x, y, color, true, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
         immediate.draw();
     }
 
@@ -55,10 +55,10 @@ public interface ITextContext {
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
      */
-    default void drawCenteredLabel(MatrixStack matrices, Text text, int x, int y, int color, double zIndex) {
+    default void drawCenteredLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
         int width = getFont().getWidth(text);
 
-        drawLabel(matrices, text, x - width/2, y, color, zIndex);
+        drawLabel(context, text, x - width/2, y, color, zIndex);
     }
 
     /**
@@ -71,11 +71,11 @@ public interface ITextContext {
      * @param maxWidth The maximum page width
      * @param color The font colour
      */
-    default void drawTextBlock(MatrixStack matrices, StringVisitable text, int x, int y, int maxWidth, int color) {
+    default void drawTextBlock(DrawContext context, StringVisitable text, int x, int y, int maxWidth, int color) {
         for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-            getFont().draw(line, left, y, color, false, matrices.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
+            getFont().draw(line, left, y, color, false, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
             immediate.draw();
 
             y += 9;

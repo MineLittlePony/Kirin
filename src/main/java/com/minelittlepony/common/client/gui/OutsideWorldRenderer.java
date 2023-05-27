@@ -4,8 +4,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -50,23 +50,9 @@ public class OutsideWorldRenderer {
      * @param stack The stack to render.
      * @param x The left-X position (in pixels)
      * @param y The top-Y position (in pixels)
-     *
-     * @deprecated @see {@link OutsideWorldRenderer#renderStack(MatrixStack, ItemStack, int, int)}
      */
-    @Deprecated
-    public static void renderStack(ItemStack stack, int x, int y) {
-        renderStack(new MatrixStack(), stack, x, y);
-    }
-
-    /**
-     * Renders a ItemStack to the screen.
-     *
-     * @param stack The stack to render.
-     * @param x The left-X position (in pixels)
-     * @param y The top-Y position (in pixels)
-     */
-    public static void renderStack(MatrixStack matrices, ItemStack stack, int x, int y) {
+    public static void renderStack(DrawContext context, ItemStack stack, int x, int y) {
         configure(null);
-        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(matrices, stack, x, y);
+        context.drawItem(stack, x, y);
     }
 }
