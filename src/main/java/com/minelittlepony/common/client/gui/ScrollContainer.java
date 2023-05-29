@@ -95,14 +95,25 @@ public class ScrollContainer extends GameGui {
 
             drawBackground(matrices, mouseX, mouseY, partialTicks);
 
+            matrices.push();
+
             Padding padding = getContentPadding();
             matrices.push();
             matrices.translate(padding.left, 0, 0);
-
             verticalScrollbar.render(matrices,
                     mouseX - margin.left,
                     mouseY - margin.top,
-                    partialTicks);
+                    partialTicks
+            );
+            matrices.pop();
+            matrices.push();
+            matrices.translate(0, padding.top, 0);
+            horizontalScrollbar.render(matrices,
+                    mouseX - margin.left,
+                    mouseY - margin.top,
+                    partialTicks
+            );
+            matrices.pop();
 
             matrices.translate(
                     getScrollX(),

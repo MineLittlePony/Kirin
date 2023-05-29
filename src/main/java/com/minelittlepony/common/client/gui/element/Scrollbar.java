@@ -63,7 +63,7 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
      * Sets up this scrollbar's position based on content position and size, and viewport element size.
      */
     public void reposition() {
-        contentBounds = rootView.getContentBounds();
+        contentBounds = rootView.getContentBounds().offset(rootView.getContentPadding());
         containerBounds = rootView.getBounds();
 
         int end = layoutToEnd ? orientation.getWidth(rootView.getBounds()) - 5 : orientation.pick(contentBounds.bottom(), contentBounds.right());
@@ -155,11 +155,11 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        return orientation.pick(mouseY, Math.max(0, Math.min(mouseY + rootView.getScrollY(), containerBounds.height)));
+        return orientation.pick(mouseY, mouseY - rootView.getScrollY());
     }
 
     private double calculateInternalXPosition(double mouseX) {
-        return orientation.pick(Math.max(0, Math.min(mouseX + rootView.getScrollX(), containerBounds.width)), mouseX);
+        return orientation.pick(mouseX - rootView.getScrollX(), mouseX);
     }
 
     @Override
