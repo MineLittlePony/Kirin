@@ -160,12 +160,12 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public int getScrollX() {
-        return getContentPadding().top - horizontalScrollbar.getScrubber().getPosition();
+        return getContentPadding().left - horizontalScrollbar.getScrubber().getPosition();
     }
 
     @Override
     public int getScrollY() {
-        return getContentPadding().left - verticalScrollbar.getScrubber().getPosition();
+        return getContentPadding().top - verticalScrollbar.getScrubber().getPosition();
     }
 
     @Override
