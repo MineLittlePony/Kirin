@@ -9,7 +9,8 @@
     "MixinMinecraftClient",
     "MixinPlayerSkinProvider",
     "MixinPlayerSkinTexture",
-    "MixinScreen"
+    "MixinScreen",
+    "MixinTooltip"
   ],
   "injectors": {
     "defaultRequire": 1
