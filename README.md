@@ -1,8 +1,7 @@
 # Kirin UI
 
- 
+ [![Current Version](https://img.shields.io/github/v/release/MineLittlePony/Kirin)](https://github.com/MineLittlePony/Kirin/releases/latest)
 [![Build Status](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml)
-[![Version](https://img.shields.io/github/v/release/MineLittlePony/Kirin)](https://github.com/MineLittlePony/Kirin/releases/latest)
 ![License](https://img.shields.io/github/license/MineLittlePony/Kirin)
 ![](https://img.shields.io/badge/api-fabric-orange.svg)
 
