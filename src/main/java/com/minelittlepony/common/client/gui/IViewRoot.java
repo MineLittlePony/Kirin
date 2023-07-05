@@ -27,10 +27,12 @@ public interface IViewRoot extends IBounded, ScreenInitCallback.ButtonList {
     default Set<Bounds> getAllBounds() {
         Set<Bounds> bounds = new HashSet<>();
         getChildElements().forEach(element -> {
-            if (element instanceof IViewRoot) {
-                bounds.addAll(((IViewRoot)element).getAllBounds());
-            }
-            if (element instanceof IBounded) {
+            if (element instanceof IViewRoot root) {
+                root.getAllBounds().stream().map(bound -> bound.offset(root.getContentPadding()).offset(new Padding(
+                    root.getBounds().top + root.getScrollY(),
+                    root.getBounds().left + root.getScrollX(), 0, 0)
+                )).forEach(bounds::add);
+            } else if (element instanceof IBounded) {
                 bounds.add(((IBounded)element).getBounds());
             }
         });

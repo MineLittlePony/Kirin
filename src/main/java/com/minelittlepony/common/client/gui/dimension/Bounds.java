@@ -158,11 +158,11 @@ public class Bounds {
 
     public void debugMeasure(DrawContext context) {
         Window window = MinecraftClient.getInstance().getWindow();
-        context.fill(left, 0, left + 1, window.getScaledHeight(), 0xFFFFFFFF);
-        context.fill(left + width, 0, left + width + 1, window.getScaledHeight(), 0xFFFFFFFF);
+        context.fill(left, -1000, left + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
+        context.fill(left + width, -1000, left + width + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
 
-        context.fill(0, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
-        context.fill(0, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
+        context.fill(-1000, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
+        context.fill(-1000, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
     }
 
     protected boolean equals(Bounds o) {

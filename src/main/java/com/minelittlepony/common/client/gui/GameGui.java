@@ -4,9 +4,12 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
+import com.minelittlepony.common.client.gui.dimension.Padding;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
@@ -29,6 +32,10 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      */
     @Nullable
     protected final Screen parent;
+
+    public static boolean drawAllDebugBounds;
+
+    public boolean drawDebugBounds;
 
     /**
      * Creates a new GameGui with the given title, and parent as the screen currently displayed.
@@ -95,7 +102,39 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      * Implementors should explicitly call this method when they want this behavior.
      */
     public void finish() {
-        close();
+        removed();
         client.setScreen(parent);
+    }
+
+    @Override
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        super.render(context, mouseX, mouseY, partialTicks);
+        drawDebugOverlays(context, mouseX, mouseY);
+    }
+
+    private void drawDebugOverlays(DrawContext context, int mouseX, int mouseY) {
+        if (drawDebugBounds || drawAllDebugBounds) {
+            context.getMatrices().push();
+            context.getMatrices().translate(0, 0, -90);
+            Padding padding = getContentPadding();
+            Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
+
+            for (Bounds bound : getAllBounds()) {
+                int color = 0xAA000000 | bound.hashCode() << 6;
+                if (!isUnFixedPosition(bound)) {
+                    bound = bound.offset(scrollOffset);
+                }
+                if (bound.contains(mouseX, mouseY)) {
+                    bound.debugMeasure(context);
+                }
+                bound.draw(context, color);
+            }
+
+            context.getMatrices().pop();
+        }
+    }
+
+    protected boolean isUnFixedPosition(Bounds bound) {
+        return true;
     }
 }
