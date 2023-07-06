@@ -158,11 +158,11 @@ public class Bounds {
 
     public void debugMeasure(MatrixStack matrices) {
         Window window = MinecraftClient.getInstance().getWindow();
-        DrawableHelper.fill(matrices, left, 0, left + 1, window.getScaledHeight(), 0xFFFFFFFF);
-        DrawableHelper.fill(matrices, left + width, 0, left + width + 1, window.getScaledHeight(), 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, left, -1000, left + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, left + width, -1000, left + width + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
 
-        DrawableHelper.fill(matrices, 0, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
-        DrawableHelper.fill(matrices, 0, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, -1000, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
+        DrawableHelper.fill(matrices, -1000, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
     }
 
     protected boolean equals(Bounds o) {

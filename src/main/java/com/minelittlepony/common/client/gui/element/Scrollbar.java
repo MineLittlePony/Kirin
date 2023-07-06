@@ -66,7 +66,7 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
         contentBounds = rootView.getContentBounds().offset(rootView.getContentPadding());
         containerBounds = rootView.getBounds();
 
-        int end = layoutToEnd ? orientation.getWidth(rootView.getBounds()) - 5 : orientation.pick(contentBounds.bottom(), contentBounds.right());
+        int end = layoutToEnd ? orientation.getWidth(rootView.getBounds()) - SCROLLBAR_THICKNESS : orientation.pick(contentBounds.bottom(), contentBounds.right());
 
         bounds.left = orientation.pick(0, end);
         bounds.top = orientation.pick(end, 0);
@@ -98,7 +98,6 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-
         if (scrubber.getMaximum() <= 0) {
             return;
         }
@@ -155,11 +154,11 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        return orientation.pick(mouseY, mouseY - rootView.getScrollY());
+        return mouseY + rootView.getScrollY() + rootView.getContentPadding().top;
     }
 
     private double calculateInternalXPosition(double mouseX) {
-        return orientation.pick(mouseX - rootView.getScrollX(), mouseX);
+        return mouseX + rootView.getScrollX() + rootView.getContentPadding().left;
     }
 
     @Override

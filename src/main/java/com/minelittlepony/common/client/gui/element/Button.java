@@ -152,6 +152,7 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     @Override
+
     public void renderToolTip(MatrixStack matrices, Screen parent, int mouseX, int mouseY) {
 
 
@@ -173,6 +174,16 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     public void setTooltipDelay(int delay) {
         super.setTooltipDelay(delay);
         this.tooltipDelay = delay;
+    }
+
+    @Override
+    protected boolean clicked(double mouseX, double mouseY) {
+        return isMouseOver(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return active && visible && getBounds().contains(mouseX, mouseY);
     }
 
     @Override

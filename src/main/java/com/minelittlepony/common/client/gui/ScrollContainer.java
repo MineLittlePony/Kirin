@@ -56,6 +56,7 @@ public class ScrollContainer extends GameGui {
 
     public ScrollContainer() {
         super(ScreenTexts.EMPTY);
+        horizontalScrollbar.layoutToEnd = true;
 
         init(MinecraftClient.getInstance(), 0, 0);
     }
@@ -91,40 +92,34 @@ public class ScrollContainer extends GameGui {
     public final void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
             matrices.push();
-            matrices.translate(margin.left, margin.top, 0);
+            getBounds().translate(matrices);
 
             drawBackground(matrices, mouseX, mouseY, partialTicks);
 
-            matrices.push();
-
             Padding padding = getContentPadding();
+
             matrices.push();
-            matrices.translate(padding.left, 0, 0);
+            matrices.translate(
+                    getScrollX() + padding.left,
+                    getScrollY() + padding.top, 0);
+
+            renderContents(matrices,
+                    mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
+                    mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
+                    partialTicks);
+
+            matrices.pop();
+
             verticalScrollbar.render(matrices,
                     mouseX - margin.left,
                     mouseY - margin.top,
                     partialTicks
             );
-            matrices.pop();
-            matrices.push();
-            matrices.translate(0, padding.top, 0);
             horizontalScrollbar.render(matrices,
                     mouseX - margin.left,
                     mouseY - margin.top,
                     partialTicks
             );
-            matrices.pop();
-
-            matrices.translate(
-                    getScrollX(),
-                    getScrollY(), 0);
-
-            renderContents(matrices,
-                    mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1 : mouseX + getMouseXOffset(),
-                    mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1 : mouseY + getMouseYOffset(),
-                    partialTicks);
-
-            matrices.pop();
 
             drawDecorations(matrices, mouseX, mouseY, partialTicks);
 
@@ -162,21 +157,21 @@ public class ScrollContainer extends GameGui {
     }
 
     public int getMouseYOffset() {
-        return -margin.top - getScrollY();
+        return -margin.top - getScrollY() - getContentPadding().top;
     }
 
     public int getMouseXOffset() {
-        return -margin.left - getScrollX();
+        return -margin.left - getScrollX() - getContentPadding().left;
     }
 
     @Override
     public int getScrollX() {
-        return getContentPadding().left - horizontalScrollbar.getScrubber().getPosition();
+        return -horizontalScrollbar.getScrubber().getPosition();
     }
 
     @Override
     public int getScrollY() {
-        return getContentPadding().top - verticalScrollbar.getScrubber().getPosition();
+        return -verticalScrollbar.getScrubber().getPosition();
     }
 
     @Override
@@ -242,5 +237,10 @@ public class ScrollContainer extends GameGui {
     public void setBounds(Bounds bounds) {
         margin.top = bounds.top;
         margin.left = bounds.left;
+    }
+
+    @Override
+    protected boolean isUnFixedPosition(Bounds bound) {
+        return bound != verticalScrollbar.getBounds() && bound != horizontalScrollbar.getBounds();
     }
 }

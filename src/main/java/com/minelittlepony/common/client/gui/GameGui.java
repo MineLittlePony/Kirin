@@ -4,12 +4,15 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
+import com.minelittlepony.common.client.gui.dimension.Padding;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -29,6 +32,10 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      */
     @Nullable
     protected final Screen parent;
+
+    public static boolean drawAllDebugBounds;
+
+    public boolean drawDebugBounds;
 
     /**
      * Creates a new GameGui with the given title, and parent as the screen currently displayed.
@@ -95,7 +102,39 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
      * Implementors should explicitly call this method when they want this behavior.
      */
     public void finish() {
-        close();
+        removed();
         client.setScreen(parent);
+    }
+
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrices, mouseX, mouseY, partialTicks);
+        drawDebugOverlays(matrices, mouseX, mouseY);
+    }
+
+    private void drawDebugOverlays(MatrixStack matrices, int mouseX, int mouseY) {
+        if (drawDebugBounds || drawAllDebugBounds) {
+            matrices.push();
+            matrices.translate(0, 0, -90);
+            Padding padding = getContentPadding();
+            Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
+
+            for (Bounds bound : getAllBounds()) {
+                int color = 0xAA000000 | bound.hashCode() << 6;
+                if (!isUnFixedPosition(bound)) {
+                    bound = bound.offset(scrollOffset);
+                }
+                if (bound.contains(mouseX, mouseY)) {
+                    bound.debugMeasure(matrices);
+                }
+                bound.draw(matrices, color);
+            }
+
+            matrices.pop();
+        }
+    }
+
+    protected boolean isUnFixedPosition(Bounds bound) {
+        return true;
     }
 }
