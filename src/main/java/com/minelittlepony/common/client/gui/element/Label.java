@@ -4,7 +4,6 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -49,11 +48,6 @@ public class Label extends Button {
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return false;
-    }
-
-    @Override
-    public ScreenRect getNavigationFocus() {
-        return ScreenRect.empty();
     }
 
     @Override

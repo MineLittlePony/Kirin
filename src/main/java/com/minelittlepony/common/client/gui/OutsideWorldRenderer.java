@@ -8,6 +8,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.joml.Vector4f;
 
 /**
  * Utility for rendering objects such as ItemStacks, Entities, and BlockEntities, when there is no client world running.
@@ -55,7 +56,8 @@ public class OutsideWorldRenderer {
      */
     @Deprecated
     public static void renderStack(ItemStack stack, int x, int y) {
-        renderStack(new MatrixStack(), stack, x, y);
+        configure(null);
+        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(stack, x, y);
     }
 
     /**
@@ -64,9 +66,13 @@ public class OutsideWorldRenderer {
      * @param stack The stack to render.
      * @param x The left-X position (in pixels)
      * @param y The top-Y position (in pixels)
+     *
+     * @since 1.15.0
      */
     public static void renderStack(MatrixStack matrices, ItemStack stack, int x, int y) {
         configure(null);
-        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(matrices, stack, x, y);
+        Vector4f v = new Vector4f(x, y, 0, 1);
+        matrices.peek().getPositionMatrix().transform(v);
+        MinecraftClient.getInstance().getItemRenderer().renderGuiItemIcon(stack, (int)v.x, (int)v.y);
     }
 }

@@ -1,7 +1,5 @@
 package com.minelittlepony.common.client.gui.element;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
@@ -28,7 +26,6 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
 
     private boolean dragging;
     private boolean touching;
-    private boolean focused;
 
     private final ScrollbarScrubber scrubber;
     private final ScrollOrientation orientation;
@@ -210,38 +207,5 @@ public class Scrollbar extends DrawableHelper implements Element, Drawable, IBou
     @Override
     public void setBounds(Bounds bounds) {
 
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (isFocused()) {
-            if (keyCode == orientation.pick(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_UP)) {
-                scrubber.scrollBy(-10, true);
-                return true;
-            }
-            if (keyCode == orientation.pick(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_DOWN)) {
-                scrubber.scrollBy(10, true);
-                return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_END) {
-                scrubber.scrollToEnd(true);
-                return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_HOME) {
-                scrubber.scrollToBeginning(true);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void setFocused(boolean focused) {
-        this.focused = focused;
-    }
-
-    @Override
-    public boolean isFocused() {
-        return focused || dragging;
     }
 }
