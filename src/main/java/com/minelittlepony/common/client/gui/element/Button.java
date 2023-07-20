@@ -1,5 +1,6 @@
 package com.minelittlepony.common.client.gui.element;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,7 @@ import org.joml.Vector2i;
 import org.joml.Vector2ic;
 
 import com.minelittlepony.common.client.gui.ITextContext;
+import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.Tooltip;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
@@ -34,7 +36,7 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button> {
+public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
 
     private Style style = new Style();
 
@@ -43,6 +45,8 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     private static final Consumer<Button> NONE = v -> {};
     @NotNull
     private Consumer<Button> action = NONE;
+    @NotNull
+    private Consumer<Button> update = NONE;
     @Nullable
     private Tooltip prevTooltip;
 
@@ -64,7 +68,20 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
      */
     @SuppressWarnings("unchecked")
     public Button onClick(@NotNull Consumer<? extends Button> callback) {
-        action = (Consumer<Button>)callback;
+        action = (Consumer<Button>)Objects.requireNonNull(callback);
+
+        return this;
+    }
+
+    /**
+     * Adds a listener to call every tick for this element.
+     *
+     * @param callback The callback function.
+     * @return {@code this} for chaining purposes.
+     */
+    @SuppressWarnings("unchecked")
+    public Button onUpdate(@NotNull Consumer<? extends Button> callback) {
+        update = (Consumer<Button>)Objects.requireNonNull(callback);
 
         return this;
     }
@@ -149,6 +166,11 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     @Override
     public void onPress() {
         action.accept(this);
+    }
+
+    @Override
+    public void tick() {
+        update.accept(this);
     }
 
     @Override
