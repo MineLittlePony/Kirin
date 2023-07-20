@@ -19,6 +19,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
@@ -241,6 +242,13 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
 
+    }
+
+    @Override
+    public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+        Bounds bounds = getBounds();
+        int left = getStyle().getIcon().getBounds().right();
+        drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2, bounds.bottom(), color);
     }
 
     protected int getTextureY() {
