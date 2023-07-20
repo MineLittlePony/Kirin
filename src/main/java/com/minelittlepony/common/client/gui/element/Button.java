@@ -1,11 +1,13 @@
 package com.minelittlepony.common.client.gui.element;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITooltipped;
+import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
@@ -32,7 +34,7 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends PressableWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button> {
+public class Button extends PressableWidget implements ITooltipped<Button>, IBounded, ITextContext, IStyled<Button>, ITickableElement {
 
     private Style style = new Style();
 
@@ -41,6 +43,8 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     private static final Consumer<Button> NONE = v -> {};
     @NotNull
     private Consumer<Button> action = NONE;
+    @NotNull
+    private Consumer<Button> update = NONE;
 
     private boolean wasHovered;
     private long lastHoveredStateChanged;
@@ -64,7 +68,20 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
      */
     @SuppressWarnings("unchecked")
     public Button onClick(@NotNull Consumer<? extends Button> callback) {
-        action = (Consumer<Button>)callback;
+        action = (Consumer<Button>)Objects.requireNonNull(callback);
+
+        return this;
+    }
+
+    /**
+     * Adds a listener to call every tick for this element.
+     *
+     * @param callback The callback function.
+     * @return {@code this} for chaining purposes.
+     */
+    @SuppressWarnings("unchecked")
+    public Button onUpdate(@NotNull Consumer<? extends Button> callback) {
+        update = (Consumer<Button>)Objects.requireNonNull(callback);
 
         return this;
     }
@@ -152,7 +169,6 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     @Override
-
     public void renderToolTip(MatrixStack matrices, Screen parent, int mouseX, int mouseY) {
 
 
@@ -174,6 +190,11 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     public void setTooltipDelay(int delay) {
         super.setTooltipDelay(delay);
         this.tooltipDelay = delay;
+    }
+
+    @Override
+    public void tick() {
+        update.accept(this);
     }
 
     @Override
