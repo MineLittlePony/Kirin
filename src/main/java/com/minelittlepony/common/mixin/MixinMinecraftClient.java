@@ -1,5 +1,6 @@
 package com.minelittlepony.common.mixin;
 
+import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.event.ScreenInitCallback;
@@ -21,9 +22,23 @@ abstract class MixinMinecraftClient {
     )
     private void onOnResolutionChanged(CallbackInfo ci) {
         MinecraftClient client = MinecraftClient.getInstance();
-        Bounds bounds = ((IViewRoot)client.currentScreen).getBounds();
-        bounds.width = client.getWindow().getScaledWidth();
-        bounds.height = client.getWindow().getScaledHeight();
-        ScreenInitCallback.EVENT.invoker().init(client.currentScreen, (ScreenInitCallback.ButtonList)client.currentScreen);
+        if (client.currentScreen instanceof IViewRoot root) {
+            Bounds bounds = root.getBounds();
+            bounds.width = client.getWindow().getScaledWidth();
+            bounds.height = client.getWindow().getScaledHeight();
+            ScreenInitCallback.EVENT.invoker().init(client.currentScreen, (ScreenInitCallback.ButtonList)client.currentScreen);
+        }
+    }
+
+    @Inject(method = "tick()V", at = @At("HEAD"))
+    public void onTick(CallbackInfo info) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.currentScreen instanceof IViewRoot root) {
+            root.getChildElements().forEach(element -> {
+                if (element instanceof ITickableElement t) {
+                    t.tick();
+                }
+            });
+        }
     }
 }
