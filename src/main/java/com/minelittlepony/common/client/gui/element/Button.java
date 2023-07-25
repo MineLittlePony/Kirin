@@ -228,6 +228,10 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
 
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
+        bounds.left = x;
+        bounds.top = y;
+        bounds.width = width;
+        bounds.height = height;
         MinecraftClient mc = MinecraftClient.getInstance();
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
