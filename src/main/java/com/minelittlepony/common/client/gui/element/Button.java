@@ -12,6 +12,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
+import com.minelittlepony.common.util.render.DrawableHelperCompat;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -286,25 +287,6 @@ public class Button extends PressableWidget implements ITooltipped<Button>, IBou
     }
 
     protected final void renderButtonBlit(MatrixStack matrices, int x, int y, int state, int blockWidth, int blockHeight) {
-            int endV = 200 - blockWidth/2;
-            int endU = state + 20 - blockHeight/2;
-
-            drawTexture(matrices,
-                    x,                y,
-                    0, state,
-                    blockWidth/2, blockHeight/2);
-            drawTexture(matrices,
-                    x + blockWidth/2, y,
-                    endV, state,
-                    blockWidth/2, blockHeight/2);
-
-            drawTexture(matrices,
-                    x,                y + blockHeight/2,
-                    0, endU,
-                    blockWidth/2, blockHeight/2);
-            drawTexture(matrices,
-                    x + blockWidth/2, y + blockHeight/2,
-                    endV, endU,
-                    blockWidth/2, blockHeight/2);
+        DrawableHelperCompat.drawNineSlicedTexture(this, matrices, x, y, blockWidth, blockHeight, 20, 4, 200, 20, 0, state);
     }
 }
