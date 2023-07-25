@@ -26,7 +26,6 @@ abstract class MixinMinecraftClient {
             Bounds bounds = root.getBounds();
             bounds.width = client.getWindow().getScaledWidth();
             bounds.height = client.getWindow().getScaledHeight();
-            ScreenInitCallback.EVENT.invoker().init(client.currentScreen, (ScreenInitCallback.ButtonList)client.currentScreen);
         }
     }
 
