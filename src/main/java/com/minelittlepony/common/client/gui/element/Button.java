@@ -185,9 +185,22 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+    public void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+        if (!visible) {
+            return;
+        }
+        getStyle().getTooltip().ifPresentOrElse(tooltip -> {
+            if (tooltip != prevTooltip) {
+                prevTooltip = tooltip;
+                setTooltip(tooltip.toTooltip());
+            }
+        }, () -> setTooltip(null));
+        super.render(context, mouseX, mouseY, tickDelta);
+    }
 
+    @Override
+    public void renderButton(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+        MinecraftClient mc = MinecraftClient.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
@@ -196,10 +209,10 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
                 GlStateManager.SrcFactor.SRC_ALPHA,
                 GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
-        int state = getTextureY();
-
-        renderButtonBlit(context, getX(), getY(), state, getWidth(), height);
+        renderButtonBlit(context, getX(), getY(), getTextureY(), getWidth(), height);
         renderBackground(context, mc, mouseX, mouseY);
+        setMessage(getStyle().getText());
+        drawIcon(context, mouseX, mouseY, tickDelta);
 
         int foreColor = getStyle().getColor();
         if (!active) {
@@ -207,18 +220,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         } else if (isHovered()) {
             foreColor = 16777120;
         }
-
-        setMessage(getStyle().getText());
-        drawIcon(context, mouseX, mouseY, partialTicks);
         renderForground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
-
-        getStyle().getTooltip().ifPresentOrElse(tooltip -> {
-            if (tooltip != prevTooltip) {
-                prevTooltip = tooltip;
-                setTooltip(tooltip.toTooltip());
-                this.getTooltipPositioner();
-            }
-        }, () -> setTooltip(null));
     }
 
     @Override
