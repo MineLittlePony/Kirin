@@ -15,17 +15,17 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -38,6 +38,11 @@ import net.minecraft.util.math.MathHelper;
  *
  */
 public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
+    protected static final ButtonTextures TEXTURES = new ButtonTextures(
+            new Identifier("widget/button"),
+            new Identifier("widget/button_disabled"),
+            new Identifier("widget/button_highlighted")
+    );
 
     private Style style = new Style();
 
@@ -154,6 +159,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         super.setWidth(width);
     }
 
+    @Override
     public void setHeight(int height) {
         bounds.height = height;
         this.height = height;
@@ -201,16 +207,13 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     @Override
     public void renderButton(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1, 1, 1, alpha);
+        context.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.blendFunc(
-                GlStateManager.SrcFactor.SRC_ALPHA,
-                GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableDepthTest();
 
-        renderButtonBlit(context, getX(), getY(), getTextureY(), getWidth(), height);
         renderBackground(context, mc, mouseX, mouseY);
+        context.setShaderColor(1, 1, 1, 1);
+
         setMessage(getStyle().getText());
         drawIcon(context, mouseX, mouseY, tickDelta);
 
@@ -220,7 +223,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         } else if (isHovered()) {
             foreColor = 16777120;
         }
-        renderForground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
+        renderForeground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
     }
 
     @Override
@@ -232,18 +235,18 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         };
     }
 
+    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
+        context.drawGuiTexture(TEXTURES.get(active, this.isSelected()), getX(), getY(), getWidth(), getHeight());
+    }
+
     protected void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {
         if (getStyle().hasIcon()) {
             getStyle().getIcon().render(context, getX(), getY(), mouseX, mouseY, partialTicks);
         }
     }
 
-    protected void renderForground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+    protected void renderForeground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         drawMessage(context, mc.textRenderer, foreColor);
-    }
-
-    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-
     }
 
     @Override
@@ -251,19 +254,5 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         Bounds bounds = getBounds();
         int left = getStyle().getIcon().getBounds().right();
         drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2, bounds.bottom(), color);
-    }
-
-    protected int getTextureY() {
-        int i = 1;
-        if (!active) {
-            i = 0;
-        } else if (isSelected()) {
-            i = 2;
-        }
-        return 46 + i * 20;
-    }
-
-    protected final void renderButtonBlit(DrawContext context, int x, int y, int state, int blockWidth, int blockHeight) {
-        context.drawNineSlicedTexture(WIDGETS_TEXTURE, x, y, blockWidth, blockHeight, 20, 4, 200, 20, 0, state);
     }
 }

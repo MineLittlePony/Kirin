@@ -148,15 +148,9 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        int i = super.getTextureY();
+        context.drawGuiTexture(TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
         int sliderX = getX() + (int)(value * (getWidth() - 8));
-
-        renderButtonBlit(context, sliderX, getY(), i, 8, 20);
-    }
-
-    @Override
-    protected int getTextureY() {
-        return 46;
+        context.drawGuiTexture(TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
     }
 
     static float convertFromRange(float value, float min, float max) {

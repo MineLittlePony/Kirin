@@ -7,7 +7,6 @@
   "client": [
     "MixinEntityRenderDispatcher",
     "MixinMinecraftClient",
-    "MixinPlayerSkinProvider",
     "MixinPlayerSkinTexture",
     "MixinScreen",
     "MixinTooltip"

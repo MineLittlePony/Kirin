@@ -1,6 +1,5 @@
 package com.minelittlepony.common.util;
 
-import com.minelittlepony.common.mixin.MixinPlayerSkinProvider;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
@@ -33,9 +32,13 @@ public class GamePaths {
     }
 
     /**
-     * Gets the current game's assets direction as a Path.
+     * Gets the current game's assets directory as a Path.
      */
     public static Path getAssetsDirectory() {
-        return ((MixinPlayerSkinProvider) MinecraftClient.getInstance().getSkinProvider()).getSkinCacheDirectory().getParentFile().toPath();
+        return ((AssetsDirProvider) MinecraftClient.getInstance()).getAssetsDirectory();
+    }
+
+    public interface AssetsDirProvider {
+        Path getAssetsDirectory();
     }
 }

@@ -4,8 +4,13 @@ import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.event.ScreenInitCallback;
+import com.minelittlepony.common.util.GamePaths.AssetsDirProvider;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
+
+import java.nio.file.Path;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
@@ -13,7 +18,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-abstract class MixinMinecraftClient {
+abstract class MixinMinecraftClient implements AssetsDirProvider {
+    private Path assetsDirectory;
+
+    @Inject(method = "<init>", at = @At(
+        value = "FIELD",
+        target = "net/minecraft/client/MinecraftClient.instance:Lnet/minecraft/client/MinecraftClient;"
+    ))
+    private void onInit(RunArgs args, CallbackInfo info) {
+        assetsDirectory = args.directories.assetDir.toPath();
+    }
+
+    @Override
+    public Path getAssetsDirectory() {
+        return assetsDirectory;
+    }
+
     @Inject(method = "onResolutionChanged()V", at = @At(
             value = "INVOKE",
             target = "net/minecraft/client/gui/screen/Screen.resize(Lnet/minecraft/client/MinecraftClient;II)V",

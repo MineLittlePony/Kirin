@@ -186,10 +186,11 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        verticalScrollbar.scrollBy((float)Math.signum(amount) * 12);
+    public boolean mouseScrolled(double mouseX, double mouseY, double xScroll, double yScroll) {
+        verticalScrollbar.scrollBy((float)Math.signum(yScroll) * 12);
+        horizontalScrollbar.scrollBy((float)Math.signum(xScroll) * 12);
 
-        return isMouseOver(mouseX, mouseY) && super.mouseScrolled(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), amount);
+        return isMouseOver(mouseX, mouseY) && super.mouseScrolled(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), xScroll, yScroll);
     }
 
     protected void renderOutside(DrawContext context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {

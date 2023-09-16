@@ -1,15 +1,12 @@
 package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.util.Identifier;
 
 public class TextureSprite implements ISprite {
 
-    private Identifier texture = ClickableWidget.WIDGETS_TEXTURE;
+    private Identifier texture = new Identifier("widget/button");
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
     private final Bounds textureBounds = new Bounds(0, 0, 256, 256);
@@ -57,7 +54,6 @@ public class TextureSprite implements ISprite {
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
                 textureBounds.width, textureBounds.height);
-        RenderSystem.setShaderTexture(0, ClickableWidget.WIDGETS_TEXTURE);
     }
 
     @Override

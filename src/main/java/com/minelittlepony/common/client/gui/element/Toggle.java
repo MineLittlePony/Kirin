@@ -69,22 +69,16 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        int i = super.getTextureY();
-        int sliderX = getX() + (on ? 1 : 0) * (width - 8);
-
-        renderButtonBlit(context, sliderX, getY(), i, 8, height);
+        context.drawGuiTexture(TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
+        int sliderX = getX() + (on ? getWidth() - 8 : 0);
+        context.drawGuiTexture(TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
     }
 
     @Override
-    protected void renderForground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
+    protected void renderForeground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
         int textY = getY() + mc.textRenderer.fontHeight / 2;
         int textX = getX() + width + 10;
 
         drawLabel(context, getStyle().getText(), textX, textY, foreColor, 0);
-    }
-
-    @Override
-    protected int getTextureY() {
-        return 46;
     }
 }
