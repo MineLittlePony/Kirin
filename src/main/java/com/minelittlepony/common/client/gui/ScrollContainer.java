@@ -84,13 +84,13 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public final void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
             MatrixStack matrices = context.getMatrices();
             matrices.push();
             getBounds().translate(matrices);
 
-            drawBackground(context, mouseX, mouseY, partialTicks);
+            drawBackground(context, mouseX, mouseY, tickDelta);
 
             Padding padding = getContentPadding();
 
@@ -102,43 +102,47 @@ public class ScrollContainer extends GameGui {
             renderContents(context,
                     mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
                     mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
-                    partialTicks);
+                    tickDelta);
 
             matrices.pop();
 
             verticalScrollbar.render(context,
                     mouseX - margin.left,
                     mouseY - margin.top,
-                    partialTicks
+                    tickDelta
             );
             horizontalScrollbar.render(context,
                     mouseX - margin.left,
                     mouseY - margin.top,
-                    partialTicks
+                    tickDelta
             );
 
-            drawDecorations(context, mouseX, mouseY, partialTicks);
+            drawDecorations(context, mouseX, mouseY, tickDelta);
 
             matrices.pop();
         });
 
-        drawOverlays(context, mouseX, mouseY, partialTicks);
+        drawOverlays(context, mouseX, mouseY, tickDelta);
     }
 
-    protected void renderContents(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        super.render(context, mouseX, mouseY, partialTicks);
+    protected void renderContents(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+        super.render(context, mouseX, mouseY, tickDelta);
     }
 
-    protected void drawBackground(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    @Deprecated
+    @Override
+    public final void renderBackground(DrawContext context, int mouseX, int mouseY, float tickDelta) { }
+
+    protected void drawBackground(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         context.fill(0, 0, width, height, backgroundColor);
     }
 
-    protected void drawDecorations(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    protected void drawDecorations(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         context.fillGradient(0, -3, width, 5, decorationColor, 0);
         context.fillGradient(0, height - 6, width, height + 3, 0, decorationColor);
     }
 
-    protected void drawOverlays(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    protected void drawOverlays(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         Runnable task;
         while ((task = delayedCalls.poll()) != null) {
             task.run();
