@@ -10,28 +10,28 @@ public interface Color {
      * Returns the ALPHA channel for the given colour hex code.
      */
     static float a(int hex) {
-        return ColorHelper.Argb.getAlpha(hex);
+        return ColorHelper.Argb.getAlpha(hex) / 255F;
     }
 
     /**
      * Returns the RED channel for the given colour hex code.
      */
     static float r(int hex) {
-        return ColorHelper.Argb.getRed(hex);
+        return ColorHelper.Argb.getRed(hex) / 255F;
     }
 
     /**
      * Returns the GREEN channel for the given colour hex code.
      */
     static float g(int hex) {
-        return ColorHelper.Argb.getGreen(hex);
+        return ColorHelper.Argb.getGreen(hex) / 255F;
     }
 
     /**
      * Returns the BLUE channel for the given colour hex code.
      */
     static float b(int hex) {
-        return ColorHelper.Argb.getBlue(hex);
+        return ColorHelper.Argb.getBlue(hex) / 255F;
     }
 
     /**
@@ -52,6 +52,11 @@ public interface Color {
      * Converts a colour hex code from BGR to RGB (and back).
      */
     static int abgrToArgb(int color) {
-        return argbToHex(a(color), b(color), g(color), r(color));
+        return ColorHelper.Argb.getArgb(
+                ColorHelper.Argb.getAlpha(color),
+                ColorHelper.Argb.getBlue(color),
+                ColorHelper.Argb.getGreen(color),
+                ColorHelper.Argb.getRed(color)
+        );
     }
 }
