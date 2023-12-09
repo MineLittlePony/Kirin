@@ -5,9 +5,6 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.Tooltip;
@@ -22,7 +19,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
@@ -191,21 +187,14 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        if (!visible) {
-            return;
-        }
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         getStyle().getTooltip().ifPresentOrElse(tooltip -> {
             if (tooltip != prevTooltip) {
                 prevTooltip = tooltip;
-                setTooltip(tooltip.toTooltip());
+                setTooltip(tooltip.toTooltip(this));
             }
         }, () -> setTooltip(null));
-        super.render(context, mouseX, mouseY, tickDelta);
-    }
 
-    @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         MinecraftClient mc = MinecraftClient.getInstance();
         context.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
@@ -224,15 +213,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
             foreColor = 16777120;
         }
         renderForeground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
-    }
-
-    @Override
-    protected TooltipPositioner getTooltipPositioner() {
-        TooltipPositioner original = super.getTooltipPositioner();
-        return (int screenWidth, int screenHeight, int x, int y, int width, int height) -> {
-            Vector2ic pos = original.getPosition(screenWidth, screenHeight, x, y, width, height);
-            return new Vector2i(pos.x() + getStyle().toolTipX, pos.y() + getStyle().toolTipY);
-        };
     }
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {

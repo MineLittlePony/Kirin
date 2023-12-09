@@ -19,7 +19,7 @@ java {
 }
 
 outlet.allowSnapshotsForProject = false
-outlet.mcVersionRange = project.minecraft_version_range
+outlet.mcVersionRange = ">=${project.minecraft_version}"
 
 group = project.group
 description = project.displayname
@@ -27,6 +27,7 @@ archivesBaseName = project.name
 
 loom {
     mixin.defaultRefmapName = 'kirin.mixin.refmap.json'
+    accessWidenerPath = file('src/main/resources/kirin.aw')
 }
 
 reckon {
@@ -50,7 +51,7 @@ processResources {
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version.toString(),
-                "minecraftVersion": project.minecraft_version_range,
+                "minecraftVersion": ">=${project.minecraft_version}",
                 "loaderVersion": ">=${project.loader_version}",
                 "fabricVersion": ">=${project.fabric_version}"
     }

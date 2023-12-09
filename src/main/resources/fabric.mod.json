@@ -15,6 +15,7 @@
   ],
   "license": "MIT",
   "icon": "kirin_logo.png",
+  "accessWidener": "kirin.aw",
   "environment": "*",
   "depends": {
     "minecraft": "${minecraftVersion}",

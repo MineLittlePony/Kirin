@@ -6,13 +6,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.joml.Vector2i;
 import com.google.common.base.Splitter;
+import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.mixin.MixinTooltip;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Narratable;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.tooltip.TooltipPositioner;
+import net.minecraft.client.gui.tooltip.WidgetTooltipPositioner;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
@@ -43,8 +48,20 @@ public interface Tooltip extends Narratable {
         return getLines().stream();
     }
 
-    default net.minecraft.client.gui.tooltip.Tooltip toTooltip() {
-        var tooltip = net.minecraft.client.gui.tooltip.Tooltip.of(Text.empty());
+    default net.minecraft.client.gui.tooltip.Tooltip toTooltip(IStyled<?> element) {
+        var tooltip = new net.minecraft.client.gui.tooltip.Tooltip(Text.empty(), Text.literal(getString().toString())) {
+            @Override
+            protected TooltipPositioner createPositioner(boolean hovered, boolean focused, ScreenRect focus) {
+                TooltipPositioner original = super.createPositioner(hovered, focused, focus);
+                if (!(original instanceof WidgetTooltipPositioner)) {
+                    return original;
+                }
+                return (int screenWidth, int screenHeight, int x, int y, int width, int height) -> {
+                    return original.getPosition(screenWidth, screenHeight, x, y, width, height)
+                        .add(element.getStyle().toolTipX, element.getStyle().toolTipY, new Vector2i());
+                };
+            }
+        };
         ((MixinTooltip)tooltip).setLines(stream().map(Text::asOrderedText).toList());
         return tooltip;
     }
