@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.5-SNAPSHOT'
     id 'maven-publish'
     id 'org.ajoberstar.reckon' version '0.13.0'
 }
@@ -17,6 +17,7 @@ archivesBaseName = project.name
 
 loom {
     mixin.defaultRefmapName = 'kirin.mixin.refmap.json'
+    accessWidenerPath = file('src/main/resources/kirin.aw')
 }
 
 reckon {

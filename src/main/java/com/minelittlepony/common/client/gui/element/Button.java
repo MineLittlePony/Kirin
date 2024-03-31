@@ -253,16 +253,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2, bounds.bottom(), color);
     }
 
-    protected int getTextureY() {
-        int i = 1;
-        if (!active) {
-            i = 0;
-        } else if (isSelected()) {
-            i = 2;
-        }
-        return 46 + i * 20;
-    }
-
     protected final void renderButtonBlit(DrawContext context, int x, int y, int state, int blockWidth, int blockHeight) {
         context.drawNineSlicedTexture(WIDGETS_TEXTURE, x, y, blockWidth, blockHeight, 20, 4, 200, 20, 0, state);
     }
