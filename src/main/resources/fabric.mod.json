@@ -14,6 +14,7 @@
     "kirin.mixin.json"
   ],
   "license": "MIT",
+  "accessWidener": "kirin.aw",
   "icon": "kirin_logo.png",
   "environment": "*",
   "depends": {

@@ -153,11 +153,11 @@ public class ScrollContainer extends GameGui {
     }
 
     public int getMouseYOffset() {
-        return -margin.top - getScrollY() - getContentPadding().top;
+        return -getBounds().top - getScrollY() - getContentPadding().top;
     }
 
     public int getMouseXOffset() {
-        return -margin.left - getScrollX() - getContentPadding().left;
+        return -getBounds().left - getScrollX() - getContentPadding().left;
     }
 
     @Override

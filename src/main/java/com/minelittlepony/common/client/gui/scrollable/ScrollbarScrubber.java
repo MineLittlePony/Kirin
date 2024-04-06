@@ -63,11 +63,10 @@ public class ScrollbarScrubber {
         if (!animate) {
             currentPosition = targetPosition;
         }
-        setMomentum(0);
     }
 
     public void setMomentum(int momentum) {
-        this.momentum = momentum;
+        this.momentum += momentum;
     }
 
     public void reposition(Bounds containerBounds, Bounds contentBounds) {
