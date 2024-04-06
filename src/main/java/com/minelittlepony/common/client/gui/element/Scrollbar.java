@@ -10,8 +10,10 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.Window;
 import net.minecraft.sound.SoundEvents;
 
 /**
@@ -153,11 +155,13 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        return mouseY + rootView.getScrollY() + rootView.getContentPadding().top;
+        double yOffset = -rootView.getScrollY() - rootView.getContentPadding().top;
+        return mouseY - yOffset;
     }
 
     private double calculateInternalXPosition(double mouseX) {
-        return mouseX + rootView.getScrollX() + rootView.getContentPadding().left;
+        double xOffset = -rootView.getScrollX() - rootView.getContentPadding().left;
+        return mouseX - xOffset;
     }
 
     @Override
@@ -167,11 +171,15 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
         double mousePosition = orientation.pick(mouseX, mouseY);
 
+        Window window = MinecraftClient.getInstance().getWindow();
+        double motionRatio = orientation.pick(window.getWidth(), window.getHeight()) / (double)orientation.pick(bounds.width, bounds.height);
+        double change = motionRatio * (prevMousePosition - mousePosition);
+
         if (dragging) {
-            scrubber.scrollBy(-(int)(prevMousePosition - mousePosition), false);
+            scrubber.scrollBy(-(int)change, false);
         } else if (touching) {
-            scrubber.scrollBy((int)(mousePosition - prevMousePosition) / 16, true);
-            scrubber.setMomentum((int)(mousePosition - prevMousePosition));
+            scrubber.scrollBy(-(int)change * 16, true);
+            scrubber.setMomentum(-(int)change);
         }
 
         prevMousePosition = mousePosition;
