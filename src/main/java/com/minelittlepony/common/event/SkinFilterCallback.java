@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.texture.NativeImage;
 
 public interface SkinFilterCallback {
-
     Event<SkinFilterCallback> EVENT = EventFactory.createArrayBacked(SkinFilterCallback.class, listeners -> {
         return new SkinFilterCallback() {
             @Override

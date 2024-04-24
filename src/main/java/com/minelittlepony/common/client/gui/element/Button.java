@@ -5,6 +5,8 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.Tooltip;
@@ -17,8 +19,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.tooltip.TooltipPositioner;
+import net.minecraft.client.gui.tooltip.TooltipState;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
@@ -58,7 +63,24 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     public Button(int x, int y, int width, int height) {
         super(x, y, width, height, ScreenTexts.EMPTY);
+        tooltip = new TooltipState() {
+            @Override
+            public void render(boolean hovered, boolean focused, ScreenRect focus) {
+                getStyle().getTooltip().ifPresentOrElse(tooltip -> {
+                    if (tooltip != prevTooltip) {
+                        prevTooltip = tooltip;
+                        setTooltip(tooltip.toTooltip(Button.this));
+                    }
+                }, () -> setTooltip(null));
+                super.render(hovered, focused, focus);
+            }
 
+            @Override
+            public TooltipPositioner createPositioner(ScreenRect focus, boolean hovered, boolean focused) {
+                final TooltipPositioner positioner = super.createPositioner(focus, hovered, focused);
+                return (sw, sh, x, y, w, h) -> positioner.getPosition(sw, sh, x, y, w, h).add(getStyle().toolTipX, getStyle().toolTipY, new Vector2i());
+            }
+        };
         bounds = new Bounds(y, x, width, height);
     }
 
@@ -188,13 +210,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        getStyle().getTooltip().ifPresentOrElse(tooltip -> {
-            if (tooltip != prevTooltip) {
-                prevTooltip = tooltip;
-                setTooltip(tooltip.toTooltip(this));
-            }
-        }, () -> setTooltip(null));
-
         MinecraftClient mc = MinecraftClient.getInstance();
         context.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();

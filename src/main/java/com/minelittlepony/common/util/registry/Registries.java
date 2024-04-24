@@ -6,6 +6,7 @@ import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.util.Identifier;
 
 public interface Registries {
@@ -25,9 +26,9 @@ public interface Registries {
                 Registry.register(this, getDefaultId(), defaultValue);
             }
 
-            public RegistryEntry.Reference<T> set(int i, RegistryKey<T> registryKey, T object, Lifecycle lifecycle) {
-                createEntry(object);
-                return super.set(i, registryKey, object, lifecycle);
+            public RegistryEntry.Reference<T> add(RegistryKey<T> key, T value, RegistryEntryInfo info) {
+                createEntry(value);
+                return super.add(key, value, info);
             }
         };
     }

@@ -4,6 +4,8 @@ import com.minelittlepony.common.client.gui.OutsideWorldRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
@@ -24,7 +26,7 @@ public class ItemStackSprite implements ISprite {
     }
 
     public ItemStackSprite setTint(int tint) {
-        stack.getOrCreateSubNbt("display").putInt("color", tint);
+        stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(tint, true));
         return this;
     }
 

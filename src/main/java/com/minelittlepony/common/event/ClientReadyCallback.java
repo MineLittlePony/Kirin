@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.MinecraftClient;
 
 /**
- * Callback for the first tick on the client. Call {@link Handler#register()}
- * to register
+ * Callback for the first tick on the client. Call {@link Handler#register()} to register
  */
+@Deprecated
 public interface ClientReadyCallback {
 
     Event<ClientReadyCallback> EVENT = EventFactory.createArrayBacked(ClientReadyCallback.class, listeners -> client -> {
