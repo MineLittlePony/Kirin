@@ -1,6 +1,7 @@
 package com.minelittlepony.common.util;
 
 import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
 
 /**
  * Colouration Utilities
@@ -57,6 +58,18 @@ public interface Color {
                 ColorHelper.Argb.getBlue(color),
                 ColorHelper.Argb.getGreen(color),
                 ColorHelper.Argb.getRed(color)
+        );
+    }
+
+    /**
+     * Interpolates between two colours
+     */
+    static int lerp(float delta, int from, int to) {
+        return argbToHex(
+                MathHelper.lerp(delta, a(from), a(to)),
+                MathHelper.lerp(delta, r(from), r(to)),
+                MathHelper.lerp(delta, g(from), g(to)),
+                MathHelper.lerp(delta, b(from), b(to))
         );
     }
 }

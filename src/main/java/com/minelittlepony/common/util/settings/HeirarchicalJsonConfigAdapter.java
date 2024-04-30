@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final Gson gson;
 
@@ -58,7 +58,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
            }
            writer.endObject();
        } catch (IOException e) {
-           logger.warn("Error whilst saving Json config", e);
+           LOGGER.warn("Error whilst saving Json config", e);
        }
     }
 
@@ -79,7 +79,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
                         });
                     });
                 } catch (IOException | JsonParseException e) {
-                    logger.warn("Erorr whilst loading json config", e);
+                    LOGGER.warn("Erorr whilst loading json config", e);
                 }
             }
         } finally {

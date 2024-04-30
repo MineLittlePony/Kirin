@@ -9,7 +9,7 @@ import java.util.stream.Stream;
  * A configuration container that lets you programmatically index values by a key.
  */
 public abstract class Config implements Iterable<Grouping> {
-    @SuppressWarnings("deprecation")
+    @Deprecated
     public static final Adapter FLATTENED_JSON_ADAPTER = LegacyJsonConfigAdapter.DEFAULT;
     public static final Adapter HEIRARCHICAL_JSON_ADAPTER = HeirarchicalJsonConfigAdapter.DEFAULT;
 

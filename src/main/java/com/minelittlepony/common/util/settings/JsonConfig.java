@@ -7,7 +7,7 @@ import java.nio.file.Path;
  *
  * @deprecated Use Config with {@code Config#FLATTENED_JSON_ADAPTER}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class JsonConfig extends Config {
     public JsonConfig(Path path) {
         super(LegacyJsonConfigAdapter.DEFAULT, path);

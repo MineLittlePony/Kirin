@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public class LegacyJsonConfigAdapter implements Config.Adapter {
     private static final Logger logger = LogManager.getLogger();
 
