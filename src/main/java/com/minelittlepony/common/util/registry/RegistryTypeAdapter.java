@@ -28,7 +28,7 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
                     return null;
                 }
                 String ls = s.toLowerCase(Locale.US);
-                return registry.getOrEmpty(new Identifier(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
+                return registry.getOrEmpty(Identifier.of(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
             }
         };
     }
@@ -52,6 +52,6 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
     @Override
     public T read(JsonReader in) throws IOException {
         String s = in.nextString();
-        return s == null ? null : registry.get(new Identifier(s.toLowerCase(Locale.ROOT)));
+        return s == null ? null : registry.get(Identifier.of(s.toLowerCase(Locale.ROOT)));
     }
 }

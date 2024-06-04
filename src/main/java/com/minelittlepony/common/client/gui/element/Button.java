@@ -40,9 +40,9 @@ import net.minecraft.util.math.MathHelper;
  */
 public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
     protected static final ButtonTextures TEXTURES = new ButtonTextures(
-            new Identifier("widget/button"),
-            new Identifier("widget/button_disabled"),
-            new Identifier("widget/button_highlighted")
+            Identifier.ofVanilla("widget/button"),
+            Identifier.ofVanilla("widget/button_disabled"),
+            Identifier.ofVanilla("widget/button_highlighted")
     );
 
     private Style style = new Style();

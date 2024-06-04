@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 
 public class TextureSprite implements ISprite {
 
-    private Identifier texture = new Identifier("widget/button");
+    private Identifier texture = Identifier.ofVanilla("widget/button");
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
     private final Bounds textureBounds = new Bounds(0, 0, 256, 256);

@@ -3,8 +3,6 @@ package com.minelittlepony.common.client.gui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
@@ -40,10 +38,9 @@ public interface ITextContext {
      * @param zIndex The Z-index used when layering multiple elements.
      */
     default void drawLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
-        VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
         context.getMatrices().translate(0, 0, zIndex);
-        getFont().draw(text, x, y, color, true, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
-        immediate.draw();
+        getFont().draw(text, x, y, color, true, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
+        context.getVertexConsumers().draw();
     }
 
     /**
@@ -74,9 +71,8 @@ public interface ITextContext {
     default void drawTextBlock(DrawContext context, StringVisitable text, int x, int y, int maxWidth, int color) {
         for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
             float left = x;
-            VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-            getFont().draw(line, left, y, color, false, context.getMatrices().peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
-            immediate.draw();
+            getFont().draw(line, left, y, color, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
+            context.getVertexConsumers().draw();
 
             y += 9;
         }
