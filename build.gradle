@@ -44,6 +44,7 @@ dependencies {
     modApi fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version)
     modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_version)
     modApi fabricApi.module("fabric-rendering-v1", project.fabric_version)
+    modApi fabricApi.module("fabric-transitive-access-wideners-v1", project.fabric_version)
 }
 
 processResources {
