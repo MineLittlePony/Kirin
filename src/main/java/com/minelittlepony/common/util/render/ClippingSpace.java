@@ -14,6 +14,7 @@ import net.minecraft.client.util.Window;
  * @author     Sollace
  *
  */
+@Deprecated
 public class ClippingSpace {
 
     /**

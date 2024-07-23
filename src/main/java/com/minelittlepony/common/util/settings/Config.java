@@ -2,8 +2,11 @@ package com.minelittlepony.common.util.settings;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import com.minelittlepony.common.util.io.PathMonitor;
 
 /**
  * A configuration container that lets you programmatically index values by a key.
@@ -18,9 +21,32 @@ public abstract class Config implements Iterable<Grouping> {
     private final Adapter adapter;
     private final Path path;
 
+    private final List<Consumer<Config>> listeners = new ArrayList<>();
+
+    @SuppressWarnings("unchecked")
+    private final PathMonitor monitor = new PathMonitor(event -> {
+        switch (event) {
+            case MODIFY:
+                load();
+                break;
+            case DELETE:
+                categories.forEach((name, category) -> {
+                    category.entries().forEach(setting -> {
+                        ((Setting<Object>)setting).set(setting.getDefault());
+                    });
+                });
+        }
+        listeners.forEach(listener -> listener.accept(this));
+    });
+
     protected Config(Adapter adapter, Path path) {
         this.adapter = adapter;
         this.path = path;
+        monitor.set(path);
+    }
+
+    public void onChangedExternally(Consumer<Config> listener) {
+        listeners.add(listener);
     }
 
     /**
@@ -91,11 +117,11 @@ public abstract class Config implements Iterable<Grouping> {
      * Commits any unsaved changes for this config.
      */
     public void save() {
-        adapter.save(this, path);
+        monitor.wrap(() -> adapter.save(this, path));
     }
 
     public void load() {
-        adapter.load(this, path);
+        monitor.wrap(() -> adapter.load(this, path));
     }
 
     public interface Adapter {
