@@ -30,14 +30,11 @@ public interface Tooltip extends Narratable {
     }
 
     default CharSequence getString() {
-        StringBuilder builder = new StringBuilder();
-        getLines().forEach(line -> {
-            if (builder.length() > 0) {
-                builder.append('\n');
-            }
-            builder.append(line.getString());
-        });
-        return builder;
+        return getText().getString();
+    }
+
+    default Text getText() {
+        return stream().reduce(Text.empty(), (a, b) -> a == Text.empty() ? b : a.copy().append("\n").append(b));
     }
 
     default Stream<Text> stream() {
@@ -45,7 +42,7 @@ public interface Tooltip extends Narratable {
     }
 
     default net.minecraft.client.gui.tooltip.Tooltip toTooltip(IStyled<?> element) {
-        var tooltip = net.minecraft.client.gui.tooltip.Tooltip.of(Text.empty(), Text.literal(getString().toString()));
+        var tooltip = net.minecraft.client.gui.tooltip.Tooltip.of(getText(), getText());
         ((MixinTooltip)tooltip).setLines(stream().map(Text::asOrderedText).toList());
         return tooltip;
     }
