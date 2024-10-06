@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.mixin.MixinTooltip;
@@ -14,6 +15,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Narratable;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Style;
@@ -34,7 +36,7 @@ public interface Tooltip extends Narratable {
     }
 
     default Text getText() {
-        return stream().reduce(null, (a, b) -> a == null ? b : b == null ? a : a.copy().append("\n").append(b));
+        return MoreObjects.firstNonNull(stream().reduce(null, (a, b) -> a == null ? b : b == null ? a : a.copy().append("\n").append(b)), ScreenTexts.EMPTY);
     }
 
     default Stream<Text> stream() {
