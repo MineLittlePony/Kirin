@@ -12,9 +12,9 @@ import net.minecraft.client.util.Window;
  * Wrapper around GLScissor for clipping a rendered object to a defined rectangle.
  *
  * @author     Sollace
- *
+ * @deprecated Will be removed in 1.23.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class ClippingSpace {
 
     /**

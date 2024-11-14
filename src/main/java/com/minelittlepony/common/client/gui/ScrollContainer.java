@@ -7,9 +7,9 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
-import com.minelittlepony.common.util.render.ClippingSpace;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 
@@ -25,12 +25,12 @@ import net.minecraft.screen.ScreenTexts;
  */
 public class ScrollContainer extends GameGui {
     /**
-     * The scrollbar for this container.
+     * The vertical scrollbar for this container.
      */
     public final Scrollbar verticalScrollbar = new Scrollbar(this, ScrollOrientation.VERTICAL);
-    @Deprecated
-    public final Scrollbar scrollbar = verticalScrollbar;
-
+    /**
+     * The horizontal scrollbar for this container.
+     */
     public final Scrollbar horizontalScrollbar = new Scrollbar(this, ScrollOrientation.HORIZONTAL);
 
     /**
@@ -85,42 +85,45 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        ClippingSpace.renderClipped(margin.left, margin.top, getBounds().width, getBounds().height, () -> {
-            MatrixStack matrices = context.getMatrices();
-            matrices.push();
-            getBounds().translate(matrices);
+        MatrixStack matrices = context.getMatrices();
 
-            drawBackground(context, mouseX, mouseY, tickDelta);
+        context.enableScissor(margin.left, margin.top, margin.left + getBounds().width, margin.top + getBounds().height);
 
-            Padding padding = getContentPadding();
+        matrices.push();
+        getBounds().translate(matrices);
 
-            matrices.push();
-            matrices.translate(
-                    getScrollX() + padding.left,
-                    getScrollY() + padding.top, 0);
+        drawBackground(context, mouseX, mouseY, tickDelta);
 
-            renderContents(context,
-                    mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
-                    mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
-                    tickDelta);
+        Padding padding = getContentPadding();
 
-            matrices.pop();
+        matrices.push();
+        matrices.translate(
+                getScrollX() + padding.left,
+                getScrollY() + padding.top, 0);
 
-            verticalScrollbar.render(context,
-                    mouseX - margin.left,
-                    mouseY - margin.top,
-                    tickDelta
-            );
-            horizontalScrollbar.render(context,
-                    mouseX - margin.left,
-                    mouseY - margin.top,
-                    tickDelta
-            );
+        renderContents(context,
+                mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
+                mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
+                tickDelta);
 
-            drawDecorations(context, mouseX, mouseY, tickDelta);
+        matrices.pop();
 
-            matrices.pop();
-        });
+        verticalScrollbar.render(context,
+                mouseX - margin.left,
+                mouseY - margin.top,
+                tickDelta
+        );
+        horizontalScrollbar.render(context,
+                mouseX - margin.left,
+                mouseY - margin.top,
+                tickDelta
+        );
+
+        drawDecorations(context, mouseX, mouseY, tickDelta);
+
+        matrices.pop();
+
+        context.disableScissor();
 
         drawOverlays(context, mouseX, mouseY, tickDelta);
     }
@@ -144,9 +147,14 @@ public class ScrollContainer extends GameGui {
 
     protected void drawOverlays(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         Runnable task;
+        Window window = MinecraftClient.getInstance().getWindow();
+        context.enableScissor(0, 0, window.getScaledWidth(), window.getScaledHeight());
+
         while ((task = delayedCalls.poll()) != null) {
             task.run();
         }
+
+        context.disableScissor();
     }
 
     @Override
@@ -199,11 +207,9 @@ public class ScrollContainer extends GameGui {
 
     protected void renderOutside(DrawContext context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
         delayedCalls.add(() -> {
-            ClippingSpace.renderUnclipped(() -> {
-                context.getMatrices().push();
-                renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
-                context.getMatrices().pop();
-            });
+            context.getMatrices().push();
+            renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
+            context.getMatrices().pop();
         });
     }
 
