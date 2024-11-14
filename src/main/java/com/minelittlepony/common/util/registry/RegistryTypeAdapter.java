@@ -28,7 +28,7 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
                     return null;
                 }
                 String ls = s.toLowerCase(Locale.US);
-                return registry.getOrEmpty(Identifier.of(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
+                return registry.getOptionalValue(Identifier.of(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
             }
         };
     }

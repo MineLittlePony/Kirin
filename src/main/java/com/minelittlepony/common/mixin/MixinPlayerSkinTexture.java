@@ -12,38 +12,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerSkinTexture.class)
 public abstract class MixinPlayerSkinTexture extends ResourceTexture {
-
     private MixinPlayerSkinTexture() { super(null); }
 
-    private static final String FILTER_IMAGE = "remapTexture(Lnet/minecraft/client/texture/NativeImage;)Lnet/minecraft/client/texture/NativeImage;";
+    private static int initialWidth;
+    private static int initialHeight;
 
-    private static final String STRIP_COLOR = "stripColor(Lnet/minecraft/client/texture/NativeImage;IIII)V";
-    private static final String STRIP_ALPHA = "stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V";
-
-    private static boolean isLegacy;
-
-    @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
+    @Inject(method = "remapTexture", at = @At("HEAD"))
     private void beforeUpdate(NativeImage image, CallbackInfoReturnable<NativeImage> info) {
-        isLegacy = image.getHeight() == 32;
+        initialWidth = image.getWidth();
+        initialHeight = image.getHeight();
     }
 
-    @Inject(method = FILTER_IMAGE, at = @At("RETURN"))
+    @Inject(method = "remapTexture", at = @At("RETURN"))
     private void update(NativeImage image, CallbackInfoReturnable<NativeImage> ci) {
         // convert skins from mojang server
-        SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), isLegacy);
+        ci.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), initialWidth, initialHeight));
     }
 
     // Sorry, Mahjon. Input validation is good 'n all, but this interferes with our other mods.
-    @Inject(method = STRIP_ALPHA, at = @At("HEAD"), cancellable = true)
+    @Inject(method = "stripAlpha", at = @At("HEAD"), cancellable = true)
     private static void cancelAlphaStrip(NativeImage image, int beginX, int beginY, int endX, int endY, CallbackInfo info) {
-        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, isLegacy)) {
+        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth, initialHeight)) {
             info.cancel();
         }
     }
 
-    @Inject(method = STRIP_COLOR, at = @At("HEAD"), cancellable = true)
+    @Inject(method = "stripColor", at = @At("HEAD"), cancellable = true)
     private static void cancelColorStrip(NativeImage image, int beginX, int beginY, int endX, int endY, CallbackInfo info) {
-        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, isLegacy)) {
+        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth, initialHeight)) {
             info.cancel();
         }
     }

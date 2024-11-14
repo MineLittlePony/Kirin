@@ -7,6 +7,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -148,9 +149,9 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
         int sliderX = getX() + (int)(value * (getWidth() - 8));
-        context.drawGuiTexture(TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
     }
 
     static float convertFromRange(float value, float min, float max) {

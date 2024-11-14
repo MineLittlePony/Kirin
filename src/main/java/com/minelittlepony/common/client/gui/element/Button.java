@@ -25,6 +25,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipState;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -211,12 +212,12 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        context.setShaderColor(1, 1, 1, alpha);
+        RenderSystem.setShaderColor(1, 1, 1, alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
 
         renderBackground(context, mc, mouseX, mouseY);
-        context.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         setMessage(getStyle().getText());
         drawIcon(context, mouseX, mouseY, tickDelta);
@@ -231,7 +232,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(TEXTURES.get(active, this.isSelected()), getX(), getY(), getWidth(), getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, this.isSelected()), getX(), getY(), getWidth(), getHeight());
     }
 
     protected void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {

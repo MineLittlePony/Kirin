@@ -7,6 +7,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 
 /**
@@ -69,9 +70,9 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
         int sliderX = getX() + (on ? getWidth() - 8 : 0);
-        context.drawGuiTexture(TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
     }
 
     @Override

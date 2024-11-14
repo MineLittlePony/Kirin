@@ -3,7 +3,6 @@ package com.minelittlepony.common.client.gui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 
@@ -38,9 +37,10 @@ public interface ITextContext {
      * @param zIndex The Z-index used when layering multiple elements.
      */
     default void drawLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
+        context.getMatrices().push();
         context.getMatrices().translate(0, 0, zIndex);
-        getFont().draw(text, x, y, color, true, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
-        context.getVertexConsumers().draw();
+        context.drawText(getFont(), text, x, y, color, false);
+        context.getMatrices().pop();
     }
 
     /**
@@ -69,12 +69,6 @@ public interface ITextContext {
      * @param color The font colour
      */
     default void drawTextBlock(DrawContext context, StringVisitable text, int x, int y, int maxWidth, int color) {
-        for (OrderedText line : getFont().wrapLines(text, maxWidth)) {
-            float left = x;
-            getFont().draw(line, left, y, color, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.SEE_THROUGH, 0, 0xF000F0);
-            context.getVertexConsumers().draw();
-
-            y += 9;
-        }
+        context.drawTextWrapped(getFont(), text, x, y, maxWidth, color);
     }
 }

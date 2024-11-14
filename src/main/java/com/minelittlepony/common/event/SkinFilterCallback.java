@@ -5,19 +5,25 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.texture.NativeImage;
 
 public interface SkinFilterCallback {
+    int VANILLA_SKIN_WIDTH = 64;
+    int VANILLA_SKIN_HEIGHT = 64;
+    int OLD_VANILLA_SKIN_HEIGHT = 32;
+
     Event<SkinFilterCallback> EVENT = EventFactory.createArrayBacked(SkinFilterCallback.class, listeners -> {
         return new SkinFilterCallback() {
             @Override
-            public void processImage(NativeImage image, boolean legacy) {
+            public NativeImage processImage(NativeImage image, int initialWidth, int initialHeight) {
                 for (SkinFilterCallback event : listeners) {
-                    event.processImage(image, legacy);
+                    image = event.processImage(image, initialWidth, initialHeight);
                 }
+
+                return image;
             }
 
             @Override
-            public boolean shouldAllowTransparency(NativeImage image, boolean legacy) {
+            public boolean shouldAllowTransparency(NativeImage image, int initialWidth, int initialHeight) {
                 for (SkinFilterCallback event : listeners) {
-                    if (event.shouldAllowTransparency(image, legacy)) {
+                    if (event.shouldAllowTransparency(image, initialWidth, initialHeight)) {
                         return true;
                     }
                 }
@@ -27,10 +33,18 @@ public interface SkinFilterCallback {
         };
     });
 
-    void processImage(NativeImage image, boolean legacy);
+    NativeImage processImage(NativeImage image, int initialWidth, int initialHeight);
 
-    default boolean shouldAllowTransparency(NativeImage image, boolean legacy) {
+    default boolean shouldAllowTransparency(NativeImage image, int initialWidth, int initialHeight) {
         return true; // default is true since in most cases this is the desired effect
+    }
+
+    static boolean isLegacyAspectRatio(int width, int height) {
+        return width == height * 2;
+    }
+
+    static int getResolutionScale(int width, int height) {
+        return width / VANILLA_SKIN_WIDTH;
     }
 
     /**

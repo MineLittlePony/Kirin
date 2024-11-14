@@ -15,6 +15,9 @@ public class ItemStackSprite implements ISprite {
 
     private int tint = 0xFFFFFFFF;
 
+    private boolean renderFailed;
+    private boolean needsWorld;
+
     public ItemStackSprite setStack(ItemConvertible iitem) {
         return setStack(new ItemStack(iitem));
     }
@@ -32,7 +35,26 @@ public class ItemStackSprite implements ISprite {
 
     @Override
     public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float partialTicks) {
-        OutsideWorldRenderer.renderStack(context, stack, x + 2, y + 2);
-        RenderSystem.disableDepthTest();
+        if (renderFailed) {
+            return;
+        }
+
+        if (!needsWorld) {
+            try {
+                context.drawItem(stack, x, y);
+                RenderSystem.disableDepthTest();
+                return;
+            } catch (Throwable ignored) {
+                needsWorld = true;
+            }
+        }
+
+        try {
+            OutsideWorldRenderer.configure(null);
+            context.drawItem(stack, x, y);
+            RenderSystem.disableDepthTest();
+        } catch (Throwable ignored) {
+            renderFailed = true;
+        }
     }
 }
