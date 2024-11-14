@@ -28,6 +28,7 @@ import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -232,7 +233,13 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, this.isSelected()), getX(), getY(), getWidth(), getHeight());
+        context.drawGuiTexture(
+                RenderLayer::getGuiTextured,
+                TEXTURES.get(active, isSelected()),
+                getX(), getY(),
+                getWidth(), getHeight(),
+                ColorHelper.getWhite(alpha)
+        );
     }
 
     protected void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {

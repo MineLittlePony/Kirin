@@ -1,5 +1,8 @@
 package com.minelittlepony.common.client.gui.element;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.IField;
@@ -9,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ColorHelper;
 
 /**
  * Implements a toggle (switch) element with two states (ON/OFF).
@@ -21,6 +25,10 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @NotNull
     private IChangeCallback<Boolean> action = IChangeCallback::none;
+
+    public Toggle(int x, int y, Supplier<Boolean> value) {
+        this(x, y, Objects.requireNonNull(value.get(), "value was null"));
+    }
 
     public Toggle(int x, int y, boolean value) {
         super(x, y, 30, 15);
@@ -70,9 +78,9 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight(), ColorHelper.getWhite(alpha));
         int sliderX = getX() + (on ? getWidth() - 8 : 0);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight());
+        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight(), ColorHelper.getWhite(alpha));
     }
 
     @Override

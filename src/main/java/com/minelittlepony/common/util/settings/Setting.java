@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 /**
  * Any settings.
  */
-public interface Setting<T> extends IChangeCallback<T> {
+public interface Setting<T> extends IChangeCallback<T>, Supplier<T> {
     String name();
 
     @NotNull
@@ -32,6 +32,7 @@ public interface Setting<T> extends IChangeCallback<T> {
     /**
      * Gets the config value associated with this entry.
      */
+    @Override
     @NotNull
     T get();
 
