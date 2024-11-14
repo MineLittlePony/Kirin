@@ -10,8 +10,8 @@ import java.util.function.Supplier;
  */
 public class Slider extends AbstractSlider<Float> {
 
-    public Slider(int x, int y, float min, float max, Supplier<Float> value) {
-        this(x, y, min, max, Objects.requireNonNull(value.get(), "value was null"));
+    public Slider(int x, int y, float min, float max, Supplier<? extends Number> value) {
+        this(x, y, min, max, Objects.requireNonNull(value.get(), "value was null").floatValue());
     }
 
     public Slider(int x, int y, float min, float max, float value) {
