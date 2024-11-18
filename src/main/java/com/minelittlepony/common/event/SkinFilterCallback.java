@@ -94,7 +94,7 @@ public interface SkinFilterCallback {
      */
     static void fill(NativeImage image, int xFrom, int yFrom, int xTo, int yTo, int color) {
         int scale = getResolutionScale(image.getWidth(), image.getHeight());
-        image.fillRect(0, 32 * scale, 64 * scale, 32 * scale, 0);
+        image.fillRect(xFrom * scale, yFrom * scale, xTo * scale, yTo * scale, color);
     }
 
     /**
