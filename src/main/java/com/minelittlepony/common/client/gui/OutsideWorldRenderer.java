@@ -52,7 +52,9 @@ public class OutsideWorldRenderer {
      * @param y The top-Y position (in pixels)
      */
     public static void renderStack(DrawContext context, ItemStack stack, int x, int y) {
-        configure(null);
+        try {
+            configure(null);
+        } catch (Throwable ignored) {}
         context.drawItem(stack, x, y);
     }
 }
