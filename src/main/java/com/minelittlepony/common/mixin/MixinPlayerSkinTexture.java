@@ -9,7 +9,6 @@ import net.minecraft.client.texture.ResourceTexture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerSkinTexture.class)
@@ -24,18 +23,18 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
     private void beforeUpdate(NativeImage image,
+            CallbackInfoReturnable<NativeImage> ci,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
-            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight,
-            CallbackInfoReturnable<NativeImage> info) {
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         initialWidth.set(image.getWidth());
         initialHeight.set(image.getHeight());
     }
 
     @Inject(method = FILTER_IMAGE, at = @At("RETURN"), cancellable = true)
     private void update(NativeImage image,
+            CallbackInfoReturnable<NativeImage> ci,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
-            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight,
-            CallbackInfoReturnable<NativeImage> ci) {
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         // convert skins from mojang server
         ci.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), initialWidth.get(), initialHeight.get()));
     }
@@ -45,11 +44,11 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
             @At(value = "INVOKE", target = STRIP_ALPHA),
             @At(value = "INVOKE", target = STRIP_COLOR)
     }, cancellable = true)
-    private static void cancelAlphaStrip(NativeImage image,
+    private static void cancelAlphaStrip(NativeImage image, CallbackInfoReturnable<NativeImage> ci,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
-            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight, CallbackInfo info) {
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth.get(), initialHeight.get())) {
-            info.cancel();
+            ci.cancel();
         }
     }
     // -
