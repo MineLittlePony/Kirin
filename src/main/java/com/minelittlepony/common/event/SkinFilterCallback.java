@@ -33,6 +33,11 @@ public interface SkinFilterCallback {
         return true; // default is true since in most cases this is the desired effect
     }
 
+    static void fill(NativeImage image, int xFrom, int yFrom, int xTo, int yTo, int color) {
+        int scale = image.getWidth() / 64;
+        image.fillRect(0, 32 * scale, 64 * scale, 32 * scale, 0);
+    }
+
     /**
      * Copies a scaled section from one region to another.
      *
