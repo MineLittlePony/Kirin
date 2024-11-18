@@ -1,5 +1,8 @@
 package com.minelittlepony.common.client.gui.element;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.minelittlepony.common.client.gui.IField;
@@ -20,6 +23,10 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @NotNull
     private IChangeCallback<Boolean> action = IChangeCallback::none;
+
+    public Toggle(int x, int y, Supplier<Boolean> value) {
+        this(x, y, Objects.requireNonNull(value.get(), "value was null"));
+    }
 
     public Toggle(int x, int y, boolean value) {
         super(x, y, 30, 15);

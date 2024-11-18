@@ -1,5 +1,8 @@
 package com.minelittlepony.common.client.gui.element;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import net.minecraft.text.Text;
 
 /**
@@ -10,6 +13,10 @@ import net.minecraft.text.Text;
 public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
 
     private final T[] values;
+
+    public EnumSlider(int x, int y, Supplier<T> value) {
+        this(x, y, Objects.requireNonNull(value.get(), "value was null"));
+    }
 
     @SuppressWarnings("unchecked")
     public EnumSlider(int x, int y, T value) {
