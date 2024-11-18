@@ -24,8 +24,8 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
     private void beforeUpdate(NativeImage image,
-            @Share(value = "initialWidth", namespace = "kirinmlp") LocalIntRef initialWidth,
-            @Share(value = "initialHeight", namespace = "kirinmlp") LocalIntRef initialHeight,
+            @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight,
             CallbackInfoReturnable<NativeImage> info) {
         initialWidth.set(image.getWidth());
         initialHeight.set(image.getHeight());
@@ -33,8 +33,8 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
 
     @Inject(method = FILTER_IMAGE, at = @At("RETURN"), cancellable = true)
     private void update(NativeImage image,
-            @Share(value = "initialWidth", namespace = "kirinmlp") LocalIntRef initialWidth,
-            @Share(value = "initialHeight", namespace = "kirinmlp") LocalIntRef initialHeight,
+            @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight,
             CallbackInfoReturnable<NativeImage> ci) {
         // convert skins from mojang server
         ci.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), initialWidth.get(), initialHeight.get()));
@@ -46,8 +46,8 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
             @At(value = "INVOKE", target = STRIP_COLOR)
     }, cancellable = true)
     private static void cancelAlphaStrip(NativeImage image,
-            @Share(value = "initialWidth", namespace = "kirinmlp") LocalIntRef initialWidth,
-            @Share(value = "initialHeight", namespace = "kirinmlp") LocalIntRef initialHeight, CallbackInfo info) {
+            @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
+            @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight, CallbackInfo info) {
         if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth.get(), initialHeight.get())) {
             info.cancel();
         }
