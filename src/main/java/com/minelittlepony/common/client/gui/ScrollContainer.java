@@ -85,10 +85,9 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        MatrixStack matrices = context.getMatrices();
-
         context.enableScissor(margin.left, margin.top, margin.left + getBounds().width, margin.top + getBounds().height);
 
+        MatrixStack matrices = context.getMatrices();
         matrices.push();
         getBounds().translate(matrices);
 

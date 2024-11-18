@@ -54,7 +54,7 @@ public class OutsideWorldRenderer {
     public static void renderStack(DrawContext context, ItemStack stack, int x, int y) {
         try {
             configure(null);
-        } catch (Throwable t) {}
+        } catch (Throwable ignored) {}
         context.drawItem(stack, x, y);
     }
 }

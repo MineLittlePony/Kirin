@@ -9,8 +9,6 @@ import com.minelittlepony.common.client.gui.style.Style;
 /**
  * Represents a toggle button that switches between different
  * styles as you toggle through its different states.
- * <p>
- * "Iconic" here refers to how it uses an icon instead of text
  *
  * @author     Sollace
  *

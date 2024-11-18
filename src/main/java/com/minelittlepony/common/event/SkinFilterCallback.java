@@ -20,6 +20,7 @@ public interface SkinFilterCallback {
                 return image;
             }
 
+            @Deprecated
             @Override
             public boolean shouldAllowTransparency(NativeImage image, int initialWidth, int initialHeight) {
                 for (SkinFilterCallback event : listeners) {
@@ -39,12 +40,32 @@ public interface SkinFilterCallback {
         return true; // default is true since in most cases this is the desired effect
     }
 
+    /**
+     * Checks whether the incoming image size corresponds to the old 1:2 ratio player skins.
+     */
     static boolean isLegacyAspectRatio(int width, int height) {
         return width == height * 2;
     }
 
+    /**
+     * Gets the scale of the image as a multiple of its vanilla image width.
+     */
     static int getResolutionScale(int width, int height) {
         return width / VANILLA_SKIN_WIDTH;
+    }
+
+    /**
+     * Fills a scaled section of an image with a solid color.
+     * @param image
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     * @param color
+     */
+    static void fill(NativeImage image, int xFrom, int yFrom, int xTo, int yTo, int color) {
+        int scale = getResolutionScale(image.getWidth(), image.getHeight());
+        image.fillRect(xFrom * scale, yFrom * scale, xTo * scale, yTo * scale, color);
     }
 
     /**
@@ -64,7 +85,7 @@ public interface SkinFilterCallback {
                       int xOffset, int yOffset,
                       int width, int height,
                       boolean mirrorX, boolean mirrorY) {
-        int scale = image.getWidth() / 64;
+        int scale = getResolutionScale(image.getWidth(), image.getHeight());
         image.copyRect(
                 xFrom * scale, yFrom * scale,
                 xOffset * scale, yOffset * scale,
