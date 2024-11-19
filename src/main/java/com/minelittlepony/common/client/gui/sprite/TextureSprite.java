@@ -3,6 +3,7 @@ package com.minelittlepony.common.client.gui.sprite;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
 public class TextureSprite implements ISprite {
@@ -52,10 +53,10 @@ public class TextureSprite implements ISprite {
                 RenderLayer::getGuiTextured,
                 texture,
                 x + bounds.left, y + bounds.top,
-                0,
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
-                textureBounds.width, textureBounds.height);
+                textureBounds.width, textureBounds.height,
+                Colors.WHITE);
     }
 
     @Override
