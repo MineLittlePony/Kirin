@@ -10,10 +10,8 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.util.Window;
 import net.minecraft.sound.SoundEvents;
 
 /**
@@ -39,14 +37,16 @@ public class Scrollbar implements Element, Drawable, IBounded {
     private Bounds containerBounds;
     private Bounds contentBounds;
 
-    private double prevMousePosition;
-
     /**
      * Whether the scrollbar must position itself at the far right of its assigned container rather than the right-most edge of the content.
      */
     public boolean layoutToEnd;
 
-    @Deprecated
+    /**
+     * @deprecated Will be removed in MC1.22. This is the equivalent of calling new Scrollbar(rootView, ScrollOrientation.VERTICAL)
+     * @param rootView
+     */
+    @Deprecated(forRemoval = true)
     public Scrollbar(IViewRoot rootView) {
         this(rootView, ScrollOrientation.VERTICAL);
     }
@@ -79,10 +79,16 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
     /**
      * Gets the vertical scroll amount.
+     *
+     * @deprecated Will be removed in MC1.22. Use scrubber.getPosition() instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public int getVerticalScrollAmount() {
         return orientation == ScrollOrientation.VERTICAL ? scrubber.getPosition() : 0;
+    }
+
+    public ScrollOrientation getOrientation() {
+        return orientation;
     }
 
     public ScrollbarScrubber getScrubber() {
@@ -91,8 +97,10 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
     /**
      * Gets the vertical scroll amount.
+     *
+     * @deprecated Will be removed in MC1.22. Use scrubber.getPosition() instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public int getHorizontalScrollAmount() {
         return orientation == ScrollOrientation.HORIZONTAL ? scrubber.getPosition() : 0;
     }
@@ -129,16 +137,16 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        mouseY = calculateInternalYPosition(mouseY);
-        mouseX = calculateInternalXPosition(mouseX);
+        double internalMouseY = calculateInternalYPosition(mouseY);
+        double internalMouseX = calculateInternalXPosition(mouseX);
 
-        double mousePosition = orientation.pick(mouseX, mouseY);
+        double mousePosition = orientation.pick(internalMouseX, internalMouseY);
 
         touching = dragging = false;
 
         if (!isMouseOver(mouseX, mouseY)) {
             touching = true;
-            return isMouseOver(mouseX, mouseY);
+            return false;
         }
 
         float grabPosition = scrubber.getGrabPosition(mousePosition);
@@ -149,7 +157,6 @@ public class Scrollbar implements Element, Drawable, IBounded {
             GameGui.playSound(SoundEvents.UI_BUTTON_CLICK);
             dragging = true;
         }
-        prevMousePosition = mousePosition;
 
         return isMouseOver(mouseX, mouseY);
     }
@@ -166,14 +173,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double differX, double differY) {
-        mouseY = calculateInternalYPosition(mouseY);
-        mouseX = calculateInternalXPosition(mouseX);
-
-        double mousePosition = orientation.pick(mouseX, mouseY);
-
-        Window window = MinecraftClient.getInstance().getWindow();
-        double motionRatio = orientation.pick(window.getWidth(), window.getHeight()) / (double)orientation.pick(bounds.width, bounds.height);
-        double change = motionRatio * (prevMousePosition - mousePosition);
+        double change = -orientation.pick(differX, differY);
 
         if (dragging) {
             scrubber.scrollBy(-(int)change, false);
@@ -182,8 +182,6 @@ public class Scrollbar implements Element, Drawable, IBounded {
             scrubber.setMomentum(-(int)change);
         }
 
-        prevMousePosition = mousePosition;
-
         return isMouseOver(mouseX, mouseY);
     }
 
@@ -191,10 +189,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         dragging = touching = false;
 
-        return isMouseOver(
-            calculateInternalXPosition(mouseX),
-            calculateInternalYPosition(mouseY)
-        );
+        return isMouseOver(mouseX, mouseY);
     }
 
     /**
@@ -206,7 +201,9 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-       return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
+        mouseY = calculateInternalYPosition(mouseY);
+        mouseX = calculateInternalXPosition(mouseX);
+        return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
     }
 
     @Override
