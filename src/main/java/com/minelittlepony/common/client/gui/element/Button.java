@@ -201,11 +201,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     @Override
-    protected boolean clicked(double mouseX, double mouseY) {
-        return isMouseOver(mouseX, mouseY);
-    }
-
-    @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return active && visible && getBounds().contains(mouseX, mouseY);
     }

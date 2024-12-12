@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.util.UUIDTypeAdapter;
 
@@ -25,7 +26,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
 
     public HeirarchicalJsonConfigAdapter(GsonBuilder builder) {
         this.gson = builder
-                .setLenient()
+                .setStrictness(Strictness.LENIENT)
                 .setPrettyPrinting()
                 .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
                 .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())

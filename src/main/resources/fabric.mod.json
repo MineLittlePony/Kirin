@@ -29,6 +29,9 @@
       "links": {
         "modmenu.discord": "https://discord.gg/zKSZ8Mg"
       }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_437": ["com/minelittlepony/common/client/gui/IViewRoot", "com/minelittlepony/common/client/gui/ITextContext"]
     }
   }
 }

@@ -5,7 +5,7 @@ import java.nio.file.Path;
 /**
  * A specialised configuration container that loads from a json file.
  *
- * @deprecated Use Config with {@code Config#FLATTENED_JSON_ADAPTER}
+ * @deprecated Will be removed in MC1.22. Use Config with {@code Config#FLATTENED_JSON_ADAPTER}
  */
 @Deprecated(forRemoval = true)
 public class JsonConfig extends Config {

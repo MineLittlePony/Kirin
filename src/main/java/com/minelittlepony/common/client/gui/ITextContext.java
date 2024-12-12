@@ -69,6 +69,6 @@ public interface ITextContext {
      * @param color The font colour
      */
     default void drawTextBlock(DrawContext context, StringVisitable text, int x, int y, int maxWidth, int color) {
-        context.drawTextWrapped(getFont(), text, x, y, maxWidth, color);
+        context.drawWrappedText(getFont(), text, x, y, maxWidth, color, false);
     }
 }
