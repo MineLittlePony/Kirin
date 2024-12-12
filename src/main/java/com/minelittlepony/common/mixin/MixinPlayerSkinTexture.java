@@ -20,7 +20,7 @@ abstract class MixinPlayerSkinTexture {
     private static final String STRIP_ALPHA = "net/minecraft/client/texture/PlayerSkinTextureDownloader.stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V";
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
-    private void beforeUpdate(NativeImage image, String url,
+    private static void beforeUpdate(NativeImage image, String url,
             CallbackInfoReturnable<NativeImage> ci,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
@@ -29,7 +29,7 @@ abstract class MixinPlayerSkinTexture {
     }
 
     @ModifyReturnValue(method = FILTER_IMAGE, at = @At("RETURN"))
-    private NativeImage update(NativeImage image,
+    private static NativeImage update(NativeImage image,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         // convert skins from mojang server
@@ -41,7 +41,7 @@ abstract class MixinPlayerSkinTexture {
             @At(value = "INVOKE", target = STRIP_ALPHA),
             @At(value = "INVOKE", target = STRIP_COLOR)
     })
-    private void cancelAlphaStrip(NativeImage image, int x1, int y1, int x2, int y2,
+    private static void cancelAlphaStrip(NativeImage image, int x1, int y1, int x2, int y2,
             Operation<Void> operation,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
