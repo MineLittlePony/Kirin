@@ -115,7 +115,6 @@ public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext
     private void drawDebugOverlays(DrawContext context, int mouseX, int mouseY) {
         if (drawDebugBounds || drawAllDebugBounds) {
             context.getMatrices().push();
-            context.getMatrices().translate(0, 0, -90);
             Padding padding = getContentPadding();
             Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
 
