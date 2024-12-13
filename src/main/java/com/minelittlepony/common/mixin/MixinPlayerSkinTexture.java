@@ -1,5 +1,6 @@
 package com.minelittlepony.common.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import com.minelittlepony.common.event.SkinFilterCallback;
@@ -20,7 +21,7 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
     private static final String STRIP_ALPHA = "net/minecraft/client/texture/PlayerSkinTexture.stripAlpha(Lnet/minecraft/client/texture/NativeImage;IIII)V";
 
     @Inject(method = FILTER_IMAGE, at = @At("HEAD"))
-    private void beforeUpdate(NativeImage image,
+    private void beforeUpdate(NativeImage image, String url,
             CallbackInfoReturnable<NativeImage> ci,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
@@ -28,25 +29,21 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
         initialHeight.set(image.getHeight());
     }
 
-    @Inject(method = FILTER_IMAGE, at = @At("RETURN"), cancellable = true)
-    private void update(NativeImage image,
-            CallbackInfoReturnable<NativeImage> ci,
+    @ModifyReturnValue(method = FILTER_IMAGE, at = @At("RETURN"))
+    private NativeImage update(NativeImage image,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         // convert skins from mojang server
-        ci.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(ci.getReturnValue(), initialWidth.get(), initialHeight.get()));
+        return SkinFilterCallback.EVENT.invoker().processImage(image, initialWidth.get(), initialHeight.get());
     }
 
     // Sorry, Mahjon. Input validation is good 'n all, but this interferes with our other mods.
-    @Inject(method = FILTER_IMAGE, at = {
-            @At(value = "INVOKE", target = STRIP_ALPHA),
-            @At(value = "INVOKE", target = STRIP_COLOR)
-    }, cancellable = true)
-    private void cancelAlphaStrip(NativeImage image, CallbackInfoReturnable<NativeImage> ci,
+    @Inject(method = FILTER_IMAGE, at = @At(value = "INVOKE", target = STRIP_ALPHA))
+    private void cancelAlphaStrip(NativeImage image, CallbackInfoReturnable<NativeImage> info,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
-        if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth.get(), initialHeight.get())) {
-            ci.cancel();
+        if (!SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth.get(), initialHeight.get())) {
+            info.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(image, initialWidth.get(), initialHeight.get()));
         }
     }
     // -
