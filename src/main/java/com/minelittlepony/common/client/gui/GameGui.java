@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
-import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 
 import net.minecraft.client.MinecraftClient;
@@ -25,7 +24,7 @@ import net.minecraft.text.Text;
  * @author     Sollace
  *
  */
-public class GameGui extends Screen implements IViewRoot, IBounded, ITextContext, IViewRootDefaultImpl {
+public class GameGui extends Screen {
     /**
      * The parent screen that existed prior to opening this Screen.
      * If present, this screen will replace this one upon closing.
