@@ -44,11 +44,11 @@ public abstract class MixinPlayerSkinTexture extends ResourceTexture {
             @At(value = "INVOKE", target = STRIP_ALPHA),
             @At(value = "INVOKE", target = STRIP_COLOR)
     }, cancellable = true)
-    private void cancelAlphaStrip(NativeImage image, CallbackInfoReturnable<NativeImage> ci,
+    private void cancelAlphaStrip(NativeImage image, CallbackInfoReturnable<NativeImage> info,
             @Share(value = "kirinmlp_initialWidth") LocalIntRef initialWidth,
             @Share(value = "kirinmlp_initialHeight") LocalIntRef initialHeight) {
         if (SkinFilterCallback.EVENT.invoker().shouldAllowTransparency(image, initialWidth.get(), initialHeight.get())) {
-            ci.cancel();
+            info.setReturnValue(SkinFilterCallback.EVENT.invoker().processImage(image, initialWidth.get(), initialHeight.get()));
         }
     }
     // -
