@@ -156,6 +156,14 @@ public class Bounds {
         matrices.translate(left, top, 0);
     }
 
+    /**
+     * Sets this bounds as the current scissor bounds for drawing
+     * @param context
+     */
+    public void scissor(DrawContext context) {
+        context.enableScissor(left, top, right(), bottom());
+    }
+
     public void debugMeasure(DrawContext context) {
         Window window = MinecraftClient.getInstance().getWindow();
         context.fill(left, -1000, left + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
