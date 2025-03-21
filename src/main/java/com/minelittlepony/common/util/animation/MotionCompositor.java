@@ -19,7 +19,7 @@ public class MotionCompositor {
     public double calculateRoll(LivingEntity entity, double motionX, double motionY, double motionZ) {
 
         // since model roll should probably be calculated from model rotation rather than entity rotation...
-        double roll = sensibleAngle(entity.prevBodyYaw - entity.bodyYaw);
+        double roll = sensibleAngle(entity.lastBodyYaw - entity.bodyYaw);
         double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
         float modelYaw = sensibleAngle(entity.bodyYaw);
 

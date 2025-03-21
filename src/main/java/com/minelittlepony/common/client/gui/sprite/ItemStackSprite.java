@@ -1,8 +1,6 @@
 package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.OutsideWorldRenderer;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -33,7 +31,7 @@ public class ItemStackSprite implements ISprite {
 
     public ItemStackSprite setTint(int tint) {
         this.tint = tint;
-        stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(tint, true));
+        stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(tint));
         return this;
     }
 
@@ -46,7 +44,6 @@ public class ItemStackSprite implements ISprite {
         if (!needsWorld) {
             try {
                 context.drawItem(stack, x + 2, y + 2);
-                RenderSystem.disableDepthTest();
                 return;
             } catch (Throwable ignored) {
                 needsWorld = true;
@@ -56,7 +53,6 @@ public class ItemStackSprite implements ISprite {
         try {
             OutsideWorldRenderer.configure(null);
             context.drawItem(stack, x + 2, y + 2);
-            RenderSystem.disableDepthTest();
         } catch (Throwable ignored) {
             renderFailed = true;
         }

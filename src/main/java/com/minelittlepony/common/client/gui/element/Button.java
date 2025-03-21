@@ -210,8 +210,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         this.hovered = isMouseOver(mouseX, mouseY);
         MinecraftClient mc = MinecraftClient.getInstance();
         RenderSystem.setShaderColor(1, 1, 1, alpha);
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
 
         renderBackground(context, mc, mouseX, mouseY);
         RenderSystem.setShaderColor(1, 1, 1, 1);
