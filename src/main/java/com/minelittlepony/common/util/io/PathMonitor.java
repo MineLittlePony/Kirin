@@ -6,7 +6,9 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchEvent.Kind;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -26,8 +28,8 @@ public class PathMonitor implements AutoCloseable {
 
     @Nullable
     private WatchKey key;
-    @Nullable
-    private Path watchedPath;
+
+    private Set<Path> watchedPaths = Set.of();
 
     private boolean paused;
 
@@ -42,11 +44,17 @@ public class PathMonitor implements AutoCloseable {
     }
 
     public void set(Path newFile) {
+        set(newFile, List.of());
+    }
+
+    public void set(Path first, List<Path> rest) {
         synchronized (locker) {
             try {
                 close();
-                watchedPath = newFile;
-                key = newFile.getParent().register(newFile.getParent().getFileSystem().newWatchService(),
+                watchedPaths = new HashSet<>();
+                watchedPaths.add(first);
+                watchedPaths.addAll(rest);
+                key = first.getParent().register(first.getParent().getFileSystem().newWatchService(),
                         StandardWatchEventKinds.ENTRY_MODIFY,
                         StandardWatchEventKinds.ENTRY_DELETE,
                         StandardWatchEventKinds.ENTRY_CREATE
@@ -83,7 +91,7 @@ public class PathMonitor implements AutoCloseable {
     public void tick() {
         synchronized (locker) {
             for (WatchEvent<?> ev : pollEvents()) {
-                if (!paused && ev.context() instanceof Path p && (watchedPath != null && watchedPath.endsWith(p))) {
+                if (!paused && ev.context() instanceof Path p && (!watchedPaths.isEmpty() && watchedPaths.stream().anyMatch(path -> path.endsWith(p)))) {
                     Kind<?> kind = ev.kind();
 
                     if (StandardWatchEventKinds.ENTRY_DELETE.equals(kind)) {
@@ -103,7 +111,7 @@ public class PathMonitor implements AutoCloseable {
             key.cancel();
             key = null;
         }
-        watchedPath = null;
+        watchedPaths = Set.of();
     }
 
     public enum Event {
