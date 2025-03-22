@@ -3,11 +3,17 @@ package com.minelittlepony.common.util.settings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.minelittlepony.common.client.gui.IField.IChangeCallback;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -63,19 +69,35 @@ public interface Setting<T> extends IChangeCallback<T>, Supplier<T> {
 
     public record Type<T> (
             Supplier<T> defaultValue,
-            Optional<Class<?>> elementType
+            Either<TypeToken<T>, Codec<T>> token
     ) {
-        @SuppressWarnings("unchecked")
-        public Class<T> rawType() {
-            return (Class<T>)defaultValue.get().getClass();
+        public static <T> Type<T> of(Supplier<T> defaultValue, Codec<T> codec) {
+            return new Type<>(defaultValue, Either.right(codec));
         }
 
         @SuppressWarnings("unchecked")
-        public TypeToken<T> token() {
-            if (elementType.isPresent()) {
-                return (TypeToken<T>)TypeToken.getParameterized(rawType(), elementType.get());
-            }
-            return TypeToken.get(rawType());
+        public static <T> Type<T> of(Supplier<T> defaultValue) {
+            return new Type<>(defaultValue, Either.left(TypeToken.get((Class<T>)defaultValue.get().getClass())));
+        }
+
+        @SuppressWarnings("unchecked")
+        public static <T> Type<T> of(Supplier<T> defaultValue, java.lang.reflect.Type...parameters) {
+            return new Type<>(defaultValue, Either.left((TypeToken<T>)TypeToken.getParameterized(defaultValue.get().getClass(), parameters)));
+        }
+
+        @SuppressWarnings("unchecked")
+        JsonElement write(Setting<?> value, Gson gson) throws IOException {
+            return token().map(
+                    token -> gson.toJsonTree(value, Setting.class),
+                    codec ->  ((Codec<Object>)codec).encodeStart(JsonOps.INSTANCE, value.get()).getOrThrow()
+            );
+        }
+
+        T read(Setting<T> setting, JsonElement value, Gson gson) {
+            return token().map(
+                token -> gson.getAdapter(token).fromJsonTree(value),
+                codec -> codec.decode(JsonOps.INSTANCE, value).result().map(Pair::getFirst).orElseGet(setting::getDefault)
+            );
         }
     }
 }

@@ -42,7 +42,7 @@ public abstract class Config implements Iterable<Grouping> {
     protected Config(Adapter adapter, Path path) {
         this.adapter = adapter;
         this.path = path;
-        monitor.set(path);
+        monitor.set(path, adapter.getAlternatives(path).toList());
     }
 
     public void onChangedExternally(Consumer<Config> listener) {
@@ -59,21 +59,32 @@ public abstract class Config implements Iterable<Grouping> {
     /**
      * Initializes a new value for this config and assigns it to a named category.
      */
-    @SuppressWarnings("unchecked")
     protected <T> Setting<T> value(String category, String key, T def) {
-        return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>())))
-                .map()
-                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, new Value.Type<>(() -> def, Optional.empty())));
+        return value(category, key, Value.Type.of(() -> def));
+    }
+
+    /**
+     * Initializes a new value for this config and assigns it to a named category.
+     */
+    protected <T, C extends Collection<T>> Setting<C> value(String category, String key, Supplier<C> def, Class<T> elementType) {
+        return value(category, key, Value.Type.of(def, def.get().getClass()));
+    }
+
+    /**
+     * Initializes a new value for this config and assigns it to a named category.
+     */
+    protected <K, V, C extends Map<K, V>> Setting<C> value(String category, String key, Supplier<C> def, Class<K> keyType, Class<V> valueType) {
+        return value(category, key, Value.Type.of(def, keyType, valueType));
     }
 
     /**
      * Initializes a new value for this config and assigns it to a named category.
      */
     @SuppressWarnings("unchecked")
-    protected <T, C extends Collection<T>> Setting<C> value(String category, String key, Supplier<C> def, Class<T> elementType) {
-        return (Setting<C>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>())))
+    protected <T> Setting<T> value(String category, String key, Value.Type<T> type) {
+        return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>())))
                 .map()
-                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, new Value.Type<>(def, Optional.of(elementType))));
+                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, type));
     }
 
     @Deprecated
@@ -125,6 +136,11 @@ public abstract class Config implements Iterable<Grouping> {
     }
 
     public interface Adapter {
+
+        default Stream<Path> getAlternatives(Path file) {
+            return Stream.of(file);
+        }
+
         void load(Config config, Path file);
 
         void save(Config config, Path file);
