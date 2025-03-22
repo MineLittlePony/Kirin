@@ -2,8 +2,9 @@ package com.minelittlepony.common.util.settings;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonReader;
 import com.mojang.util.UUIDTypeAdapter;
 
 import java.io.*;
@@ -49,13 +50,13 @@ public class LegacyJsonConfigAdapter implements Config.Adapter {
     public void load(Config config, Path file) {
         try {
             if (Files.isReadable(file)) {
-                try (BufferedReader s = Files.newBufferedReader(file)) {
-                    gson.fromJson(s, JsonObject.class).entrySet().forEach(entry -> {
+                try (JsonReader reader = gson.newJsonReader(Files.newBufferedReader(file))) {
+                    Streams.parse(reader).getAsJsonObject().entrySet().forEach(entry -> {
                         String key = entry.getKey().toLowerCase();
 
                         Setting<Object> setting = config.get(key);
                         if (setting != null) {
-                            setting.set(gson.getAdapter(setting.getType().token()).fromJsonTree(entry.getValue()));
+                            setting.set(setting.getType().read(setting, entry.getValue(), gson));
                         }
                     });
                 } catch (IOException | JsonParseException e) {
