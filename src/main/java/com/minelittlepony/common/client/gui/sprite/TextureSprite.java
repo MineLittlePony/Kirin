@@ -1,8 +1,9 @@
 package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
+
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 
@@ -50,7 +51,7 @@ public class TextureSprite implements ISprite {
     @Override
     public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float partialTicks) {
         context.drawTexture(
-                RenderLayer::getGuiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 texture,
                 x + bounds.left, y + bounds.top,
                 textureBounds.left, textureBounds.top,

@@ -1,5 +1,7 @@
 package com.minelittlepony.common.client.gui.dimension;
 
+import org.joml.Matrix3x2fStack;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
@@ -154,6 +156,13 @@ public class Bounds {
      */
     public void translate(MatrixStack matrices) {
         matrices.translate(left, top, 0);
+    }
+
+    /**
+     * Applies this bounds' offset as a translation to the passed in matrix stack.
+     */
+    public void translate(Matrix3x2fStack matrices) {
+        matrices.translate(left, top);
     }
 
     /**

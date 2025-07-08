@@ -35,12 +35,24 @@ public interface ITextContext {
      * @param y The top Y position (in pixel)
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
+     *
+     * @deprecated Z-Index is no longer used. Use {@code context.createNewRootLayer()} if you need manual layering
      */
-    default void drawLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, zIndex);
+    @Deprecated
+    default void drawLabel(DrawContext context, Text text, int x, int y, int color, @Deprecated double zIndex) {
         context.drawText(getFont(), text, x, y, color, false);
-        context.getMatrices().pop();
+    }
+
+    /**
+     * Draws a piece of coloured, left-aligned text to the screen.
+     *
+     * @param text The text to render
+     * @param x The left X position (in pixel)
+     * @param y The top Y position (in pixel)
+     * @param color The font colour
+     */
+    default void drawLabel(DrawContext context, Text text, int x, int y, int color) {
+        context.drawText(getFont(), text, x, y, color, false);
     }
 
     /**
@@ -51,12 +63,26 @@ public interface ITextContext {
      * @param y The top Y position (in pixel)
      * @param color The font colour
      * @param zIndex The Z-index used when layering multiple elements.
+     *
+     * @deprecated Z-Index is no longer used. Use {@code context.createNewRootLayer()} if you need manual layering
      */
-    default void drawCenteredLabel(DrawContext context, Text text, int x, int y, int color, double zIndex) {
-        int width = getFont().getWidth(text);
-
-        drawLabel(context, text, x - width/2, y, color, zIndex);
+    @Deprecated
+    default void drawCenteredLabel(DrawContext context, Text text, int x, int y, int color, @Deprecated double zIndex) {
+        drawLabel(context, text, x - getFont().getWidth(text)/2, y, color);
     }
+
+    /**
+     * Draws a piece of coloured, centered text to the screen.
+     *
+     * @param text The text to render
+     * @param x The left X position (in pixel)
+     * @param y The top Y position (in pixel)
+     * @param color The font colour
+     */
+    default void drawCenteredLabel(DrawContext context, Text text, int x, int y, int color) {
+        drawLabel(context, text, x - getFont().getWidth(text)/2, y, color);
+    }
+
 
     /**
      * Draws a block of text spanning multiple lines. Content is left-aligned,

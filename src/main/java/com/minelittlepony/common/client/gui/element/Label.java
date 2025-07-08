@@ -61,9 +61,9 @@ public class Label extends Button {
         int textY = (int)(getY() + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
 
         if (center) {
-            drawCenteredLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor(), 0);
+            drawCenteredLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor());
         } else {
-            drawLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor(), 0);
+            drawLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor());
         }
     }
 }

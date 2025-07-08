@@ -113,7 +113,7 @@ public class GameGui extends Screen {
 
     private void drawDebugOverlays(DrawContext context, int mouseX, int mouseY) {
         if (drawDebugBounds || drawAllDebugBounds) {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             Padding padding = getContentPadding();
             Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
 
@@ -128,7 +128,7 @@ public class GameGui extends Screen {
                 bound.draw(context, color);
             }
 
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         }
     }
 

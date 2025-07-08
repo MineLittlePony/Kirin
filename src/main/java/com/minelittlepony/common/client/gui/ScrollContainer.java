@@ -3,6 +3,9 @@ package com.minelittlepony.common.client.gui;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.BiConsumer;
+
+import org.joml.Matrix3x2fStack;
+
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
@@ -10,7 +13,6 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 
 /**
@@ -87,25 +89,26 @@ public class ScrollContainer extends GameGui {
     public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         getBounds().scissor(context);
 
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
         getBounds().translate(matrices);
 
         drawBackground(context, mouseX, mouseY, tickDelta);
 
         Padding padding = getContentPadding();
 
-        matrices.push();
+        matrices.pushMatrix();
         matrices.translate(
                 getScrollX() + padding.left,
-                getScrollY() + padding.top, 0);
+                getScrollY() + padding.top
+        );
 
         renderContents(context,
                 mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
                 mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
                 tickDelta);
 
-        matrices.pop();
+        matrices.popMatrix();
 
         verticalScrollbar.render(context,
                 mouseX - margin.left,
@@ -120,7 +123,7 @@ public class ScrollContainer extends GameGui {
 
         drawDecorations(context, mouseX, mouseY, tickDelta);
 
-        matrices.pop();
+        matrices.popMatrix();
 
         context.disableScissor();
 
@@ -206,9 +209,9 @@ public class ScrollContainer extends GameGui {
 
     protected void renderOutside(DrawContext context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
         delayedCalls.add(() -> {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         });
     }
 
