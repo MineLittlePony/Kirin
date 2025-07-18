@@ -1,33 +1,27 @@
 package com.minelittlepony.common.client.gui.element;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
-
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.Tooltip;
-
 import java.util.function.Function;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Base class for a slider element.
  *
- * @author     Sollace
- *
  * @param <T> The value type for this slider.
+ * @author Sollace
  */
 public abstract class AbstractSlider<T> extends Button implements IField<T, AbstractSlider<T>> {
 
-    private float min;
-    private float max;
+    private final float min;
+    private final float max;
 
     private float value;
 
@@ -69,6 +63,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
         return this;
     }
+
     /**
      * Sets a function to use when formatting the slider's current value for display in its tooltip.
      *
@@ -129,7 +124,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     private void onChange(double mouseX) {
         // convert pixel coordinate to range (0 - 1)
-        setClampedValue((float)(mouseX - (getX() + 4)) / (getWidth() - 8));
+        setClampedValue((float) (mouseX - (getX() + 4)) / (getWidth() - 8));
     }
 
     @Override
@@ -150,9 +145,25 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight(), ColorHelper.getWhite(alpha));
-        int sliderX = getX() + (int)(value * (getWidth() - 8));
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight(), ColorHelper.getWhite(alpha));
+        Identifier backgroundTexture = TEXTURES.get(false, isSelected());
+        context.drawTexture(
+                null,
+                backgroundTexture,
+                getX(), getY(),
+                0.0F, 0.0F,
+                getWidth(), getHeight(),
+                getWidth(), getHeight()
+        );
+        int sliderX = getX() + (int) (value * (getWidth() - 8));
+        Identifier sliderTexture = TEXTURES.get(active, isSelected());
+        context.drawTexture(
+                null,
+                sliderTexture,
+                sliderX, getY(),
+                0.0F, 0.0F,
+                8, getHeight(),
+                8, getHeight()
+        );
     }
 
     static float convertFromRange(float value, float min, float max) {

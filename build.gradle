@@ -1,10 +1,10 @@
 buildscript {
     dependencies {
-        classpath 'com.github.dexman545:Outlet:1.6.1'
+        classpath 'com.github.dexman545:Outlet:1.7.0-alpha.5'
     }
 }
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.+'
     id 'org.ajoberstar.reckon' version '0.13.1'
@@ -115,11 +115,17 @@ publishing {
             }
         }
     }
-
     repositories {
-        maven {
+        mavenLocal()
+    }
+}
+
+tasks.withType(PublishToMavenRepository).configureEach {
+    doFirst {
+        publishing.repositories.clear()
+        def stage = version.version.stage.value
+        publishing.repositories.maven {
             name = "MineLittlePony"
-            def stage = version.version.stage.value
             url = "s3://repo.minelittlepony-mod.com/maven/${stage != null && stage.name == 'beta' ? 'snapshot' : 'release'}"
             credentials(AwsCredentials) {
                 accessKey = System.env.ACCESS_KEY

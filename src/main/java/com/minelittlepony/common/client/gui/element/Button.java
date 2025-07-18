@@ -1,12 +1,5 @@
 package com.minelittlepony.common.client.gui.element;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-
 import com.minelittlepony.common.client.gui.ITextContext;
 import com.minelittlepony.common.client.gui.ITickableElement;
 import com.minelittlepony.common.client.gui.Tooltip;
@@ -14,8 +7,8 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
-import com.mojang.blaze3d.systems.RenderSystem;
-
+import java.util.Objects;
+import java.util.function.Consumer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -25,11 +18,12 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipState;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 /**
  * A stylable button element.
@@ -37,8 +31,7 @@ import net.minecraft.util.math.MathHelper;
  * All appearance other than dimensions and position are controlled by this element's {Style}
  * to make switching and changing styles easier.
  *
- * @author     Sollace
- *
+ * @author Sollace
  */
 public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
     protected static final ButtonTextures TEXTURES = new ButtonTextures(
@@ -51,7 +44,8 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     private final Bounds bounds;
 
-    private static final Consumer<Button> NONE = v -> {};
+    private static final Consumer<Button> NONE = v -> {
+    };
     @NotNull
     private Consumer<Button> action = NONE;
     @NotNull
@@ -67,20 +61,22 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         super(x, y, width, height, ScreenTexts.EMPTY);
         tooltip = new TooltipState() {
             @Override
-            public void render(boolean hovered, boolean focused, ScreenRect focus) {
+            public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, boolean focused,
+                               ScreenRect navigationFocus) {
                 getStyle().getTooltip().ifPresentOrElse(tooltip -> {
                     if (tooltip != prevTooltip) {
                         prevTooltip = tooltip;
                         setTooltip(tooltip.toTooltip(Button.this));
                     }
                 }, () -> setTooltip(null));
-                super.render(hovered, focused, focus);
+                super.render(context, mouseX, mouseY, hovered, focused, navigationFocus);
             }
 
             @Override
             public TooltipPositioner createPositioner(ScreenRect focus, boolean hovered, boolean focused) {
                 final TooltipPositioner positioner = super.createPositioner(focus, hovered, focused);
-                return (sw, sh, x, y, w, h) -> positioner.getPosition(sw, sh, x, y, w, h).add(getStyle().toolTipX, getStyle().toolTipY, new Vector2i());
+                return (sw, sh, x, y, w, h) -> positioner.getPosition(sw, sh, x, y, w, h).add(getStyle().toolTipX,
+                        getStyle().toolTipY, new Vector2i());
             }
         };
         bounds = new Bounds(y, x, width, height);
@@ -94,7 +90,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
      */
     @SuppressWarnings("unchecked")
     public Button onClick(@NotNull Consumer<? extends Button> callback) {
-        action = (Consumer<Button>)Objects.requireNonNull(callback);
+        action = (Consumer<Button>) Objects.requireNonNull(callback);
 
         return this;
     }
@@ -107,7 +103,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
      */
     @SuppressWarnings("unchecked")
     public Button onUpdate(@NotNull Consumer<? extends Button> callback) {
-        update = (Consumer<Button>)Objects.requireNonNull(callback);
+        update = (Consumer<Button>) Objects.requireNonNull(callback);
 
         return this;
     }
@@ -205,14 +201,16 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         return active && visible && getBounds().contains(mouseX, mouseY);
     }
 
+    // src/main/java/com/minelittlepony/common/client/gui/element/Button.java
+
+    // Java
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float tickDelta) {
         this.hovered = isMouseOver(mouseX, mouseY);
         MinecraftClient mc = MinecraftClient.getInstance();
-        RenderSystem.setShaderColor(1, 1, 1, alpha);
 
+        // Remove setShaderColor calls if not available
         renderBackground(context, mc, mouseX, mouseY);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         setMessage(getStyle().getText());
         drawIcon(context, mouseX, mouseY, tickDelta);
@@ -224,15 +222,27 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
             foreColor = 16777120;
         }
         renderForeground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
+
+        renderTooltip(context, mouseX, mouseY, hovered, isFocused(), new ScreenRect(getX(), getY(), getWidth(),
+                getHeight()));
+    }
+
+    public void renderTooltip(DrawContext context, int mouseX, int mouseY, boolean hovered, boolean focused,
+                              ScreenRect navigationFocus) {
+        if (tooltip != null) {
+            tooltip.render(context, mouseX, mouseY, hovered, focused, navigationFocus);
+        }
     }
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(
-                RenderLayer::getGuiTextured,
-                TEXTURES.get(active, isSelected()),
+        Identifier texture = TEXTURES.get(active, isSelected());
+        context.drawTexture(
+                null, // No custom pipeline, use default
+                texture,
                 getX(), getY(),
+                0.0F, 0.0F,
                 getWidth(), getHeight(),
-                ColorHelper.getWhite(alpha)
+                getWidth(), getHeight()
         );
     }
 
@@ -250,6 +260,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
         Bounds bounds = getBounds();
         int left = getStyle().getIcon().getBounds().right();
-        drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2, bounds.bottom(), color);
+        drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2,
+                bounds.bottom(), color);
     }
 }

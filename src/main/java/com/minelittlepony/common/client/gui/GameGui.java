@@ -1,12 +1,8 @@
 package com.minelittlepony.common.client.gui;
 
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
-
+import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,14 +11,14 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Optional root element for a screen using Kirin functionality.
  * <p>
  * This class implements some QOL features, such as bounds, text utilities, etc of Kirin UI elements.
  *
- * @author     Sollace
- *
+ * @author Sollace
  */
 public class GameGui extends Screen {
     /**
@@ -48,7 +44,7 @@ public class GameGui extends Screen {
     /**
      * Creates a new GameGui with the given title, and parent as the screen currently displayed.
      *
-     * @param title The screen's title.
+     * @param title  The screen's title.
      * @param parent The parent screen.
      */
     protected GameGui(Text title, @Nullable Screen parent) {
@@ -97,7 +93,7 @@ public class GameGui extends Screen {
 
     /**
      * Closes this screen and returns to the parent.
-     *
+     * <p>
      * Implementors should explicitly call this method when they want this behavior.
      */
     public void finish() {
@@ -113,7 +109,7 @@ public class GameGui extends Screen {
 
     private void drawDebugOverlays(DrawContext context, int mouseX, int mouseY) {
         if (drawDebugBounds || drawAllDebugBounds) {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             Padding padding = getContentPadding();
             Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
 
@@ -128,7 +124,7 @@ public class GameGui extends Screen {
                 bound.draw(context, color);
             }
 
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         }
     }
 

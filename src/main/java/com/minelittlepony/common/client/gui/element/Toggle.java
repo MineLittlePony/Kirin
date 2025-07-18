@@ -1,23 +1,19 @@
 package com.minelittlepony.common.client.gui.element;
 
-import java.util.Objects;
-import java.util.function.Supplier;
-
-import org.jetbrains.annotations.NotNull;
-
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
-
+import java.util.Objects;
+import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Implements a toggle (switch) element with two states (ON/OFF).
  *
- * @author     Sollace
+ * @author Sollace
  */
 public class Toggle extends Button implements IField<Boolean, Toggle> {
 
@@ -78,9 +74,25 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
     @Override
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight(), ColorHelper.getWhite(alpha));
+        Identifier backgroundTexture = TEXTURES.get(false, isSelected());
+        context.drawTexture(
+                null,
+                backgroundTexture,
+                getX(), getY(),
+                0.0F, 0.0F,
+                getWidth(), getHeight(),
+                getWidth(), getHeight()
+        );
         int sliderX = getX() + (on ? getWidth() - 8 : 0);
-        context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight(), ColorHelper.getWhite(alpha));
+        Identifier sliderTexture = TEXTURES.get(active, isSelected());
+        context.drawTexture(
+                null,
+                sliderTexture,
+                sliderX, getY(),
+                0.0F, 0.0F,
+                8, getHeight(),
+                8, getHeight()
+        );
     }
 
     @Override

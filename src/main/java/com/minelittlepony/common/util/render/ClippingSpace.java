@@ -1,17 +1,14 @@
 package com.minelittlepony.common.util.render;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Wrapper around GLScissor for clipping a rendered object to a defined rectangle.
  *
- * @author     Sollace
+ * @author Sollace
  * @deprecated Will be removed in 1.23.
  */
 @Deprecated(forRemoval = true)
@@ -20,10 +17,10 @@ public class ClippingSpace {
     /**
      * Sets up a clipping region around a render call.
      *
-     * @param x The left edge of the clipping area.
-     * @param y The top edge of the clipping area.
-     * @param width The total width.
-     * @param height The total height.
+     * @param x          The left edge of the clipping area.
+     * @param y          The top edge of the clipping area.
+     * @param width      The total width.
+     * @param height     The total height.
      * @param renderTask A function to call (render content) whilst the clipping is active.
      */
     public static void renderClipped(int x, int y, int width, int height, Runnable renderTask) {
@@ -31,11 +28,12 @@ public class ClippingSpace {
 
         renderTask.run();
 
-        RenderSystem.disableScissor();
+        GlStateManager._disableScissorTest();
     }
 
     /**
      * Excludes a particular render call from an active scissor.
+     *
      * @param renderTask A function to call (render content) whilst the clipping is inactive.
      */
     public static void renderUnclipped(Runnable renderTask) {
@@ -51,16 +49,17 @@ public class ClippingSpace {
     private static void enableClipRegion(int x, int y, int width, int height) {
         Window window = MinecraftClient.getInstance().getWindow();
         double f = window.getScaleFactor();
-        int windowHeight = (int)Math.round(window.getScaledHeight() * f);
+        int windowHeight = (int) Math.round(window.getScaledHeight() * f);
 
         x *= f;
         y *= f;
         width *= f;
         height *= f;
 
-        RenderSystem.enableScissor(
+        GlStateManager._enableScissorTest();
+        GL11.glScissor(
                 Math.round(x),
-                windowHeight - height - y,
+                windowHeight - Math.round(height) - Math.round(y),
                 Math.round(width),
                 Math.round(height)
         );
