@@ -49,9 +49,13 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
         try (Json5Writer writer = new Json5Writer(Files.newBufferedWriter(correctExtension(file).orElse(FileUtils.changeExtension(file, "json5"))), gson)) {
            writer.beginObject();
            for (var category : config.categoryNames()) {
+               var cat = config.getCategory(category);
+               for (var comment : cat.getComments()) {
+                   writer.comment(comment);
+               }
                writer.name(category);
                writer.beginObject();
-               for (var setting : config.getCategory(category)) {
+               for (var setting : cat) {
                    for (var comment : setting.getValue().getComments()) {
                        writer.comment(comment);
                    }
