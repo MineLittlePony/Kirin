@@ -12,6 +12,7 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.util.Util;
@@ -67,7 +68,7 @@ public class Json5Writer extends JsonWriter {
         setIndent(INDENT);
         setHtmlSafe(gson.htmlSafe());
         setSerializeNulls(gson.serializeNulls());
-        setLenient(true);
+        setStrictness(Strictness.LENIENT);
     }
 
     public Json5Writer comment(String comment) {
@@ -87,6 +88,7 @@ public class Json5Writer extends JsonWriter {
     @Override
     public Json5Writer endArray() throws IOException {
         super.endArray();
+        firstMember = false;
         depth--;
         return this;
     }
@@ -103,6 +105,7 @@ public class Json5Writer extends JsonWriter {
     @Override
     public Json5Writer endObject() throws IOException {
         super.endObject();
+        firstMember = false;
         depth--;
         return this;
     }
@@ -178,6 +181,13 @@ public class Json5Writer extends JsonWriter {
         return this;
     }
 
+    protected void newline() throws IOException {
+        out.write('\n');
+        for (int i = 0; i < depth; i++) {
+            out.write(INDENT);
+        }
+    }
+
     protected void beforeValue() throws IOException {
         if (deferredName != null) {
             deferredName = null;
@@ -186,24 +196,25 @@ public class Json5Writer extends JsonWriter {
                 if (!LOAD_FAIL) {
                     // Prevent generated json from adding commas onto the ends of comments
                     int top = INVOKE_PEEK.apply(this);
-                    if (top == NONEMPTY_OBJECT || top == NONEMPTY_OBJECT) {
+                    if (top == NONEMPTY_OBJECT || top == NONEMPTY_ARRAY) {
                         INVOKE_REPLACE_TOP.accept(this, top == NONEMPTY_OBJECT ? EMPTY_OBJECT : EMPTY_ARRAY);
                     }
                 }
 
                 if (!firstMember) {
                     out.write(',');
-                    firstMember = false;
                 }
 
+                newline();
+                out.write("/*");
+
                 for (String comment : deferredComments) {
-                    out.write('\n');
-                    for (int i = 0; i < depth; i++) {
-                        out.write(INDENT);
-                    }
-                    out.write("// ");
+                    newline();
+                    out.write(" * ");
                     out.write(comment);
                 }
+                newline();
+                out.write(" */");
                 deferredComments.clear();
             }
         }
