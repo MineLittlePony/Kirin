@@ -12,7 +12,6 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.Strictness;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.util.Util;
@@ -68,7 +67,7 @@ public class Json5Writer extends JsonWriter {
         setIndent(INDENT);
         setHtmlSafe(gson.htmlSafe());
         setSerializeNulls(gson.serializeNulls());
-        setStrictness(Strictness.LENIENT);
+        setLenient(true);
     }
 
     public Json5Writer comment(String comment) {
