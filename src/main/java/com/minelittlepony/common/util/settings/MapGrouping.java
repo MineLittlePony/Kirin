@@ -1,10 +1,11 @@
 package com.minelittlepony.common.util.settings;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-record MapGrouping(Map<String, Setting<?>> map) implements Grouping {
+record MapGrouping(Map<String, Setting<?>> map, List<String> comments) implements Grouping {
     @Override
     public Iterator<Entry<String, Setting<?>>> iterator() {
         return map.entrySet().iterator();
@@ -24,5 +25,17 @@ record MapGrouping(Map<String, Setting<?>> map) implements Grouping {
     @Override
     public Iterable<Setting<?>> entries() {
         return map.values();
+    }
+
+    @Override
+    public List<String> getComments() {
+        // TODO Auto-generated method stub
+        return comments;
+    }
+
+    @Override
+    public Grouping addComment(String comment) {
+        comments.add(comment);
+        return this;
     }
 }
