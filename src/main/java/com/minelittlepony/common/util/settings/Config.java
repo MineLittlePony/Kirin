@@ -84,7 +84,7 @@ public abstract class Config implements Iterable<Grouping> {
     protected <T> Setting<T> value(String category, String key, Value.Type<T> type) {
         return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>(), new ArrayList<>())))
                 .map()
-                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(k, type));
+                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(key, type));
     }
 
     @Deprecated
