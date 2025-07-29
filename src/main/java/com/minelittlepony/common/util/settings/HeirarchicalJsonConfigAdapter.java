@@ -60,7 +60,7 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
                    for (var comment : setting.getValue().getComments()) {
                        writer.comment(comment);
                    }
-                   writer.name(setting.getKey());
+                   writer.name(setting.getValue().name());
                    Streams.write(setting.getValue().getType().write(setting.getValue(), gson), writer);
                }
                writer.endObject();
