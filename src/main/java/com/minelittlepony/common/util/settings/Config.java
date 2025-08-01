@@ -67,7 +67,7 @@ public abstract class Config implements Iterable<Grouping> {
      * Initializes a new value for this config and assigns it to a named category.
      */
     protected <T, C extends Collection<T>> Setting<C> value(String category, String key, Supplier<C> def, Class<T> elementType) {
-        return value(category, key, Value.Type.of(def, def.get().getClass()));
+        return value(category, key, Value.Type.of(def, elementType));
     }
 
     /**
