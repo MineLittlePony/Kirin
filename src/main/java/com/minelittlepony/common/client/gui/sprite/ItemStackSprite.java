@@ -51,7 +51,7 @@ public class ItemStackSprite implements ISprite {
         }
 
         try {
-            OutsideWorldRenderer.configure(null);
+            OutsideWorldRenderer.configure();
             context.drawItem(stack, x + 2, y + 2);
         } catch (Throwable ignored) {
             renderFailed = true;

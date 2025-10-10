@@ -1,11 +1,10 @@
 package com.minelittlepony.common.client.gui;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -26,20 +25,29 @@ public class OutsideWorldRenderer {
      * @param world An optional World instance to configure the renderer against. May be null.
      *
      * @return a pre-configured BlockEntityRenderDispatcher
+     *
+     * @deprecated Will be removed in MC1.22. World is no longer needed
      */
-    public static BlockEntityRenderDispatcher configure(@Nullable World world) {
+    @Deprecated(forRemoval = true)
+    public static BlockEntityRenderManager configure(@Nullable World world) {
         MinecraftClient mc = MinecraftClient.getInstance();
-        BlockEntityRenderDispatcher dispatcher = mc.getBlockEntityRenderDispatcher();
+        BlockEntityRenderManager dispatcher = mc.getBlockEntityRenderDispatcher();
+        dispatcher.configure(mc.gameRenderer.getCamera());
+        mc.getEntityRenderDispatcher().configure(mc.gameRenderer.getCamera(), mc.targetedEntity);
 
-        world = ObjectUtils.firstNonNull(dispatcher.world, world, mc.world);
-
-        dispatcher.configure(world,
-                mc.gameRenderer.getCamera(),
-                mc.crosshairTarget);
-
-        mc.getEntityRenderDispatcher().configure(world,
-                mc.gameRenderer.getCamera(),
-                mc.targetedEntity);
+        return dispatcher;
+    }
+    /**
+     * Gets a pre-configured BlockEntityRenderDispatcher
+     * for rendering BlockEntities outside of the world.
+     *
+     * @return a pre-configured BlockEntityRenderManager
+     */
+    public static BlockEntityRenderManager configure() {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        BlockEntityRenderManager dispatcher = mc.getBlockEntityRenderDispatcher();
+        dispatcher.configure(mc.gameRenderer.getCamera());
+        mc.getEntityRenderDispatcher().configure(mc.gameRenderer.getCamera(), mc.targetedEntity);
 
         return dispatcher;
     }
@@ -53,7 +61,7 @@ public class OutsideWorldRenderer {
      */
     public static void renderStack(DrawContext context, ItemStack stack, int x, int y) {
         try {
-            configure(null);
+            configure();
         } catch (Throwable ignored) {}
         context.drawItem(stack, x, y);
     }

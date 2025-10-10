@@ -11,7 +11,9 @@ import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.util.Window;
 import net.minecraft.screen.ScreenTexts;
 
@@ -162,7 +164,7 @@ public class ScrollContainer extends GameGui {
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         if (isMouseOver(mouseX, mouseY)) {
-            super.mouseDragged(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), 0, 0, 0);
+            super.mouseDragged(new Click(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), new MouseInput(0, 0)), 0, 0);
         }
     }
 
@@ -185,18 +187,22 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return isMouseOver(mouseX, mouseY) && super.mouseClicked(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), button);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        return isMouseOver(click.x(), click.y()) && super.mouseClicked(getContentClick(click), doubled);
+    }
+
+    protected Click getContentClick(Click click) {
+        return new Click(click.x() + getMouseXOffset(), click.y() + getMouseYOffset(), click.buttonInfo());
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return isMouseOver(mouseX, mouseY) && super.mouseReleased(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), button);
+    public boolean mouseReleased(Click click) {
+        return isMouseOver(click.x(), click.y()) && super.mouseReleased(getContentClick(click));
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double differX, double differY) {
-        return super.mouseDragged(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), button, differX, differY);
+    public boolean mouseDragged(Click click, double differX, double differY) {
+        return super.mouseDragged(getContentClick(click), differX, differY);
     }
 
     @Override

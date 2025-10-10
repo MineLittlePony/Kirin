@@ -1,7 +1,5 @@
 package com.minelittlepony.common.client.gui.element;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.minelittlepony.common.client.gui.GameGui;
 import com.minelittlepony.common.client.gui.IViewRoot;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
@@ -10,8 +8,11 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 
 import net.minecraft.client.gui.Drawable;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 
 /**
@@ -136,15 +137,15 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double internalMouseY = calculateInternalYPosition(mouseY);
-        double internalMouseX = calculateInternalXPosition(mouseX);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double internalMouseY = calculateInternalYPosition(click.y());
+        double internalMouseX = calculateInternalXPosition(click.x());
 
         double mousePosition = orientation.pick(internalMouseX, internalMouseY);
 
         touching = dragging = false;
 
-        if (!isMouseOver(mouseX, mouseY)) {
+        if (!isMouseOver(click)) {
             touching = true;
             return false;
         }
@@ -158,7 +159,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
             dragging = true;
         }
 
-        return isMouseOver(mouseX, mouseY);
+        return isMouseOver(click);
     }
 
     private double calculateInternalYPosition(double mouseY) {
@@ -172,7 +173,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double differX, double differY) {
+    public boolean mouseDragged(Click click, double differX, double differY) {
         double change = -orientation.pick(differX, differY);
 
         if (dragging) {
@@ -182,14 +183,14 @@ public class Scrollbar implements Element, Drawable, IBounded {
             scrubber.setMomentum(-(int)change);
         }
 
-        return isMouseOver(mouseX, mouseY);
+        return isMouseOver(click);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
         dragging = touching = false;
 
-        return isMouseOver(mouseX, mouseY);
+        return isMouseOver(click);
     }
 
     /**
@@ -197,6 +198,12 @@ public class Scrollbar implements Element, Drawable, IBounded {
      */
     public void scrollBy(double amount) {
         scrubber.scrollBy(-amount, true);
+    }
+
+    public boolean isMouseOver(Click click) {
+        double mouseY = calculateInternalYPosition(click.x());
+        double mouseX = calculateInternalXPosition(click.y());
+        return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
     }
 
     @Override
@@ -217,25 +224,26 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
         if (isFocused()) {
-            if (keyCode == orientation.pick(GLFW.GLFW_KEY_LEFT, GLFW.GLFW_KEY_UP)) {
+            if (input.getKeycode() == orientation.pick(InputUtil.GLFW_KEY_LEFT, InputUtil.GLFW_KEY_UP)) {
                 scrubber.scrollBy(-10, true);
                 return true;
             }
-            if (keyCode == orientation.pick(GLFW.GLFW_KEY_RIGHT, GLFW.GLFW_KEY_DOWN)) {
+            if (input.getKeycode() == orientation.pick(InputUtil.GLFW_KEY_RIGHT, InputUtil.GLFW_KEY_DOWN)) {
                 scrubber.scrollBy(10, true);
                 return true;
             }
-            if (keyCode == GLFW.GLFW_KEY_END) {
+            if (input.getKeycode() == InputUtil.GLFW_KEY_END) {
                 scrubber.scrollToEnd(true);
                 return true;
             }
-            if (keyCode == GLFW.GLFW_KEY_HOME) {
+            if (input.getKeycode() == InputUtil.GLFW_KEY_HOME) {
                 scrubber.scrollToBeginning(true);
                 return true;
             }
         }
+
         return false;
     }
 

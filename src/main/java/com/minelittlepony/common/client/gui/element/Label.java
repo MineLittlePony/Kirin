@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.input.MouseInput;
 
 /**
  * A simple label for drawing text to a gui screen.
@@ -42,7 +43,7 @@ public class Label extends Button {
     }
 
     @Override
-    protected boolean isValidClickButton(int button) {
+    protected boolean isValidClickButton(MouseInput input) {
         return false;
     }
 

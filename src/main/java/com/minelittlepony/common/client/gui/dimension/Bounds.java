@@ -2,10 +2,18 @@ package com.minelittlepony.common.client.gui.dimension;
 
 import org.joml.Matrix3x2fStack;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 
 /**
  * Represents the bounding rectangle of an element on the screen.
@@ -13,6 +21,19 @@ import net.minecraft.client.util.math.MatrixStack;
  * @author     Sollace
  */
 public class Bounds {
+    public static final Codec<Bounds> CODEC = RecordCodecBuilder.create(i -> i.group(
+            Codec.INT.fieldOf("top").forGetter(b -> b.top),
+            Codec.INT.fieldOf("left").forGetter(b -> b.left),
+            Codec.INT.fieldOf("width").forGetter(b -> b.width),
+            Codec.INT.fieldOf("height").forGetter(b -> b.height)
+    ).apply(i, Bounds::new));
+    public static final PacketCodec<ByteBuf, Bounds> PACKET_CODEC = PacketCodec.tuple(
+            PacketCodecs.INTEGER, b -> b.top,
+            PacketCodecs.INTEGER, b -> b.left,
+            PacketCodecs.INTEGER, b -> b.width,
+            PacketCodecs.INTEGER, b -> b.height,
+            Bounds::new
+    );
 
     public int top;
     public int left;
@@ -147,6 +168,7 @@ public class Bounds {
      * Draws a coloured rectangle over the area covered by this bounds.
      * Useful for debugging.
      */
+    @Environment(EnvType.CLIENT)
     public void draw(DrawContext context, int tint) {
         context.fill(left, top, left + width, top + height, tint);
     }
@@ -154,6 +176,7 @@ public class Bounds {
     /**
      * Applies this bounds' offset as a translation to the passed in matrix stack.
      */
+    @Environment(EnvType.CLIENT)
     public void translate(MatrixStack matrices) {
         matrices.translate(left, top, 0);
     }
@@ -161,6 +184,7 @@ public class Bounds {
     /**
      * Applies this bounds' offset as a translation to the passed in matrix stack.
      */
+    @Environment(EnvType.CLIENT)
     public void translate(Matrix3x2fStack matrices) {
         matrices.translate(left, top);
     }
@@ -169,10 +193,12 @@ public class Bounds {
      * Sets this bounds as the current scissor bounds for drawing
      * @param context
      */
+    @Environment(EnvType.CLIENT)
     public void scissor(DrawContext context) {
         context.enableScissor(left, top, right(), bottom());
     }
 
+    @Environment(EnvType.CLIENT)
     public void debugMeasure(DrawContext context) {
         Window window = MinecraftClient.getInstance().getWindow();
         context.fill(left, -1000, left + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);

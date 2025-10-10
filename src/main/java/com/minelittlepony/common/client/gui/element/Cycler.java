@@ -6,6 +6,8 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
+import net.minecraft.client.input.AbstractInput;
+
 /**
  * Represents a toggle button that switches between different
  * styles as you toggle through its different states.
@@ -71,8 +73,8 @@ public class Cycler extends Button implements IMultiStyled<Cycler>, IField<Integ
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         setValue(value + 1);
-        super.onPress();
+        super.onPress(input);
     }
 }

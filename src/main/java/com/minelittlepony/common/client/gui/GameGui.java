@@ -82,7 +82,7 @@ public class GameGui extends Screen {
      * @return True if the key is pressed.
      */
     public static boolean isKeyDown(int key) {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), key);
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), key);
     }
 
     /**

@@ -8,6 +8,8 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
+import net.minecraft.client.input.AbstractInput;
+
 /**
  * Represents a toggle button that switches between different
  * values as you toggle through its different states.
@@ -70,8 +72,8 @@ public class Selector<T> extends Button implements IMultiStyled<Selector<T>>, IF
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         setValue(action.perform(getValue()));
-        super.onPress();
+        super.onPress(input);
     }
 }

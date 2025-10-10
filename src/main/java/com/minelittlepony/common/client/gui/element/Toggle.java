@@ -11,6 +11,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 
@@ -71,8 +72,8 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    public void onPress() {
-        super.onPress();
+    public void onPress(AbstractInput input) {
+        super.onPress(input);
         setValue(!on);
     }
 

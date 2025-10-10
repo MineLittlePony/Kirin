@@ -24,6 +24,7 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipState;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.input.AbstractInput;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -189,7 +190,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     @Override
-    public void onPress() {
+    public void onPress(AbstractInput input) {
         action.accept(this);
     }
 

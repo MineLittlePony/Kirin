@@ -3,11 +3,11 @@ package com.minelittlepony.common.client.gui.element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
@@ -90,18 +90,18 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (active && visible && (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT)) {
+    public boolean keyPressed(KeyInput input) {
+        if (active && visible && (input.isLeft() || input.isRight())) {
             playDownSound(MinecraftClient.getInstance().getSoundManager());
 
             float step = (max - min) / 4F;
 
-            if (keyCode == GLFW.GLFW_KEY_LEFT) {
+            if (input.isLeft()) {
                 step *= -1;
             }
 
             setClampedValue(value + step);
-            onPress();
+            onPress(input);
 
             return true;
         }
@@ -138,14 +138,14 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
-        onChange(mouseX);
+    public void onClick(Click click, boolean doubled) {
+        super.onClick(click, doubled);
+        onChange(click.x());
     }
 
     @Override
-    protected void onDrag(double mouseX, double mouseY, double mouseDX, double mouseDY) {
-        onChange(mouseX);
+    protected void onDrag(Click click, double mouseDX, double mouseDY) {
+        onChange(click.x());
     }
 
     @Override
