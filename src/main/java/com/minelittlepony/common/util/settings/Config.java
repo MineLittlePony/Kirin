@@ -7,12 +7,16 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.minelittlepony.common.util.io.PathMonitor;
+import com.mojang.serialization.Codec;
 
 /**
  * A configuration container that lets you programmatically index values by a key.
  */
 public abstract class Config implements Iterable<Grouping> {
-    @Deprecated
+    /**
+     * @deprecated Will be removed in MC1.22. Use HEIRARCHICAL_JSON_ADAPTER instead! It's backwards compatible! :D
+     */
+    @Deprecated(forRemoval = true)
     public static final Adapter FLATTENED_JSON_ADAPTER = LegacyJsonConfigAdapter.DEFAULT;
     public static final Adapter HEIRARCHICAL_JSON_ADAPTER = HeirarchicalJsonConfigAdapter.DEFAULT;
 
@@ -80,6 +84,13 @@ public abstract class Config implements Iterable<Grouping> {
     /**
      * Initializes a new value for this config and assigns it to a named category.
      */
+    protected <V> Setting<V> value(String category, String key, Supplier<V> def, Codec<V> codec) {
+        return value(category, key, Value.Type.of(def, codec));
+    }
+
+    /**
+     * Initializes a new value for this config and assigns it to a named category.
+     */
     @SuppressWarnings("unchecked")
     protected <T> Setting<T> value(String category, String key, Value.Type<T> type) {
         return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>(), new ArrayList<>())))
@@ -87,18 +98,27 @@ public abstract class Config implements Iterable<Grouping> {
                 .computeIfAbsent(key.toLowerCase(), k -> new Value<>(key, type));
     }
 
-    @Deprecated
+    /**
+     * @deprecated Will be removed in MC1.22. Use getCategory(category) instead!
+     */
+    @Deprecated(forRemoval = true)
     public Iterable<Setting<?>> getByCategory(String category) {
         return categories.get(category).entries();
     }
 
-    @Deprecated
+    /**
+     * @deprecated Will be removed in MC1.22. Use getCategory(category).get(key) instead!
+     */
+    @Deprecated(forRemoval = true)
     @SuppressWarnings("unchecked")
     public <T> Setting<T> get(String key) {
         return (Setting<T>)categories.values().stream().flatMap(c -> c.stream()).filter(entry -> entry.name().equalsIgnoreCase(key)).findFirst().orElse(null);
     }
 
-    @Deprecated
+    /**
+     * @deprecated Will be removed in MC1.22. Use getCategory(category).containsKey(key) instead!
+     */
+    @Deprecated(forRemoval = true)
     public boolean containsKey(String key) {
         return get(key) != null;
     }
