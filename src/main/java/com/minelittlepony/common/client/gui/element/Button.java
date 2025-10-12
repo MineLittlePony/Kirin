@@ -233,7 +233,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     protected void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {
         if (getStyle().hasIcon()) {
-            getStyle().getIcon().render(context, getX(), getY(), mouseX, mouseY, partialTicks);
+            getStyle().getIcon().render(context, getX(), getY(), mouseX, mouseY, partialTicks, alpha);
         }
     }
 

@@ -9,7 +9,11 @@ public interface ISprite extends IBounded {
 
     ISprite EMPTY = (m, x, y, mx, my, t) -> {};
 
-    void render(DrawContext context, int x, int y, int mouseX, int mouseY, float partialTicks);
+    void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta);
+
+    default void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+        render(context, x, y, mouseX, mouseY, tickDelta);
+    }
 
     @Override
     default Bounds getBounds() {

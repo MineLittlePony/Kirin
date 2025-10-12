@@ -4,8 +4,8 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 
 public class TextureSprite implements ISprite {
 
@@ -49,7 +49,12 @@ public class TextureSprite implements ISprite {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float partialTicks) {
+    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+        render(context, x, y, mouseX, mouseY, tickDelta, 1);
+    }
+
+    @Override
+    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         context.drawTexture(
                 RenderPipelines.GUI_TEXTURED,
                 texture,
@@ -57,7 +62,7 @@ public class TextureSprite implements ISprite {
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
                 textureBounds.width, textureBounds.height,
-                Colors.WHITE);
+                ColorHelper.getWhite(alpha));
     }
 
     @Override
