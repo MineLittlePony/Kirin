@@ -20,6 +20,16 @@ public interface Interpolator {
     float interpolate(String key, float state, float animationSpeed);
 
     /**
+     * Gets the last calculated interpolated value without changing it.
+     *
+     * @param key           Identifier to track previous values
+     * @param fallback      The fallback to return if no value is available for the requested key
+     */
+    default float get(String key, float fallback) {
+        return fallback;
+    }
+
+    /**
      * Gets or creates a new linear interpolation function for the provided id.
      */
     static Interpolator linear(UUID id) {

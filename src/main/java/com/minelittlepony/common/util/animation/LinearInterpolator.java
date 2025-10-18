@@ -18,7 +18,7 @@ public class LinearInterpolator implements Interpolator {
 
     @Override
     public float interpolate(String key, float to, float animationSpeed) {
-        float from = properties.getOrDefault(key, to);
+        float from = get(key, to);
 
         from += (to - from) / animationSpeed;
 
@@ -30,6 +30,10 @@ public class LinearInterpolator implements Interpolator {
         properties.put(key, from);
 
         return from;
+    }
 
+    @Override
+    public float get(String key, float fallback) {
+        return properties.getOrDefault(key, fallback);
     }
 }
