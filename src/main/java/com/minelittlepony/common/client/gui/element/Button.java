@@ -19,6 +19,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
@@ -219,6 +220,9 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
             foreColor = 16777120;
         }
         renderForeground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
+        if (getBounds().contains(mouseX, mouseY)) {
+            context.setCursor(isInteractable() ? StandardCursors.POINTING_HAND : StandardCursors.NOT_ALLOWED);
+        }
     }
 
     protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
