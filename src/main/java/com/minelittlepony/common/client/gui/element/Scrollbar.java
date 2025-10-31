@@ -201,8 +201,8 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     public boolean isMouseOver(Click click) {
-        double mouseX = calculateInternalYPosition(click.x());
-        double mouseY = calculateInternalXPosition(click.y());
+        double mouseX = calculateInternalXPosition(click.x());
+        double mouseY = calculateInternalYPosition(click.y());
         return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
     }
 
