@@ -89,28 +89,29 @@ public class ScrollContainer extends GameGui {
 
     @Override
     public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        getBounds().scissor(context);
 
         Matrix3x2fStack matrices = context.getMatrices();
         matrices.pushMatrix();
+        getBounds().scissor(context);
         getBounds().translate(matrices);
 
         drawBackground(context, mouseX, mouseY, tickDelta);
 
         Padding padding = getContentPadding();
 
-        matrices.pushMatrix();
-        matrices.translate(
+        DrawContext subContext = new DrawContext(client, context.state);
+        getBounds().scissor(subContext);
+        subContext.getMatrices().set(context.getMatrices());
+        subContext.getMatrices().pushMatrix();
+        subContext.getMatrices().translate(
                 getScrollX() + padding.left,
                 getScrollY() + padding.top
         );
 
-        renderContents(context,
+        renderContents(subContext,
                 mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
                 mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
                 tickDelta);
-
-        matrices.popMatrix();
 
         verticalScrollbar.render(context,
                 mouseX - margin.left,
@@ -130,6 +131,10 @@ public class ScrollContainer extends GameGui {
         context.disableScissor();
 
         drawOverlays(context, mouseX, mouseY, tickDelta);
+
+        subContext.disableScissor();
+        subContext.drawDeferredElements();
+        subContext.getMatrices().popMatrix();
     }
 
     protected void renderContents(DrawContext context, int mouseX, int mouseY, float tickDelta) {
