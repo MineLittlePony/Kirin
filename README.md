@@ -4,9 +4,7 @@
 [![Build Status](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/MineLittlePony/Kirin/actions/workflows/gradle-build.yml)
 ![License](https://img.shields.io/github/license/MineLittlePony/Kirin)
 ![](https://img.shields.io/badge/api-fabric-orange.svg)
-
-
-Embedded common code used across several Mine Little Pony projects to create their GUIs.
+[![Modrinth](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.modrinth.com%2Fv2%2Fproject%2Fkirin%2Fversion&query=%24%5B0%5D.version_number&logo=modrinth&logoColor=%2300AF5C&label=Modrinth)](https://modrinth.com/mod/kirin/)
 
 Embedded common code used across several Mine Little Pony projects to create their GUIs.
 
