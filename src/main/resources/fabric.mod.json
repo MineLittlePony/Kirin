@@ -13,6 +13,11 @@
   "mixins": [
     "kirin.mixin.json"
   ],
+  "entrypoints": {
+    "client": [
+      "com.minelittlepony.kirin.impl.Test"
+    ]
+  },
   "license": "MIT",
   "icon": "kirin_logo.png",
   "accessWidener": "kirin.aw",

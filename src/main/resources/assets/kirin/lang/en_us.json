@@ -1,0 +1,6 @@
+{
+  "gui.narrate.selector": "%s Selector",
+  
+  "narration.selector.usage.focused": "Press Enter change the value",
+  "narration.selector.usage.hovered": "Left Click to change the value"
+}
