@@ -10,6 +10,14 @@ public class GridPacker implements IPacker {
     private int itemSpacing;
 
     private int alignmentOffset;
+    private int xOffset;
+    private int yOffset;
+
+    public GridPacker setOffset(int x, int y) {
+        xOffset = x;
+        yOffset = y;
+        return this;
+    }
 
     public GridPacker setListWidth(int width) {
         screen.width = width;
@@ -38,8 +46,8 @@ public class GridPacker implements IPacker {
     @Override
     public void start() {
         alignmentOffset = computeAlignmentOffset();
-        bounds.top = 0;
-        bounds.left = -(bounds.width + itemSpacing) + alignmentOffset;
+        bounds.top = yOffset;
+        bounds.left = -(bounds.width + itemSpacing) + alignmentOffset + xOffset;
     }
 
     @Override
