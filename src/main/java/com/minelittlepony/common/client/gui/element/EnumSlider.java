@@ -41,4 +41,13 @@ public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
 
         return values[(int)value % values.length];
     }
+
+    @Override
+    protected T nextValue(T value, int steps) {
+        int ordinal = value.ordinal() + steps;
+        while (ordinal < 0) {
+            ordinal += values.length;
+        }
+        return values[ordinal % values.length];
+    }
 }

@@ -7,6 +7,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.input.MouseInput;
+import net.minecraft.text.MutableText;
 
 /**
  * A simple label for drawing text to a gui screen.
@@ -66,5 +67,10 @@ public class Label extends Button {
         } else {
             drawLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor());
         }
+    }
+
+    @Override
+    protected MutableText getNarrationMessage() {
+        return getMessage().copy();
     }
 }

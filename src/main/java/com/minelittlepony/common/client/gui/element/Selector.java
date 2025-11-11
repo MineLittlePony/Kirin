@@ -8,7 +8,11 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.style.IMultiStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.input.AbstractInput;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 /**
  * Represents a toggle button that switches between different
@@ -75,5 +79,19 @@ public class Selector<T> extends Button implements IMultiStyled<Selector<T>>, IF
     public void onPress(AbstractInput input) {
         setValue(action.perform(getValue()));
         super.onPress(input);
+    }
+
+    @Override
+    protected MutableText getNarrationMessage() {
+        return Text.translatable("gui.narrate.selector", getMessage());
+    }
+
+    @Override
+    public void appendClickableNarrations(NarrationMessageBuilder builder) {
+        super.appendClickableNarrations(builder);
+        builder.put(NarrationPart.TITLE, getNarrationMessage());
+        if (active) {
+            builder.put(NarrationPart.USAGE, Text.translatable("narration.selector.usage." + (isFocused() ? "focused" : "hovered")));
+        }
     }
 }

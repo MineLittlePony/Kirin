@@ -11,7 +11,10 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.input.AbstractInput;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.ColorHelper;
 
@@ -90,5 +93,19 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
         int textX = getX() + width + 10;
 
         drawLabel(context, getStyle().getText(), textX, textY, foreColor);
+    }
+
+    @Override
+    protected MutableText getNarrationMessage() {
+        return Text.translatable("narration.checkbox", getMessage());
+    }
+
+    @Override
+    public void appendClickableNarrations(NarrationMessageBuilder builder) {
+        super.appendClickableNarrations(builder);
+        builder.put(NarrationPart.TITLE, getNarrationMessage());
+        if (active) {
+            builder.put(NarrationPart.USAGE, Text.translatable("narration.checkbox.usage." + (isFocused() ? "focused" : "hovered")));
+        }
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
@@ -68,7 +69,10 @@ public class Scrollbar implements Element, Drawable, IBounded {
         contentBounds = rootView.getContentBounds().offset(rootView.getContentPadding());
         containerBounds = rootView.getBounds();
 
-        int end = layoutToEnd ? orientation.getWidth(rootView.getBounds()) - SCROLLBAR_THICKNESS : orientation.pick(contentBounds.bottom(), contentBounds.right());
+        int end = orientation.getWidth(rootView.getBounds()) - SCROLLBAR_THICKNESS;
+        if (!layoutToEnd) {
+            end = Math.min(end, orientation.pick(contentBounds.bottom(), contentBounds.right()));
+        }
 
         bounds.left = orientation.pick(0, end);
         bounds.top = orientation.pick(end, 0);
@@ -114,6 +118,13 @@ public class Scrollbar implements Element, Drawable, IBounded {
 
         scrubber.update(rootView.getBounds(), contentBounds, mouseX, mouseY, partialTicks, touching || dragging);
         renderScrubber(scrubber, orientation, context);
+
+        if (getBounds().contains(mouseX, mouseY)) {
+            float position = scrubber.getGrabPosition(orientation.pick(mouseX, mouseY));
+            if (position >= 0 && position <= 1) {
+                context.setCursor(orientation == ScrollOrientation.VERTICAL ? StandardCursors.RESIZE_NS : StandardCursors.RESIZE_EW);
+            }
+        }
     }
 
     private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, DrawContext context) {
@@ -163,13 +174,11 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     private double calculateInternalYPosition(double mouseY) {
-        double yOffset = -rootView.getScrollY() - rootView.getContentPadding().top;
-        return mouseY - yOffset;
+        return mouseY + rootView.getScrollY() + rootView.getContentPadding().top;
     }
 
     private double calculateInternalXPosition(double mouseX) {
-        double xOffset = -rootView.getScrollX() - rootView.getContentPadding().left;
-        return mouseX - xOffset;
+        return mouseX + rootView.getScrollX() + rootView.getContentPadding().left;
     }
 
     @Override
