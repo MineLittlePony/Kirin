@@ -83,8 +83,8 @@ public class ScrollContainer extends GameGui {
 
         verticalScrollbar.reposition();
         horizontalScrollbar.reposition();
-        getChildElements().add(verticalScrollbar);
-        getChildElements().add(horizontalScrollbar);
+        getChildElements().add(0, verticalScrollbar);
+        getChildElements().add(0, horizontalScrollbar);
     }
 
     @Override
@@ -97,15 +97,13 @@ public class ScrollContainer extends GameGui {
 
         drawBackground(context, mouseX, mouseY, tickDelta);
 
-        Padding padding = getContentPadding();
-
         DrawContext subContext = new DrawContext(client, context.state);
         getBounds().scissor(subContext);
         subContext.getMatrices().set(context.getMatrices());
         subContext.getMatrices().pushMatrix();
         subContext.getMatrices().translate(
-                getScrollX() + padding.left,
-                getScrollY() + padding.top
+                getScrollX() + getContentPadding().left,
+                getScrollY() + getContentPadding().top
         );
 
         renderContents(subContext,
