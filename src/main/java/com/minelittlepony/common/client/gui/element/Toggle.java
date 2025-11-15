@@ -9,6 +9,7 @@ import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextConsumer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -88,11 +89,10 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    protected void renderForeground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        int textY = getY() + mc.textRenderer.fontHeight / 2;
-        int textX = getX() + width + 10;
-
-        drawLabel(context, getStyle().getText(), textX, textY, foreColor);
+    protected void renderForeground(DrawContext context, TextConsumer drawer, int mouseX, int mouseY) {
+        Bounds bounds = getBounds();
+        Text text = getStyle().getText();
+        drawer.text(text, getX() + width + 10, bounds.right() - 2, bounds.top, bounds.bottom());
     }
 
     @Override

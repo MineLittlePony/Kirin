@@ -4,8 +4,7 @@ extendable          method   net/minecraft/client/gui/tooltip/TooltipState      
 accessible          field    net/minecraft/client/gui/widget/ClickableWidget        tooltip                  Lnet/minecraft/client/gui/tooltip/TooltipState;
 mutable             field    net/minecraft/client/gui/widget/ClickableWidget        tooltip                  Lnet/minecraft/client/gui/tooltip/TooltipState;
 
-accessible          class    net/minecraft/client/render/RenderPhase$TextureBase
+accessible          class    net/minecraft/client/render/RenderSetup$class_12338
 
-transitive-accessible          field   net/minecraft/client/render/RenderLayer$MultiPhase              phases    Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
-accessible                     method   net/minecraft/client/render/RenderPhase$TextureBase            getId     ()Ljava/util/Optional;
-accessible                     field    net/minecraft/client/render/RenderLayer$MultiPhaseParameters   texture    Lnet/minecraft/client/render/RenderPhase$TextureBase;
+accessible          field    net/minecraft/client/render/RenderLayer                renderSetup              Lnet/minecraft/client/render/RenderSetup;
+accessible          field    net/minecraft/client/render/RenderSetup                textures                 Ljava/util/Map;

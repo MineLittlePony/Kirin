@@ -5,7 +5,6 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.event.ScreenInitCallback;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.AbstractParentElement;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -44,8 +43,8 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
     @Override
     public abstract <T extends Element & Drawable & Selectable> T addButton(T button);
 
-    @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("RETURN"))
-    private void onInit(MinecraftClient client, int w, int h, CallbackInfo ci) {
+    @Inject(method = "init(II)V", at = @At("RETURN"))
+    private void onInit(int w, int h, CallbackInfo ci) {
         bounds.width = w;
         bounds.height = h;
         ScreenInitCallback.EVENT.invoker().init((Screen) (Object) this, this);

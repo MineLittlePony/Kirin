@@ -56,8 +56,6 @@ public class ScrollContainer extends GameGui {
     public ScrollContainer() {
         super(ScreenTexts.EMPTY);
         horizontalScrollbar.layoutToEnd = true;
-
-        init(MinecraftClient.getInstance(), 0, 0);
     }
 
     @Override
@@ -97,7 +95,10 @@ public class ScrollContainer extends GameGui {
 
         drawBackground(context, mouseX, mouseY, tickDelta);
 
-        DrawContext subContext = new DrawContext(client, context.state);
+        int subMouseX = mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset();
+        int subMouseY = mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset();
+
+        DrawContext subContext = new DrawContext(client, context.state, subMouseX, subMouseY);
         getBounds().scissor(subContext);
         subContext.getMatrices().set(context.getMatrices());
         subContext.getMatrices().pushMatrix();
@@ -106,10 +107,7 @@ public class ScrollContainer extends GameGui {
                 getScrollY() + getContentPadding().top
         );
 
-        renderContents(subContext,
-                mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset(),
-                mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset(),
-                tickDelta);
+        renderContents(subContext, subMouseX, subMouseY, tickDelta);
 
         verticalScrollbar.render(context,
                 mouseX - margin.left,

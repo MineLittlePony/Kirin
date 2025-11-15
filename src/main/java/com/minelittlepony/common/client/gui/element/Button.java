@@ -15,9 +15,10 @@ import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.font.TextConsumer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.DrawContext.HoverType;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.cursor.Cursor;
 import net.minecraft.client.gui.cursor.StandardCursors;
@@ -206,26 +207,6 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         return active && visible && getBounds().contains(mouseX, mouseY);
     }
 
-    @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        this.hovered = isMouseOver(mouseX, mouseY);
-        MinecraftClient mc = MinecraftClient.getInstance();
-        renderBackground(context, mc, mouseX, mouseY);
-        setMessage(getStyle().getText());
-        drawIcon(context, mouseX, mouseY, tickDelta);
-
-        int foreColor = getStyle().getColor();
-        if (!active) {
-            foreColor = 10526880;
-        } else if (isHovered()) {
-            foreColor = 16777120;
-        }
-        renderForeground(context, mc, mouseX, mouseY, foreColor | MathHelper.ceil(alpha * 255F) << 24);
-        if (getBounds().contains(mouseX, mouseY)) {
-            context.setCursor(isInteractable() ? getCursor(mouseX, mouseY) : StandardCursors.NOT_ALLOWED);
-        }
-    }
-
     protected Cursor getCursor(int mouseX, int mouseY) {
         return StandardCursors.POINTING_HAND;
     }
@@ -240,20 +221,33 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         );
     }
 
-    protected void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    @Override
+    protected void drawIcon(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+        this.hovered = isMouseOver(mouseX, mouseY);
+        MinecraftClient mc = MinecraftClient.getInstance();
+        renderBackground(context, mc, mouseX, mouseY);
+        setMessage(getStyle().getText());
         if (getStyle().hasIcon()) {
-            getStyle().getIcon().render(context, getX(), getY(), mouseX, mouseY, partialTicks, alpha);
+            getStyle().getIcon().render(context, getX(), getY(), mouseX, mouseY, tickDelta, alpha);
+        }
+
+        int foreColor = getStyle().getColor();
+        if (!active) {
+            foreColor = 10526880;
+        } else if (isHovered()) {
+            foreColor = 16777120;
+        }
+        int color = foreColor | MathHelper.ceil(alpha * 255F) << 24;
+
+        renderForeground(context, context.getTextConsumer(HoverType.NONE, style -> style.withColor(color)), mouseX, mouseY);
+        if (getBounds().contains(mouseX, mouseY)) {
+            context.setCursor(isInteractable() ? getCursor(mouseX, mouseY) : StandardCursors.NOT_ALLOWED);
         }
     }
 
-    protected void renderForeground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY, int foreColor) {
-        drawMessage(context, mc.textRenderer, foreColor);
-    }
-
-    @Override
-    public void drawMessage(DrawContext context, TextRenderer textRenderer, int color) {
+    protected void renderForeground(DrawContext context, TextConsumer drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
         int left = getStyle().getIcon().getBounds().right();
-        drawScrollableText(context, textRenderer, getMessage(), bounds.left + left, bounds.top, bounds.right() - 2, bounds.bottom(), color);
+        drawer.text(getStyle().getText(), bounds.left + left, bounds.right() - 2, bounds.top, bounds.bottom());
     }
 }

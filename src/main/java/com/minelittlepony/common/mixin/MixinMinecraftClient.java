@@ -36,7 +36,7 @@ abstract class MixinMinecraftClient implements AssetsDirProvider {
 
     @Inject(method = "onResolutionChanged()V", at = @At(
             value = "INVOKE",
-            target = "net/minecraft/client/gui/screen/Screen.resize(Lnet/minecraft/client/MinecraftClient;II)V",
+            target = "net/minecraft/client/gui/screen/Screen.resize(II)V",
             shift = Shift.AFTER
         )
     )
@@ -46,7 +46,7 @@ abstract class MixinMinecraftClient implements AssetsDirProvider {
             Bounds bounds = root.getBounds();
             bounds.width = client.getWindow().getScaledWidth();
             bounds.height = client.getWindow().getScaledHeight();
-            ScreenInitCallback.EVENT.invoker().init(client.currentScreen, (ScreenInitCallback.ButtonList)client.currentScreen);
+            ScreenInitCallback.EVENT.invoker().init(client.currentScreen, client.currentScreen);
         }
     }
 
