@@ -4,10 +4,12 @@ import java.util.function.Function;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.registry.*;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryEntryInfo;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistrationInfo;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 public interface Registries {
     /**
@@ -21,14 +23,14 @@ public interface Registries {
      * @return A new registry.
      */
     static <T> Registry<T> createDefaulted(Identifier id, Function<T, Identifier> defaultIdFactory, T defaultValue) {
-        return new SimpleDefaultedRegistry<>(defaultIdFactory.apply(defaultValue).toString(), RegistryKey.ofRegistry(id), Lifecycle.stable(), true) {
+        return new DefaultedMappedRegistry<>(defaultIdFactory.apply(defaultValue).toString(), ResourceKey.createRegistryKey(id), Lifecycle.stable(), true) {
             {
-                Registry.register(this, getDefaultId(), defaultValue);
+                Registry.register(this, getDefaultKey(), defaultValue);
             }
 
-            public RegistryEntry.Reference<T> add(RegistryKey<T> key, T value, RegistryEntryInfo info) {
-                createEntry(value);
-                return super.add(key, value, info);
+            public Holder.Reference<T> register(ResourceKey<T> key, T value, RegistrationInfo info) {
+                createIntrusiveHolder(value);
+                return super.register(key, value, info);
             }
         };
     }

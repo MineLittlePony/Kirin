@@ -6,15 +6,15 @@ import org.jetbrains.annotations.Nullable;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
+import com.mojang.blaze3d.platform.InputConstants;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 
 /**
  * Optional root element for a screen using Kirin functionality.
@@ -41,8 +41,8 @@ public class GameGui extends Screen {
      *
      * @param title The screen's title
      */
-    protected GameGui(Text title) {
-        this(title, MinecraftClient.getInstance().currentScreen);
+    protected GameGui(Component title) {
+        this(title, Minecraft.getInstance().screen);
     }
 
     /**
@@ -51,7 +51,7 @@ public class GameGui extends Screen {
      * @param title The screen's title.
      * @param parent The parent screen.
      */
-    protected GameGui(Text title, @Nullable Screen parent) {
+    protected GameGui(Component title, @Nullable Screen parent) {
         super(title);
 
         this.parent = parent;
@@ -63,7 +63,7 @@ public class GameGui extends Screen {
      * @param event The sound event to play.
      */
     public static void playSound(SoundEvent event) {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1));
     }
 
     /**
@@ -71,8 +71,8 @@ public class GameGui extends Screen {
      *
      * @param event The sound event to play.
      */
-    public static void playSound(RegistryEntry.Reference<SoundEvent> event) {
-        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event, 1));
+    public static void playSound(Holder.Reference<SoundEvent> event) {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1));
     }
 
     /**
@@ -82,7 +82,7 @@ public class GameGui extends Screen {
      * @return True if the key is pressed.
      */
     public static boolean isKeyDown(int key) {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), key);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), key);
     }
 
     /**
@@ -101,19 +101,19 @@ public class GameGui extends Screen {
      * Implementors should explicitly call this method when they want this behavior.
      */
     public void finish() {
-        close();
-        client.setScreen(parent);
+        onClose();
+        minecraft.setScreen(parent);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
         super.render(context, mouseX, mouseY, partialTicks);
         drawDebugOverlays(context, mouseX, mouseY);
     }
 
-    private void drawDebugOverlays(DrawContext context, int mouseX, int mouseY) {
+    private void drawDebugOverlays(GuiGraphics context, int mouseX, int mouseY) {
         if (drawDebugBounds || drawAllDebugBounds) {
-            context.getMatrices().pushMatrix();
+            context.pose().pushMatrix();
             Padding padding = getContentPadding();
             Padding scrollOffset = new Padding(-getScrollY() - padding.top, -getScrollX() - padding.left, 0, 0);
 
@@ -128,7 +128,7 @@ public class GameGui extends Screen {
                 bound.draw(context, color);
             }
 
-            context.getMatrices().popMatrix();
+            context.pose().popMatrix();
         }
     }
 

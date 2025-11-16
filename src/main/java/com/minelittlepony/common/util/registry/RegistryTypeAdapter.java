@@ -8,8 +8,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+
 
 public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
 
@@ -28,7 +29,7 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
                     return null;
                 }
                 String ls = s.toLowerCase(Locale.US);
-                return registry.getOptionalValue(Identifier.of(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
+                return registry.getOptional(Identifier.parse(ls)).orElseGet(() -> defaultValue.apply(ls, registry));
             }
         };
     }
@@ -40,7 +41,7 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
     @Override
     public void write(JsonWriter out, T value) throws IOException {
         if (value != null) {
-            Identifier id = registry.getId(value);
+            Identifier id = registry.getKey(value);
             if (id != null) {
                 out.value(id.toString());
                 return;
@@ -52,6 +53,6 @@ public class RegistryTypeAdapter<T> extends TypeAdapter<T> {
     @Override
     public T read(JsonReader in) throws IOException {
         String s = in.nextString();
-        return s == null ? null : registry.get(Identifier.of(s.toLowerCase(Locale.ROOT)));
+        return s == null ? null : registry.getValue(Identifier.parse(s.toLowerCase(Locale.ROOT)));
     }
 }

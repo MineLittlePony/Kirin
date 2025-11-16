@@ -9,9 +9,8 @@ import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.event.ScreenInitCallback;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 
 public interface IViewRoot extends IBounded, ScreenInitCallback.ButtonList {
     /**
@@ -47,12 +46,12 @@ public interface IViewRoot extends IBounded, ScreenInitCallback.ButtonList {
     /**
      * The list of all child elements, buttons included, present on this screen.
      */
-    List<Element> getChildElements();
+    List<GuiEventListener> getChildElements();
 
     /**
      * The list of buttons (selectable elements) present on this screen.
      */
-    <T extends Element & Drawable & Selectable> List<Selectable> buttons();
+    List<NarratableEntry> buttons();
 
     /**
      * Gets the horizonal scroll offset in pixels.

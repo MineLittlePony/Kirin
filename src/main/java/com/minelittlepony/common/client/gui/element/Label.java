@@ -2,12 +2,12 @@ package com.minelittlepony.common.client.gui.element;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.text.MutableText;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.MutableComponent;
 
 /**
  * A simple label for drawing text to a gui screen.
@@ -33,9 +33,9 @@ public class Label extends Button {
     public Bounds getBounds() {
         Bounds bounds = super.getBounds();
 
-        TextRenderer fonts = MinecraftClient.getInstance().textRenderer;
+        Font fonts = Minecraft.getInstance().font;
 
-        bounds.width = fonts.getWidth(getStyle().getText());
+        bounds.width = fonts.width(getStyle().getText());
         if (this.center) {
             bounds.left = getX() - bounds.width/2;
         }
@@ -44,7 +44,7 @@ public class Label extends Button {
     }
 
     @Override
-    protected boolean isValidClickButton(MouseInput input) {
+    protected boolean isValidClickButton(MouseButtonInfo input) {
         return false;
     }
 
@@ -54,13 +54,13 @@ public class Label extends Button {
     }
 
     @Override
-    public ScreenRect getNavigationFocus() {
-        return ScreenRect.empty();
+    public ScreenRectangle getRectangle() {
+        return ScreenRectangle.empty();
     }
 
     @Override
-    public void drawIcon(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-        int textY = (int)(getY() + MinecraftClient.getInstance().textRenderer.fontHeight/1.5F);
+    public void renderContents(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+        int textY = (int)(getY() + Minecraft.getInstance().font.lineHeight/1.5F);
 
         if (center) {
             drawCenteredLabel(context, getStyle().getText(), getX(), textY, getStyle().getColor());
@@ -70,7 +70,7 @@ public class Label extends Button {
     }
 
     @Override
-    protected MutableText getNarrationMessage() {
+    protected MutableComponent createNarrationMessage() {
         return getMessage().copy();
     }
 }

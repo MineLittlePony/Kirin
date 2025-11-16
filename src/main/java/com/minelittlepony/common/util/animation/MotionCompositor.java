@@ -1,8 +1,8 @@
 package com.minelittlepony.common.util.animation;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Calculates roll and incline for a player based on their motion vectors.
@@ -19,9 +19,9 @@ public class MotionCompositor {
     public double calculateRoll(LivingEntity entity, double motionX, double motionY, double motionZ) {
 
         // since model roll should probably be calculated from model rotation rather than entity rotation...
-        double roll = sensibleAngle(entity.lastBodyYaw - entity.bodyYaw);
+        double roll = sensibleAngle(entity.yBodyRotO - entity.yBodyRot);
         double horMotion = Math.sqrt(motionX * motionX + motionZ * motionZ);
-        float modelYaw = sensibleAngle(entity.bodyYaw);
+        float modelYaw = sensibleAngle(entity.yBodyRot);
 
         // detecting that we're flying backwards and roll must be inverted
         if (Math.abs(sensibleAngle((float) Math.toDegrees(Math.atan2(motionX, motionZ)) + modelYaw)) > 90) {
@@ -37,7 +37,7 @@ public class MotionCompositor {
 
         assert !Float.isNaN((float)roll);
 
-        return MathHelper.clamp(roll, -54, 54);
+        return Mth.clamp(roll, -54, 54);
     }
 
     /**
@@ -47,11 +47,11 @@ public class MotionCompositor {
         double dist = Math.sqrt(motionX * motionX + motionZ * motionZ);
         double angle = Math.atan2(motionY, dist);
 
-        if (entity instanceof PlayerEntity && !((PlayerEntity)entity).getAbilities().allowFlying) {
+        if (entity instanceof Player player && !player.getAbilities().mayfly) {
             angle /= 2;
         }
 
-        angle = MathHelper.clamp(angle, -THIRD_PI, THIRD_PI);
+        angle = Mth.clamp(angle, -THIRD_PI, THIRD_PI);
 
         return Math.toDegrees(angle);
     }

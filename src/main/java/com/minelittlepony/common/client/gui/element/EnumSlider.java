@@ -3,7 +3,7 @@ package com.minelittlepony.common.client.gui.element;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /**
  * Also a slider, but conveniently works with Enum values.
@@ -23,7 +23,7 @@ public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
         super(x, y, 0, value.getClass().getEnumConstants().length - 1, value);
         values = (T[])value.getClass().getEnumConstants();
 
-        setTextFormat(s -> Text.of(getValue().name()));
+        setTextFormat(s -> Component.literal(getValue().name()));
     }
 
     @Override

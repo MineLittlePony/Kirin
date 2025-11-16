@@ -1,8 +1,9 @@
 package com.minelittlepony.common.event;
 
+import com.mojang.blaze3d.platform.NativeImage;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.texture.NativeImage;
 
 public interface SkinFilterCallback {
     int VANILLA_SKIN_WIDTH = 64;

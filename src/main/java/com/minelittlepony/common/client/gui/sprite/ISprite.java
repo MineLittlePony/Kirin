@@ -3,15 +3,15 @@ package com.minelittlepony.common.client.gui.sprite;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface ISprite extends IBounded {
 
     ISprite EMPTY = (m, x, y, mx, my, t) -> {};
 
-    void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta);
+    void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta);
 
-    default void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+    default void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         render(context, x, y, mouseX, mouseY, tickDelta);
     }
 

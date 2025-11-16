@@ -1,6 +1,6 @@
 package com.minelittlepony.common.util;
 
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.ARGB;
 
 /**
  * Colouration Utilities
@@ -13,7 +13,7 @@ public interface Color {
      */
     @Deprecated(since = "1.20.1", forRemoval = true)
     static float a(int hex) {
-        return ColorHelper.getAlphaFloat(hex);
+        return ARGB.alphaFloat(hex);
     }
 
     /**
@@ -23,7 +23,7 @@ public interface Color {
      */
     @Deprecated(since = "1.20.1", forRemoval = true)
     static float r(int hex) {
-        return ColorHelper.getRedFloat(hex);
+        return ARGB.redFloat(hex);
     }
 
     /**
@@ -33,7 +33,7 @@ public interface Color {
      */
     @Deprecated(since = "1.20.1", forRemoval = true)
     static float g(int hex) {
-        return ColorHelper.getGreenFloat(hex);
+        return ARGB.greenFloat(hex);
     }
 
     /**
@@ -43,7 +43,7 @@ public interface Color {
      */
     @Deprecated(since = "1.20.1", forRemoval = true)
     static float b(int hex) {
-        return ColorHelper.getBlueFloat(hex);
+        return ARGB.blueFloat(hex);
     }
 
     /**
@@ -53,7 +53,7 @@ public interface Color {
      */
     @Deprecated(since = "1.19.4", forRemoval = true)
     static int argbToHex(float a, float r, float g, float b) {
-        return ColorHelper.fromFloats(a, r, g, b);
+        return ARGB.colorFromFloat(a, r, g, b);
     }
 
     /**
@@ -63,7 +63,7 @@ public interface Color {
      */
     @Deprecated(since = "1.19.4", forRemoval = true)
     static int argbToHex(int a, int r, int g, int b) {
-        return ColorHelper.getArgb(a, r, g, b);
+        return ARGB.color(a, r, g, b);
     }
 
     /**
@@ -73,7 +73,7 @@ public interface Color {
      */
     @Deprecated
     static int abgrToArgb(int color) {
-        return ColorHelper.fromAbgr(color);
+        return ARGB.fromABGR(color);
     }
 
     /**
@@ -83,6 +83,6 @@ public interface Color {
      */
     @Deprecated(since = "1.19.4", forRemoval = true)
     static int lerp(float delta, int from, int to) {
-        return ColorHelper.lerp(delta, from, to);
+        return ARGB.linearLerp(delta, from, to);
     }
 }

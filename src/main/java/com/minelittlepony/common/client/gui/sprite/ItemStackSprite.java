@@ -1,19 +1,19 @@
 package com.minelittlepony.common.client.gui.sprite;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Colors;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.ItemLike;
 
 public class ItemStackSprite implements ISprite {
 
     private ItemStack stack = ItemStack.EMPTY;
 
-    private int tint = Colors.WHITE;
+    private int tint = CommonColors.WHITE;
 
-    public ItemStackSprite setStack(ItemConvertible iitem) {
+    public ItemStackSprite setStack(ItemLike iitem) {
         return setStack(new ItemStack(iitem));
     }
 
@@ -24,20 +24,20 @@ public class ItemStackSprite implements ISprite {
 
     public ItemStackSprite setTint(int tint) {
         this.tint = tint;
-        stack.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(tint));
+        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(tint));
         return this;
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         if (alpha >= 0.5F) {
-            context.drawItemWithoutEntity(stack, x + 2, y + 2);
+            context.renderFakeItem(stack, x + 2, y + 2);
         }
     }
 }

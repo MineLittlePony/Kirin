@@ -2,11 +2,11 @@ package com.minelittlepony.common.client.gui;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Utility for rendering objects such as ItemStacks, Entities, and BlockEntities, when there is no client world running.
@@ -29,11 +29,11 @@ public class OutsideWorldRenderer {
      * @deprecated Will be removed in MC1.22. World is no longer needed
      */
     @Deprecated(forRemoval = true)
-    public static BlockEntityRenderManager configure(@Nullable World world) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        BlockEntityRenderManager dispatcher = mc.getBlockEntityRenderDispatcher();
-        dispatcher.configure(mc.gameRenderer.getCamera());
-        mc.getEntityRenderDispatcher().configure(mc.gameRenderer.getCamera(), mc.targetedEntity);
+    public static BlockEntityRenderDispatcher configure(@Nullable Level world) {
+        Minecraft mc = Minecraft.getInstance();
+        BlockEntityRenderDispatcher dispatcher = mc.getBlockEntityRenderDispatcher();
+        dispatcher.prepare(mc.gameRenderer.getMainCamera());
+        mc.getEntityRenderDispatcher().prepare(mc.gameRenderer.getMainCamera(), mc.crosshairPickEntity);
 
         return dispatcher;
     }
@@ -43,11 +43,11 @@ public class OutsideWorldRenderer {
      *
      * @return a pre-configured BlockEntityRenderManager
      */
-    public static BlockEntityRenderManager configure() {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        BlockEntityRenderManager dispatcher = mc.getBlockEntityRenderDispatcher();
-        dispatcher.configure(mc.gameRenderer.getCamera());
-        mc.getEntityRenderDispatcher().configure(mc.gameRenderer.getCamera(), mc.targetedEntity);
+    public static BlockEntityRenderDispatcher configure() {
+        Minecraft mc = Minecraft.getInstance();
+        BlockEntityRenderDispatcher dispatcher = mc.getBlockEntityRenderDispatcher();
+        dispatcher.prepare(mc.gameRenderer.getMainCamera());
+        mc.getEntityRenderDispatcher().prepare(mc.gameRenderer.getMainCamera(), mc.crosshairPickEntity);
 
         return dispatcher;
     }
@@ -59,10 +59,10 @@ public class OutsideWorldRenderer {
      * @param x The left-X position (in pixels)
      * @param y The top-Y position (in pixels)
      */
-    public static void renderStack(DrawContext context, ItemStack stack, int x, int y) {
+    public static void renderStack(GuiGraphics context, ItemStack stack, int x, int y) {
         try {
             configure();
         } catch (Throwable ignored) {}
-        context.drawItem(stack, x, y);
+        context.renderFakeItem(stack, x, y);
     }
 }

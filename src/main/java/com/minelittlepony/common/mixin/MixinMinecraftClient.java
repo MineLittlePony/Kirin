@@ -6,8 +6,8 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.util.GamePaths.AssetsDirProvider;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.RunArgs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
 
 import java.nio.file.Path;
 
@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 abstract class MixinMinecraftClient implements AssetsDirProvider {
     private Path assetsDirectory;
 
     @Inject(method = "<init>", at = @At(
         value = "FIELD",
-        target = "net/minecraft/client/MinecraftClient.instance:Lnet/minecraft/client/MinecraftClient;"
+        target = "net/minecraft/client/Minecraft.instance:Lnet/minecraft/client/Minecraft;"
     ))
-    private void onInit(RunArgs args, CallbackInfo info) {
-        assetsDirectory = args.directories.assetDir.toPath();
+    private void onInit(GameConfig args, CallbackInfo info) {
+        assetsDirectory = args.location.assetDirectory.toPath();
     }
 
     @Override
@@ -34,26 +34,26 @@ abstract class MixinMinecraftClient implements AssetsDirProvider {
         return assetsDirectory;
     }
 
-    @Inject(method = "onResolutionChanged()V", at = @At(
+    @Inject(method = "resizeDisplay()V", at = @At(
             value = "INVOKE",
-            target = "net/minecraft/client/gui/screen/Screen.resize(II)V",
+            target = "net/minecraft/client/gui/screens/Screen.resize(II)V",
             shift = Shift.AFTER
         )
     )
     private void onOnResolutionChanged(CallbackInfo ci) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof IViewRoot root) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof IViewRoot root) {
             Bounds bounds = root.getBounds();
-            bounds.width = client.getWindow().getScaledWidth();
-            bounds.height = client.getWindow().getScaledHeight();
-            ScreenInitCallback.EVENT.invoker().init(client.currentScreen, client.currentScreen);
+            bounds.width = client.getWindow().getGuiScaledWidth();
+            bounds.height = client.getWindow().getGuiScaledHeight();
+            ScreenInitCallback.EVENT.invoker().init(client.screen, client.screen);
         }
     }
 
     @Inject(method = "tick()V", at = @At("HEAD"))
     public void onTick(CallbackInfo info) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.currentScreen instanceof IViewRoot root) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.screen instanceof IViewRoot root) {
             root.getChildElements().forEach(element -> {
                 if (element instanceof ITickableElement t) {
                     t.tick();

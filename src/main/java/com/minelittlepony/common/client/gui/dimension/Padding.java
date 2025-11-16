@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * An element's external padding.
@@ -19,11 +19,11 @@ public class Padding {
             Codec.INT.fieldOf("bottom").forGetter(b -> b.bottom),
             Codec.INT.fieldOf("right").forGetter(b -> b.right)
     ).apply(i, Padding::new));
-    public static final PacketCodec<ByteBuf, Padding> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, b -> b.top,
-            PacketCodecs.INTEGER, b -> b.left,
-            PacketCodecs.INTEGER, b -> b.bottom,
-            PacketCodecs.INTEGER, b -> b.right,
+    public static final StreamCodec<ByteBuf, Padding> PACKET_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, b -> b.top,
+            ByteBufCodecs.INT, b -> b.left,
+            ByteBufCodecs.INT, b -> b.bottom,
+            ByteBufCodecs.INT, b -> b.right,
             Padding::new
     );
 

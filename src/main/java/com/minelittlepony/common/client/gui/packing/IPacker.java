@@ -5,8 +5,8 @@ import java.util.List;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 
 /**
  * A packer is a tool used for arranging elements on a UI.
@@ -35,7 +35,7 @@ public interface IPacker {
     /**
      * Repacks all the supplied elements according to this packer's specifications.
      */
-    default void pack(List<? extends Element> elements) {
+    default void pack(List<? extends GuiEventListener> elements) {
         start();
         elements.forEach(element -> {
             if (element instanceof IBounded) {

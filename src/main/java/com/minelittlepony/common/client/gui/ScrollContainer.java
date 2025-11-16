@@ -10,12 +10,13 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.client.gui.element.Scrollbar;
 import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.client.util.Window;
-import net.minecraft.screen.ScreenTexts;
+import com.mojang.blaze3d.platform.Window;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.CommonComponents;
 
 /**
  * A container implementing proper overflow mechanics and smooth scrolling.
@@ -54,7 +55,7 @@ public class ScrollContainer extends GameGui {
     private final Deque<Runnable> delayedCalls = new ArrayDeque<>();
 
     public ScrollContainer() {
-        super(ScreenTexts.EMPTY);
+        super(CommonComponents.EMPTY);
         horizontalScrollbar.layoutToEnd = true;
     }
 
@@ -70,10 +71,10 @@ public class ScrollContainer extends GameGui {
      * @param contentInitializer A method to call to initialise this element's contents.
      */
     public void init(Runnable contentInitializer) {
-        clearChildren();
+        clearWidgets();
 
-        width = getBounds().width = client.getWindow().getScaledWidth() - margin.left - margin.right;
-        height = getBounds().height = client.getWindow().getScaledHeight() - margin.top - margin.bottom;
+        width = getBounds().width = minecraft.getWindow().getGuiScaledWidth() - margin.left - margin.right;
+        height = getBounds().height = minecraft.getWindow().getGuiScaledHeight() - margin.top - margin.bottom;
         getBounds().top = margin.top;
         getBounds().left = margin.left;
 
@@ -86,9 +87,9 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public final void render(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+    public final void render(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
 
-        Matrix3x2fStack matrices = context.getMatrices();
+        Matrix3x2fStack matrices = context.pose();
         matrices.pushMatrix();
         getBounds().scissor(context);
         getBounds().translate(matrices);
@@ -98,11 +99,11 @@ public class ScrollContainer extends GameGui {
         int subMouseX = mouseX < margin.left || mouseX > margin.left + getBounds().width ? -1000 : mouseX + getMouseXOffset();
         int subMouseY = mouseY < margin.top || mouseY > margin.top + getBounds().height ? -1000 : mouseY + getMouseYOffset();
 
-        DrawContext subContext = new DrawContext(client, context.state, subMouseX, subMouseY);
+        GuiGraphics subContext = new GuiGraphics(minecraft, context.guiRenderState, subMouseX, subMouseY);
         getBounds().scissor(subContext);
-        subContext.getMatrices().set(context.getMatrices());
-        subContext.getMatrices().pushMatrix();
-        subContext.getMatrices().translate(
+        subContext.pose().set(context.pose());
+        subContext.pose().pushMatrix();
+        subContext.pose().translate(
                 getScrollX() + getContentPadding().left,
                 getScrollY() + getContentPadding().top
         );
@@ -129,31 +130,31 @@ public class ScrollContainer extends GameGui {
         drawOverlays(context, mouseX, mouseY, tickDelta);
 
         subContext.disableScissor();
-        subContext.drawDeferredElements();
-        subContext.getMatrices().popMatrix();
+        subContext.renderDeferredElements();
+        subContext.pose().popMatrix();
     }
 
-    protected void renderContents(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
         super.render(context, mouseX, mouseY, tickDelta);
     }
 
     @Deprecated
     @Override
-    public final void renderBackground(DrawContext context, int mouseX, int mouseY, float tickDelta) { }
+    public final void renderBackground(GuiGraphics context, int mouseX, int mouseY, float tickDelta) { }
 
-    protected void drawBackground(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+    protected void drawBackground(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
         context.fill(0, 0, width, height, backgroundColor);
     }
 
-    protected void drawDecorations(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+    protected void drawDecorations(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
         context.fillGradient(0, -3, width, 5, decorationColor, 0);
         context.fillGradient(0, height - 6, width, height + 3, 0, decorationColor);
     }
 
-    protected void drawOverlays(DrawContext context, int mouseX, int mouseY, float tickDelta) {
+    protected void drawOverlays(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
         Runnable task;
-        Window window = MinecraftClient.getInstance().getWindow();
-        context.enableScissor(0, 0, window.getScaledWidth(), window.getScaledHeight());
+        Window window = Minecraft.getInstance().getWindow();
+        context.enableScissor(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight());
 
         while ((task = delayedCalls.poll()) != null) {
             task.run();
@@ -165,7 +166,7 @@ public class ScrollContainer extends GameGui {
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         if (isMouseOver(mouseX, mouseY)) {
-            super.mouseDragged(new Click(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), new MouseInput(0, 0)), 0, 0);
+            super.mouseDragged(new MouseButtonEvent(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), new MouseButtonInfo(0, 0)), 0, 0);
         }
     }
 
@@ -188,21 +189,21 @@ public class ScrollContainer extends GameGui {
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
         return isMouseOver(click.x(), click.y()) && super.mouseClicked(getContentClick(click), doubled);
     }
 
-    protected Click getContentClick(Click click) {
-        return new Click(click.x() + getMouseXOffset(), click.y() + getMouseYOffset(), click.buttonInfo());
+    protected MouseButtonEvent getContentClick(MouseButtonEvent click) {
+        return new MouseButtonEvent(click.x() + getMouseXOffset(), click.y() + getMouseYOffset(), click.buttonInfo());
     }
 
     @Override
-    public boolean mouseReleased(Click click) {
+    public boolean mouseReleased(MouseButtonEvent click) {
         return isMouseOver(click.x(), click.y()) && super.mouseReleased(getContentClick(click));
     }
 
     @Override
-    public boolean mouseDragged(Click click, double differX, double differY) {
+    public boolean mouseDragged(MouseButtonEvent click, double differX, double differY) {
         return super.mouseDragged(getContentClick(click), differX, differY);
     }
 
@@ -214,11 +215,11 @@ public class ScrollContainer extends GameGui {
         return isMouseOver(mouseX, mouseY) && super.mouseScrolled(mouseX + getMouseXOffset(), mouseY + getMouseYOffset(), xScroll, yScroll);
     }
 
-    protected void renderOutside(DrawContext context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
+    protected void renderOutside(GuiGraphics context, int mouseX, int mouseY, BiConsumer<Integer, Integer> renderCall) {
         delayedCalls.add(() -> {
-            context.getMatrices().pushMatrix();
+            context.pose().pushMatrix();
             renderCall.accept(mouseX - getMouseXOffset(), mouseY - getMouseYOffset());
-            context.getMatrices().popMatrix();
+            context.pose().popMatrix();
         });
     }
 

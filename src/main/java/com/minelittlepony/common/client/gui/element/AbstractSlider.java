@@ -3,25 +3,25 @@ package com.minelittlepony.common.client.gui.element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.Cursor;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.navigation.GuiNavigationType;
-import net.minecraft.client.gui.screen.ButtonTextures;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
-
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.Tooltip;
+import com.mojang.blaze3d.platform.cursor.CursorType;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
+import net.minecraft.client.InputType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
 import java.util.function.Function;
 
@@ -33,13 +33,13 @@ import java.util.function.Function;
  * @param <T> The value type for this slider.
  */
 public abstract class AbstractSlider<T> extends Button implements IField<T, AbstractSlider<T>> {
-    private static final Identifier TEXTURE = Identifier.ofVanilla("widget/slider");
-    private static final Identifier HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("widget/slider_highlighted");
-    private static final Identifier HANDLE_TEXTURE = Identifier.ofVanilla("widget/slider_handle");
-    private static final Identifier HANDLE_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("widget/slider_handle_highlighted");
+    private static final Identifier TEXTURE = Identifier.withDefaultNamespace("widget/slider");
+    private static final Identifier HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("widget/slider_highlighted");
+    private static final Identifier HANDLE_TEXTURE = Identifier.withDefaultNamespace("widget/slider_handle");
+    private static final Identifier HANDLE_HIGHLIGHTED_TEXTURE = Identifier.withDefaultNamespace("widget/slider_handle_highlighted");
 
-    protected static final ButtonTextures TEXTURES = new ButtonTextures(TEXTURE, TEXTURE, HIGHLIGHTED_TEXTURE);
-    protected static final ButtonTextures HANDLE_TEXTURES = new ButtonTextures(HANDLE_TEXTURE, HANDLE_TEXTURE, HANDLE_HIGHLIGHTED_TEXTURE);
+    protected static final WidgetSprites TEXTURES = new WidgetSprites(TEXTURE, TEXTURE, HIGHLIGHTED_TEXTURE);
+    protected static final WidgetSprites HANDLE_TEXTURES = new WidgetSprites(HANDLE_TEXTURE, HANDLE_TEXTURE, HANDLE_HIGHLIGHTED_TEXTURE);
 
     public static final int SLIDER_WIDTH = 8;
     public static final int HALF_SLIDER_WIDTH = SLIDER_WIDTH / 2;
@@ -55,7 +55,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     private IChangeCallback<T> action = IChangeCallback::none;
 
     @Nullable
-    private Function<AbstractSlider<T>, Text> textFunc;
+    private Function<AbstractSlider<T>, Component> textFunc;
     @Nullable
     private Function<AbstractSlider<T>, Tooltip> tooltipFunc;
 
@@ -85,7 +85,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
      * @param formatter The formatting function to call.
      * @return {@code this} for chaining purposes
      */
-    public AbstractSlider<T> setTextFormat(@NotNull Function<AbstractSlider<T>, Text> formatter) {
+    public AbstractSlider<T> setTextFormat(@NotNull Function<AbstractSlider<T>, Component> formatter) {
         this.textFunc = formatter;
         getStyle().setText(formatter.apply(this));
 
@@ -112,9 +112,9 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         if (active && visible && (input.isLeft() || input.isRight())) {
-            playDownSound(MinecraftClient.getInstance().getSoundManager());
+            playDownSound(Minecraft.getInstance().getSoundManager());
             setClampedValue(valueToFloat(nextValue(floatToValue(value), input.isLeft() ? -1 : 1)));
             onPress(input);
 
@@ -124,7 +124,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     protected void setClampedValue(float value) {
-        value = MathHelper.clamp(value, 0, 1);
+        value = Mth.clamp(value, 0, 1);
 
         if (value != this.value) {
             float initial = this.value;
@@ -153,13 +153,13 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    public void onClick(Click click, boolean doubled) {
+    public void onClick(MouseButtonEvent click, boolean doubled) {
         super.onClick(click, doubled);
         onChange(click.x());
     }
 
     @Override
-    protected void onDrag(Click click, double mouseDX, double mouseDY) {
+    protected void onDrag(MouseButtonEvent click, double mouseDX, double mouseDY) {
         onChange(click.x());
     }
 
@@ -169,8 +169,8 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
         if (!focused) {
             handleFocused = false;
         } else {
-            GuiNavigationType guiNavigationType = MinecraftClient.getInstance().getNavigationType();
-            handleFocused |= guiNavigationType == GuiNavigationType.MOUSE || guiNavigationType == GuiNavigationType.KEYBOARD_TAB;
+            InputType guiNavigationType = Minecraft.getInstance().getLastInputType();
+            handleFocused |= guiNavigationType == InputType.MOUSE || guiNavigationType == InputType.KEYBOARD_TAB;
         }
     }
 
@@ -179,37 +179,37 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected Cursor getCursor(int mouseX, int mouseY) {
+    protected CursorType getCursor(int mouseX, int mouseY) {
         mouseX -= getX();
         int sliderX = getSliderX();
-        return mouseX >= sliderX && mouseX <= (sliderX + SLIDER_WIDTH) ? StandardCursors.RESIZE_EW : super.getCursor(mouseX, mouseY);
+        return mouseX >= sliderX && mouseX <= (sliderX + SLIDER_WIDTH) ? CursorTypes.RESIZE_EW : super.getCursor(mouseX, mouseY);
     }
 
     @Override
-    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isSelected() && !handleFocused), getX(), getY(), getWidth(), getHeight(), ColorHelper.getWhite(alpha));
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, HANDLE_TEXTURES.get(active, isSelected() && handleFocused), getX() + getSliderX(), getY(), 8, getHeight(), ColorHelper.getWhite(alpha));
+    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isHoveredOrFocused() && !handleFocused), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, HANDLE_TEXTURES.get(active, isHoveredOrFocused() && handleFocused), getX() + getSliderX(), getY(), 8, getHeight(), ARGB.white(alpha));
     }
 
     @Override
-    protected MutableText getNarrationMessage() {
-        return Text.translatable("gui.narrate.slider", getMessage());
+    protected MutableComponent createNarrationMessage() {
+        return Component.translatable("gui.narrate.slider", getMessage());
     }
 
     @Override
-    public void appendClickableNarrations(NarrationMessageBuilder builder) {
-        super.appendClickableNarrations(builder);
-        builder.put(NarrationPart.TITLE, getNarrationMessage());
+    public void updateWidgetNarration(NarrationElementOutput builder) {
+        super.updateWidgetNarration(builder);
+        builder.add(NarratedElementType.TITLE, createNarrationMessage());
         if (active) {
-            builder.put(NarrationPart.USAGE, Text.translatable("narration.slider.usage." + (isFocused() ? (handleFocused ? "focused" : "focused.keyboard_cannot_change_value") : "hovered")));
+            builder.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage." + (isFocused() ? (handleFocused ? "focused" : "focused.keyboard_cannot_change_value") : "hovered")));
         }
     }
 
     static float convertFromRange(float value, float min, float max) {
-        return (MathHelper.clamp(value, min, max) - min) / (max - min);
+        return (Mth.clamp(value, min, max) - min) / (max - min);
     }
 
     static float convertToRange(float value, float min, float max) {
-        return MathHelper.clamp(min + (value * (max - min)), min, max);
+        return Mth.clamp(min + (value * (max - min)), min, max);
     }
 }

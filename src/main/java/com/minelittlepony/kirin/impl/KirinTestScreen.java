@@ -16,11 +16,11 @@ import com.minelittlepony.common.client.gui.packing.IPacker;
 import com.minelittlepony.common.client.gui.packing.ListPacker;
 import com.minelittlepony.common.client.gui.style.Style;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 
 class KirinTestScreen extends GameGui {
 
@@ -29,7 +29,7 @@ class KirinTestScreen extends GameGui {
     private int ticker;
 
     KirinTestScreen(@Nullable Screen parent) {
-        super(Text.literal("Test!! :O"), parent);
+        super(Component.literal("Test!! :O"), parent);
         content.margin.top = 30;
         content.margin.bottom = 30;
         content.getContentPadding().top = 10;
@@ -44,7 +44,7 @@ class KirinTestScreen extends GameGui {
     }
 
     private void rebuildContent() {
-        addDrawable(content);
+        addRenderableOnly(content);
         getChildElements().add(content);
 
         addButton(new Label(width / 2, 5).setCentered()).getStyle().setText(getTitle().getString());
@@ -65,7 +65,7 @@ class KirinTestScreen extends GameGui {
 
         content.addButton(new Toggle(0, 0, false))
             .onChange(on -> {
-                GameGui.playSound(SoundEvents.ENTITY_VILLAGER_YES);
+                GameGui.playSound(SoundEvents.VILLAGER_YES);
                 return on;
             })
             .getStyle()
@@ -76,7 +76,7 @@ class KirinTestScreen extends GameGui {
                 .setText("Slider")
                 .setTooltip("This is a slider");
         content.addButton(new EnumSlider<>(LEFT, row += 20, VisibilityMode.AUTO))
-            .setTextFormat(slider -> Text.literal("Visibility Mode: " + slider.getValue().name()))
+            .setTextFormat(slider -> Component.literal("Visibility Mode: " + slider.getValue().name()))
             .getStyle()
                 .setTooltip("This is a enum slider! It has a set number of possible values");
         content.addButton(new Cycler(LEFT, row += 20, 100, 20))
@@ -98,7 +98,7 @@ class KirinTestScreen extends GameGui {
             .setCentered()
             .onUpdate(button -> {
                 ticker++;
-                button.getStyle().setColor(colors[(ticker / 10) % colors.length].getSignColor());
+                button.getStyle().setColor(colors[(ticker / 10) % colors.length].getTextColor());
             })
             .getStyle()
                 .setText("This is a label")

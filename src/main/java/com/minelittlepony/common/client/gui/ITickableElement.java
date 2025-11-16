@@ -1,7 +1,7 @@
 package com.minelittlepony.common.client.gui;
 
-import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 
-public interface ITickableElement extends Element {
+public interface ITickableElement extends GuiEventListener {
     void tick();
 }

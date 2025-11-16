@@ -2,18 +2,18 @@ package com.minelittlepony.common.client.gui.dimension;
 
 import org.joml.Matrix3x2fStack;
 
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Represents the bounding rectangle of an element on the screen.
@@ -27,11 +27,11 @@ public class Bounds {
             Codec.INT.fieldOf("width").forGetter(b -> b.width),
             Codec.INT.fieldOf("height").forGetter(b -> b.height)
     ).apply(i, Bounds::new));
-    public static final PacketCodec<ByteBuf, Bounds> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, b -> b.top,
-            PacketCodecs.INTEGER, b -> b.left,
-            PacketCodecs.INTEGER, b -> b.width,
-            PacketCodecs.INTEGER, b -> b.height,
+    public static final StreamCodec<ByteBuf, Bounds> PACKET_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, b -> b.top,
+            ByteBufCodecs.INT, b -> b.left,
+            ByteBufCodecs.INT, b -> b.width,
+            ByteBufCodecs.INT, b -> b.height,
             Bounds::new
     );
 
@@ -169,7 +169,7 @@ public class Bounds {
      * Useful for debugging.
      */
     @Environment(EnvType.CLIENT)
-    public void draw(DrawContext context, int tint) {
+    public void draw(GuiGraphics context, int tint) {
         context.fill(left, top, left + width, top + height, tint);
     }
 
@@ -177,7 +177,7 @@ public class Bounds {
      * Applies this bounds' offset as a translation to the passed in matrix stack.
      */
     @Environment(EnvType.CLIENT)
-    public void translate(MatrixStack matrices) {
+    public void translate(PoseStack matrices) {
         matrices.translate(left, top, 0);
     }
 
@@ -194,18 +194,18 @@ public class Bounds {
      * @param context
      */
     @Environment(EnvType.CLIENT)
-    public void scissor(DrawContext context) {
+    public void scissor(GuiGraphics context) {
         context.enableScissor(left, top, right(), bottom());
     }
 
     @Environment(EnvType.CLIENT)
-    public void debugMeasure(DrawContext context) {
-        Window window = MinecraftClient.getInstance().getWindow();
-        context.fill(left, -1000, left + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
-        context.fill(left + width, -1000, left + width + 1, window.getScaledHeight() * 9, 0xFFFFFFFF);
+    public void debugMeasure(GuiGraphics context) {
+        Window window = Minecraft.getInstance().getWindow();
+        context.fill(left, -1000, left + 1, window.getGuiScaledHeight() * 9, 0xFFFFFFFF);
+        context.fill(left + width, -1000, left + width + 1, window.getGuiScaledHeight() * 9, 0xFFFFFFFF);
 
-        context.fill(-1000, top, window.getScaledWidth(), top + 1, 0xFFFFFFFF);
-        context.fill(-1000, top + height, window.getScaledWidth(), top + height + 1, 0xFFFFFFFF);
+        context.fill(-1000, top, window.getGuiScaledWidth(), top + 1, 0xFFFFFFFF);
+        context.fill(-1000, top + height, window.getGuiScaledWidth(), top + height + 1, 0xFFFFFFFF);
     }
 
     protected boolean equals(Bounds o) {

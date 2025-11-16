@@ -1,6 +1,6 @@
 package com.minelittlepony.common.client.gui.packing;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class FlexibleGridPacker extends GridPacker {
 
@@ -16,7 +16,7 @@ public class FlexibleGridPacker extends GridPacker {
         if (columnCount > 0) {
             int max = maxItemWidth > 0 ? Math.min(width, maxItemWidth) : width;
             int min = Math.min(width, minItemWidth);
-            setItemWidth(MathHelper.clamp(width / columnCount, Math.min(max, min), Math.max(max, min)));
+            setItemWidth(Mth.clamp(width / columnCount, Math.min(max, min), Math.max(max, min)));
         }
 
         return this;

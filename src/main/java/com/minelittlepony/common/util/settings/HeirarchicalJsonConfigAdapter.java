@@ -7,9 +7,8 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.predicate.NumberRange.DoubleRange;
-import net.minecraft.predicate.NumberRange.IntRange;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.resources.Identifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,9 +33,9 @@ public class HeirarchicalJsonConfigAdapter implements Config.Adapter {
                 .registerTypeHierarchyAdapter(Path.class, new ToStringAdapter<>(Paths::get))
                 .registerTypeAdapter(UUID.class, new UUIDTypeAdapter())
                 .registerTypeHierarchyAdapter(Setting.class, new SettingSerializer())
-                .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::of))
-                .registerTypeAdapter(IntRange.class, new CodecTypeAdapter<>(IntRange.CODEC))
-                .registerTypeAdapter(DoubleRange.class, new CodecTypeAdapter<>(DoubleRange.CODEC))
+                .registerTypeAdapter(Identifier.class, new ToStringAdapter<>(Identifier::parse))
+                .registerTypeAdapter(MinMaxBounds.Ints.class, new CodecTypeAdapter<>(MinMaxBounds.Ints.CODEC))
+                .registerTypeAdapter(MinMaxBounds.Doubles.class, new CodecTypeAdapter<>(MinMaxBounds.Doubles.CODEC))
                 .create();
     }
 

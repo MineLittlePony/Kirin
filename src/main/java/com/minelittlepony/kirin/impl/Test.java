@@ -4,8 +4,8 @@ import com.minelittlepony.common.client.gui.element.Button;
 import com.minelittlepony.common.event.ScreenInitCallback;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 
 public class Test implements ClientModInitializer {
     public static final boolean DEBUG = Boolean.getBoolean("kirin.debug");
@@ -16,7 +16,7 @@ public class Test implements ClientModInitializer {
             ScreenInitCallback.EVENT.register((screen, buttons) -> {
                 if (screen instanceof TitleScreen) {
                     Button button = buttons.addButton(new Button(50, 20, 20, 20))
-                            .onClick(sender -> MinecraftClient.getInstance().setScreen(new KirinTestScreen(screen)));
+                            .onClick(sender -> Minecraft.getInstance().setScreen(new KirinTestScreen(screen)));
                         button.getStyle()
                                 .setTooltip("Kirin Test Screen", 0, 10);
                 }

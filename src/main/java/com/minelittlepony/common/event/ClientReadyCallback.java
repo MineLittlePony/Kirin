@@ -3,7 +3,7 @@ package com.minelittlepony.common.event;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 /**
  * Callback for the first tick on the client. Call {@link Handler#register()} to register
@@ -17,7 +17,7 @@ public interface ClientReadyCallback {
         }
     });
 
-    void onClientPostInit(MinecraftClient client);
+    void onClientPostInit(Minecraft client);
 
     class Handler implements ClientTickEvents.EndTick  {
 
@@ -40,7 +40,7 @@ public interface ClientReadyCallback {
         }
 
         @Override
-        public void onEndTick(MinecraftClient client) {
+        public void onEndTick(Minecraft client) {
             if (firstTick) {
                 ClientReadyCallback.EVENT.invoker().onClientPostInit(client);
                 firstTick = false;

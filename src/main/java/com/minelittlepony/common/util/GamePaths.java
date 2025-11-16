@@ -1,8 +1,7 @@
 package com.minelittlepony.common.util;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-
+import net.minecraft.client.Minecraft;
 import java.nio.file.Path;
 
 /**
@@ -35,7 +34,7 @@ public class GamePaths {
      * Gets the current game's assets directory as a Path.
      */
     public static Path getAssetsDirectory() {
-        return ((AssetsDirProvider) MinecraftClient.getInstance()).getAssetsDirectory();
+        return ((AssetsDirProvider) Minecraft.getInstance()).getAssetsDirectory();
     }
 
     public interface AssetsDirProvider {

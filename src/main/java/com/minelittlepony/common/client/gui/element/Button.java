@@ -14,24 +14,25 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.style.IStyled;
 import com.minelittlepony.common.client.gui.style.Style;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextConsumer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.DrawContext.HoverType;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.cursor.Cursor;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.ButtonTextures;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.tooltip.TooltipPositioner;
-import net.minecraft.client.gui.tooltip.TooltipState;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.platform.cursor.CursorType;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.components.WidgetTooltipHolder;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
 /**
  * A stylable button element.
@@ -42,11 +43,11 @@ import net.minecraft.util.math.MathHelper;
  * @author     Sollace
  *
  */
-public class Button extends PressableWidget implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
-    protected static final ButtonTextures TEXTURES = new ButtonTextures(
-            Identifier.ofVanilla("widget/button"),
-            Identifier.ofVanilla("widget/button_disabled"),
-            Identifier.ofVanilla("widget/button_highlighted")
+public class Button extends AbstractButton implements IBounded, ITextContext, IStyled<Button>, ITickableElement {
+    protected static final WidgetSprites TEXTURES = new WidgetSprites(
+            Identifier.withDefaultNamespace("widget/button"),
+            Identifier.withDefaultNamespace("widget/button_disabled"),
+            Identifier.withDefaultNamespace("widget/button_highlighted")
     );
 
     private Style style = new Style();
@@ -66,23 +67,23 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     public Button(int x, int y, int width, int height) {
-        super(x, y, width, height, ScreenTexts.EMPTY);
-        tooltip = new TooltipState() {
+        super(x, y, width, height, CommonComponents.EMPTY);
+        tooltip = new WidgetTooltipHolder() {
             @Override
-            public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, boolean focused, ScreenRect navigationFocus) {
+            public void refreshTooltipForNextRenderPass(GuiGraphics context, int mouseX, int mouseY, boolean hovered, boolean focused, ScreenRectangle navigationFocus) {
                 getStyle().getTooltip().ifPresentOrElse(tooltip -> {
                     if (tooltip != prevTooltip) {
                         prevTooltip = tooltip;
                         setTooltip(tooltip.toTooltip(Button.this));
                     }
                 }, () -> setTooltip(null));
-                super.render(context, mouseX, mouseY, hovered, focused, navigationFocus);
+                super.refreshTooltipForNextRenderPass(context, mouseX, mouseY, hovered, focused, navigationFocus);
             }
 
             @Override
-            public TooltipPositioner createPositioner(ScreenRect focus, boolean hovered, boolean focused) {
-                final TooltipPositioner positioner = super.createPositioner(focus, hovered, focused);
-                return (sw, sh, x, y, w, h) -> positioner.getPosition(sw, sh, x, y, w, h).add(getStyle().toolTipX, getStyle().toolTipY, new Vector2i());
+            public ClientTooltipPositioner createTooltipPositioner(ScreenRectangle focus, boolean hovered, boolean focused) {
+                final ClientTooltipPositioner positioner = super.createTooltipPositioner(focus, hovered, focused);
+                return (sw, sh, x, y, w, h) -> positioner.positionTooltip(sw, sh, x, y, w, h).add(getStyle().toolTipX, getStyle().toolTipY, new Vector2i());
             }
         };
         bounds = new Bounds(y, x, width, height);
@@ -188,12 +189,12 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
     }
 
     @Override
-    public void appendClickableNarrations(NarrationMessageBuilder narrationMsg) {
-        getStyle().getTooltip().ifPresent(tooltip -> tooltip.appendNarrations(narrationMsg));
+    public void updateWidgetNarration(NarrationElementOutput narrationMsg) {
+        getStyle().getTooltip().ifPresent(tooltip -> tooltip.updateNarration(narrationMsg));
     }
 
     @Override
-    public void onPress(AbstractInput input) {
+    public void onPress(InputWithModifiers input) {
         action.accept(this);
     }
 
@@ -207,24 +208,18 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         return active && visible && getBounds().contains(mouseX, mouseY);
     }
 
-    protected Cursor getCursor(int mouseX, int mouseY) {
-        return StandardCursors.POINTING_HAND;
+    protected CursorType getCursor(int mouseX, int mouseY) {
+        return CursorTypes.POINTING_HAND;
     }
 
-    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(
-                RenderPipelines.GUI_TEXTURED,
-                TEXTURES.get(active, isSelected()),
-                getX(), getY(),
-                getWidth(), getHeight(),
-                ColorHelper.getWhite(alpha)
-        );
+    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isHoveredOrFocused()), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
     }
 
     @Override
-    protected void drawIcon(DrawContext context, int mouseX, int mouseY, float tickDelta) {
-        this.hovered = isMouseOver(mouseX, mouseY);
-        MinecraftClient mc = MinecraftClient.getInstance();
+    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
+        isHovered = isMouseOver(mouseX, mouseY);
+        Minecraft mc = Minecraft.getInstance();
         renderBackground(context, mc, mouseX, mouseY);
         setMessage(getStyle().getText());
         if (getStyle().hasIcon()) {
@@ -237,17 +232,17 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
         } else if (isHovered()) {
             foreColor = 16777120;
         }
-        int color = foreColor | MathHelper.ceil(alpha * 255F) << 24;
+        int color = foreColor | Mth.ceil(alpha * 255F) << 24;
 
-        renderForeground(context, context.getTextConsumer(HoverType.NONE, style -> style.withColor(color)), mouseX, mouseY);
+        renderForeground(context, context.textRenderer(HoveredTextEffects.NONE, style -> style.withColor(color)), mouseX, mouseY);
         if (getBounds().contains(mouseX, mouseY)) {
-            context.setCursor(isInteractable() ? getCursor(mouseX, mouseY) : StandardCursors.NOT_ALLOWED);
+            context.requestCursor(isActive() ? getCursor(mouseX, mouseY) : CursorTypes.NOT_ALLOWED);
         }
     }
 
-    protected void renderForeground(DrawContext context, TextConsumer drawer, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphics context, ActiveTextCollector drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
         int left = getStyle().getIcon().getBounds().right();
-        drawer.text(getStyle().getText(), bounds.left + left, bounds.right() - 2, bounds.top, bounds.bottom());
+        drawer.acceptScrollingWithDefaultCenter(getStyle().getText(), bounds.left + left, bounds.right() - 2, bounds.top, bounds.bottom());
     }
 }

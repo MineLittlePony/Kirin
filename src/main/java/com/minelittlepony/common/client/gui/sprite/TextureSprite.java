@@ -2,14 +2,14 @@ package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 public class TextureSprite implements ISprite {
 
-    private Identifier texture = Identifier.ofVanilla("widget/button");
+    private Identifier texture = Identifier.withDefaultNamespace("widget/button");
 
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
     private final Bounds textureBounds = new Bounds(0, 0, 256, 256);
@@ -49,20 +49,20 @@ public class TextureSprite implements ISprite {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
-        context.drawTexture(
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+        context.blit(
                 RenderPipelines.GUI_TEXTURED,
                 texture,
                 x + bounds.left, y + bounds.top,
                 textureBounds.left, textureBounds.top,
                 bounds.width, bounds.height,
                 textureBounds.width, textureBounds.height,
-                ColorHelper.getWhite(alpha));
+                ARGB.white(alpha));
     }
 
     @Override

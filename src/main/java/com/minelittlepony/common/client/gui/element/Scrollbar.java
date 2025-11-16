@@ -6,15 +6,15 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.IBounded;
 import com.minelittlepony.common.client.gui.scrollable.ScrollOrientation;
 import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.sounds.SoundEvents;
 
 /**
  * A scrollbar for interacting with scrollable UI elements.
@@ -23,7 +23,7 @@ import net.minecraft.sound.SoundEvents;
  *
  * @author     Sollace
  */
-public class Scrollbar implements Element, Drawable, IBounded {
+public class Scrollbar implements Renderable, GuiEventListener, IBounded {
 
     public static final int SCROLLBAR_THICKNESS = 6;
 
@@ -111,7 +111,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
         if (scrubber.getMaximum() <= 0) {
             return;
         }
@@ -122,12 +122,12 @@ public class Scrollbar implements Element, Drawable, IBounded {
         if (getBounds().contains(mouseX, mouseY)) {
             float position = scrubber.getGrabPosition(orientation.pick(mouseX, mouseY));
             if (position >= 0 && position <= 1) {
-                context.setCursor(orientation == ScrollOrientation.VERTICAL ? StandardCursors.RESIZE_NS : StandardCursors.RESIZE_EW);
+                context.requestCursor(orientation == ScrollOrientation.VERTICAL ? CursorTypes.RESIZE_NS : CursorTypes.RESIZE_EW);
             }
         }
     }
 
-    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, DrawContext context) {
+    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, GuiGraphics context) {
         int scrubberStart = scrubber.getStart();
         int scrubberEnd = scrubberStart + scrubber.getLength();
 
@@ -138,17 +138,17 @@ public class Scrollbar implements Element, Drawable, IBounded {
         );
     }
 
-    private void renderBackground(DrawContext context, int top, int left, int bottom, int right) {
+    private void renderBackground(GuiGraphics context, int top, int left, int bottom, int right) {
         context.fill(left, top, right, bottom, 0x96000000);
     }
 
-    private void renderBar(DrawContext context, int left, int right, int top, int bottom) {
+    private void renderBar(GuiGraphics context, int left, int right, int top, int bottom) {
         context.fill(left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
         context.fill(left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
         double internalMouseY = calculateInternalYPosition(click.y());
         double internalMouseX = calculateInternalXPosition(click.x());
 
@@ -182,7 +182,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean mouseDragged(Click click, double differX, double differY) {
+    public boolean mouseDragged(MouseButtonEvent click, double differX, double differY) {
         double change = -orientation.pick(differX, differY);
 
         if (dragging) {
@@ -196,7 +196,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean mouseReleased(Click click) {
+    public boolean mouseReleased(MouseButtonEvent click) {
         dragging = touching = false;
 
         return isMouseOver(click);
@@ -209,7 +209,7 @@ public class Scrollbar implements Element, Drawable, IBounded {
         scrubber.scrollBy(-amount, true);
     }
 
-    public boolean isMouseOver(Click click) {
+    public boolean isMouseOver(MouseButtonEvent click) {
         double mouseX = calculateInternalXPosition(click.x());
         double mouseY = calculateInternalYPosition(click.y());
         return scrubber.getMaximum() > 0 && getBounds().contains(mouseX, mouseY);
@@ -233,21 +233,21 @@ public class Scrollbar implements Element, Drawable, IBounded {
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         if (isFocused()) {
-            if (input.getKeycode() == orientation.pick(InputUtil.GLFW_KEY_LEFT, InputUtil.GLFW_KEY_UP)) {
+            if (input.input() == orientation.pick(InputConstants.KEY_LEFT, InputConstants.KEY_UP)) {
                 scrubber.scrollBy(-10, true);
                 return true;
             }
-            if (input.getKeycode() == orientation.pick(InputUtil.GLFW_KEY_RIGHT, InputUtil.GLFW_KEY_DOWN)) {
+            if (input.input() == orientation.pick(InputConstants.KEY_RIGHT, InputConstants.KEY_DOWN)) {
                 scrubber.scrollBy(10, true);
                 return true;
             }
-            if (input.getKeycode() == InputUtil.GLFW_KEY_END) {
+            if (input.input() == InputConstants.KEY_END) {
                 scrubber.scrollToEnd(true);
                 return true;
             }
-            if (input.getKeycode() == InputUtil.GLFW_KEY_HOME) {
+            if (input.input() == InputConstants.KEY_HOME) {
                 scrubber.scrollToBeginning(true);
                 return true;
             }

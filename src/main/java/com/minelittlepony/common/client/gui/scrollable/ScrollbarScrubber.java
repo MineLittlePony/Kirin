@@ -2,8 +2,8 @@ package com.minelittlepony.common.client.gui.scrollable;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 
 public class ScrollbarScrubber {
 
@@ -59,7 +59,7 @@ public class ScrollbarScrubber {
     }
 
     public void scrollTo(int position, boolean animate) {
-        targetPosition = MathHelper.clamp(position, 0, maximumPosition);
+        targetPosition = Mth.clamp(position, 0, maximumPosition);
         if (!animate) {
             currentPosition = targetPosition;
         }
@@ -75,9 +75,9 @@ public class ScrollbarScrubber {
 
         maximumPosition = (int)Math.max(0, contentLength - containerLength);
         scrollSpeed = containerLength == 0 ? 1 : contentLength / containerLength;
-        scrollSpeed *= (float)MinecraftClient.getInstance().getWindow().getScaleFactor() / 3F;
+        scrollSpeed *= Minecraft.getInstance().getWindow().getGuiScale() / 3F;
 
-        scrubberLength = (int)MathHelper.clamp(containerLength - (float)Math.sqrt(maximumPosition), 15, containerLength / 2);
+        scrubberLength = (int)Mth.clamp(containerLength - (float)Math.sqrt(maximumPosition), 15, containerLength / 2);
         gapLength = (int)containerLength - scrubberLength;
 
         scrollTo(targetPosition, false);
@@ -107,6 +107,6 @@ public class ScrollbarScrubber {
             return 2;
         }
 
-        return MathHelper.clamp((float)(coord - scrubberStart) / scrubberLength, 0, 1);
+        return Mth.clamp((float)(coord - scrubberStart) / scrubberLength, 0, 1);
     }
 }

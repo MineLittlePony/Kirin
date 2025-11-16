@@ -5,11 +5,11 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.minelittlepony.common.event.ScreenInitCallback;
 
-import net.minecraft.client.gui.AbstractParentElement;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Screen.class)
-abstract class MixinScreen extends AbstractParentElement implements Drawable, IViewRootDefaultImpl {
+abstract class MixinScreen extends AbstractContainerEventHandler implements Renderable, IViewRootDefaultImpl {
     private final Bounds bounds = new Bounds(0, 0, 0, 0);
     private final Padding padding = new Padding(0, 0, 0, 0);
 
@@ -36,12 +36,12 @@ abstract class MixinScreen extends AbstractParentElement implements Drawable, IV
     }
 
     @Override
-    @Accessor("selectables")
-    public abstract List<Selectable> buttons();
+    @Accessor("narratables")
+    public abstract List<NarratableEntry> buttons();
 
-    @Invoker("addDrawableChild")
+    @Invoker("addRenderableWidget")
     @Override
-    public abstract <T extends Element & Drawable & Selectable> T addButton(T button);
+    public abstract <T extends GuiEventListener & Renderable & NarratableEntry> T addButton(T button);
 
     @Inject(method = "init(II)V", at = @At("RETURN"))
     private void onInit(int w, int h, CallbackInfo ci) {

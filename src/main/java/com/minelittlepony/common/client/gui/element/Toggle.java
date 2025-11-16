@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
 import com.minelittlepony.common.client.gui.IField;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextConsumer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.input.AbstractInput;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 
 /**
  * Implements a toggle (switch) element with two states (ON/OFF).
@@ -67,8 +67,8 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
 
         // The text label sits outside the bounds of the main toggle widget,
         // so we have to include that in our calculations.
-        Text label = getStyle().getText();
-        int labelWidth = MinecraftClient.getInstance().textRenderer.getWidth(label);
+        Component label = getStyle().getText();
+        int labelWidth = Minecraft.getInstance().font.width(label);
 
         bounds.width = labelWidth > 0 ? Math.max(bounds.width, width + 10 + labelWidth) : width;
 
@@ -76,36 +76,36 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    public void onPress(AbstractInput input) {
+    public void onPress(InputWithModifiers input) {
         super.onPress(input);
         setValue(!on);
     }
 
     @Override
-    protected void renderBackground(DrawContext context, MinecraftClient mc, int mouseX, int mouseY) {
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURES.get(false, isSelected()), getX(), getY(), getWidth(), getHeight(), ColorHelper.getWhite(alpha));
+    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(false, isFocused()), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
         int sliderX = getX() + (on ? getWidth() - 8 : 0);
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isSelected()), sliderX, getY(), 8, getHeight(), ColorHelper.getWhite(alpha));
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isFocused()), sliderX, getY(), 8, getHeight(), ARGB.white(alpha));
     }
 
     @Override
-    protected void renderForeground(DrawContext context, TextConsumer drawer, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphics context, ActiveTextCollector drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
-        Text text = getStyle().getText();
-        drawer.text(text, getX() + width + 10, bounds.right() - 2, bounds.top, bounds.bottom());
+        Component text = getStyle().getText();
+        drawer.acceptScrollingWithDefaultCenter(text, getX() + width + 10, bounds.right() - 2, bounds.top, bounds.bottom());
     }
 
     @Override
-    protected MutableText getNarrationMessage() {
-        return Text.translatable("narration.checkbox", getMessage());
+    protected MutableComponent createNarrationMessage() {
+        return Component.translatable("narration.checkbox", getMessage());
     }
 
     @Override
-    public void appendClickableNarrations(NarrationMessageBuilder builder) {
-        super.appendClickableNarrations(builder);
-        builder.put(NarrationPart.TITLE, getNarrationMessage());
+    public void updateWidgetNarration(NarrationElementOutput builder) {
+        super.updateWidgetNarration(builder);
+        builder.add(NarratedElementType.TITLE, createNarrationMessage());
         if (active) {
-            builder.put(NarrationPart.USAGE, Text.translatable("narration.checkbox.usage." + (isFocused() ? "focused" : "hovered")));
+            builder.add(NarratedElementType.USAGE, Component.translatable("narration.checkbox.usage." + (isFocused() ? "focused" : "hovered")));
         }
     }
 }

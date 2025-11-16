@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.throwables.MixinException;
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 import com.minelittlepony.common.client.gui.dimension.Padding;
 
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.screens.Screen;
 
 @InternalApi
 public interface IViewRootDefaultImpl extends IViewRoot, ITextContext {
@@ -22,14 +22,14 @@ public interface IViewRootDefaultImpl extends IViewRoot, ITextContext {
     @Override
     default Padding getContentPadding() { throw applicationFailed(); }
     @Override
-    default <T extends Element & Drawable & Selectable> List<Selectable> buttons() { throw applicationFailed(); }
+    default List<NarratableEntry> buttons() { throw applicationFailed(); }
     @Override
-    default <T extends Element & Drawable & Selectable> T addButton(T button) { throw applicationFailed(); }
+    default <T extends GuiEventListener & Renderable & NarratableEntry> T addButton(T button) { throw applicationFailed(); }
 
     @SuppressWarnings("unchecked")
     @Override
-    default List<Element> getChildElements() {
-        return (List<Element>) ((Screen) this).children();
+    default List<GuiEventListener> getChildElements() {
+        return (List<GuiEventListener>) ((Screen) this).children();
     }
 
     private static MixinException applicationFailed() {
