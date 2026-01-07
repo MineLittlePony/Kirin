@@ -75,10 +75,23 @@ class KirinTestScreen extends GameGui {
             .getStyle()
                 .setText("Slider")
                 .setTooltip("This is a slider");
-        content.addButton(new EnumSlider<>(LEFT, row += 20, VisibilityMode.AUTO))
-            .setTextFormat(slider -> Text.literal("Visibility Mode: " + slider.getValue().name()))
+        content.addButton(new Slider(LEFT, row += 20, 0, 100, 50))
+            .setEnabled(false)
             .getStyle()
-                .setTooltip("This is a enum slider! It has a set number of possible values");
+                .setText("Slider")
+                .setTooltip("This is a DISABLED slider");
+        for (int i = 0; i < 2; i++) {
+            content.addButton(new EnumSlider<>(LEFT, row += 20, VisibilityMode.AUTO))
+                .setTextFormat(slider -> Text.literal("Visibility Mode: " + slider.getValue().name()))
+                .setEnabled(i == 0)
+                .getStyle()
+                    .setTooltip("This is a enum slider! It has a set number of possible values");
+        }
+        row += 10;
+        for (int i = 0; i < 3; i++) {
+            content.addButton(new Toggle(LEFT, row += 20, true))
+                .getStyle().setText("This is a toggle AAAAH WA LA LALALALALALA");
+        }
         content.addButton(new Cycler(LEFT, row += 20, 100, 20))
             .setStyles(
                     new Style().setText("One").setTooltip("Keep clicking and I will cycle back to the beginning!"),
@@ -118,6 +131,7 @@ class KirinTestScreen extends GameGui {
         }
         for (int i = 0; i < 10; i++) {
             content.addButton(new Button(RIGHT, row += 20, 180, 20))
+                .setEnabled(i % 5 == 0)
                 .getStyle()
                     .setText("Right Button " + i)
                     .setTooltip("Right");
