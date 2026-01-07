@@ -39,7 +39,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     private static final Identifier HANDLE_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("widget/slider_handle_highlighted");
 
     protected static final ButtonTextures TEXTURES = new ButtonTextures(TEXTURE, TEXTURE, HIGHLIGHTED_TEXTURE);
-    protected static final ButtonTextures HANDLE_TEXTURES = new ButtonTextures(HANDLE_TEXTURE, HANDLE_TEXTURE, HANDLE_HIGHLIGHTED_TEXTURE);
+    protected static final ButtonTextures HANDLE_TEXTURES = new ButtonTextures(HANDLE_TEXTURE, TEXTURE, HANDLE_HIGHLIGHTED_TEXTURE);
 
     public static final int SLIDER_WIDTH = 8;
     public static final int HALF_SLIDER_WIDTH = SLIDER_WIDTH / 2;
