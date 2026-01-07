@@ -204,7 +204,7 @@ public class Button extends PressableWidget implements IBounded, ITextContext, I
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return active && visible && getBounds().contains(mouseX, mouseY);
+        return visible && getBounds().contains(mouseX, mouseY);
     }
 
     protected Cursor getCursor(int mouseX, int mouseY) {
