@@ -92,7 +92,7 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     protected void renderForeground(DrawContext context, TextConsumer drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
         Text text = getStyle().getText();
-        drawer.text(text, getX() + width + 10, bounds.right() - 2, bounds.top, bounds.bottom());
+        drawer.text(text, getX() + width, bounds.right() - 5, bounds.top, bounds.bottom());
     }
 
     @Override
