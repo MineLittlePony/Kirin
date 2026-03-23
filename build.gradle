@@ -23,8 +23,6 @@ description = project.displayname
 archivesBaseName = project.name
 
 loom {
-    //useLegacyMixinAp = true
-    //mixin.defaultRefmapName = 'kirin.mixin.refmap.json'
     accessWidenerPath = file('src/main/resources/kirin.aw')
 }
 

@@ -1,0 +1,6 @@
+{
+  "gui.narrate.selector": "%s Селектор",
+  
+  "narration.selector.usage.focused": "Нажмите Enter, чтобы изменить значение",
+  "narration.selector.usage.hovered": "ЛКМ, чтобы изменить значение"
+}

@@ -205,7 +205,7 @@ public class Button extends AbstractButton implements IBounded, ITextContext, IS
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return active && visible && getBounds().contains(mouseX, mouseY);
+        return visible && getBounds().contains(mouseX, mouseY);
     }
 
     protected CursorType getCursor(int mouseX, int mouseY) {
