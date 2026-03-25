@@ -4,8 +4,8 @@
   "package": "com.minelittlepony.common.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "MixinMinecraftClient",
-    "MixinPlayerSkinTexture",
+    "MixinMinecraft",
+    "MixinSkinTextureDownloader",
     "MixinScreen",
     "MixinTooltip"
   ],

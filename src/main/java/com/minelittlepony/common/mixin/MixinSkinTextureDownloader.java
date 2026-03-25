@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SkinTextureDownloader.class)
-abstract class MixinPlayerSkinTexture {
+abstract class MixinSkinTextureDownloader {
     private static final String FILTER_IMAGE = "processLegacySkin(Lcom/mojang/blaze3d/platform/NativeImage;Ljava/lang/String;)Lcom/mojang/blaze3d/platform/NativeImage;";
     private static final String STRIP_COLOR = "net/minecraft/client/renderer/texture/SkinTextureDownloader.doNotchTransparencyHack(Lcom/mojang/blaze3d/platform/NativeImage;IIII)V";
     private static final String STRIP_ALPHA = "net/minecraft/client/renderer/texture/SkinTextureDownloader.setNoAlpha(Lcom/mojang/blaze3d/platform/NativeImage;IIII)V";
