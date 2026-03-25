@@ -12,6 +12,7 @@ import net.minecraft.client.main.GameConfig;
 import java.nio.file.Path;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 abstract class MixinMinecraft implements AssetsDirProvider {
+    @Unique
     private Path assetsDirectory;
 
     @Inject(method = "<init>", at = @At(
@@ -34,13 +36,13 @@ abstract class MixinMinecraft implements AssetsDirProvider {
         return assetsDirectory;
     }
 
-    @Inject(method = "resizeDisplay()V", at = @At(
+    @Inject(method = "resizeGui()V", at = @At(
             value = "INVOKE",
             target = "net/minecraft/client/gui/screens/Screen.resize(II)V",
             shift = Shift.AFTER
         )
     )
-    private void onOnResolutionChanged(CallbackInfo ci) {
+    private void onResizeGui(CallbackInfo ci) {
         Minecraft client = Minecraft.getInstance();
         if (client.screen instanceof IViewRoot root) {
             Bounds bounds = root.getBounds();
@@ -50,7 +52,7 @@ abstract class MixinMinecraft implements AssetsDirProvider {
         }
     }
 
-    @Inject(method = "tick()V", at = @At("HEAD"))
+    @Inject(method = "runTick(Z)V", at = @At("HEAD"))
     public void onTick(CallbackInfo info) {
         Minecraft client = Minecraft.getInstance();
         if (client.screen instanceof IViewRoot root) {
