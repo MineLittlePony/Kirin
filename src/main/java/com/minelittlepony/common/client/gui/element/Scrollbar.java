@@ -44,15 +44,6 @@ public class Scrollbar implements Renderable, GuiEventListener, IBounded {
      */
     public boolean layoutToEnd;
 
-    /**
-     * @deprecated Will be removed in MC1.22. This is the equivalent of calling new Scrollbar(rootView, ScrollOrientation.VERTICAL)
-     * @param rootView
-     */
-    @Deprecated(forRemoval = true)
-    public Scrollbar(IViewRoot rootView) {
-        this(rootView, ScrollOrientation.VERTICAL);
-    }
-
     public Scrollbar(IViewRoot rootView, ScrollOrientation orientation) {
         this.rootView = rootView;
         this.orientation = orientation;
@@ -82,32 +73,12 @@ public class Scrollbar implements Renderable, GuiEventListener, IBounded {
         scrubber.reposition(containerBounds, contentBounds);
     }
 
-    /**
-     * Gets the vertical scroll amount.
-     *
-     * @deprecated Will be removed in MC1.22. Use scrubber.getPosition() instead.
-     */
-    @Deprecated(forRemoval = true)
-    public int getVerticalScrollAmount() {
-        return orientation == ScrollOrientation.VERTICAL ? scrubber.getPosition() : 0;
-    }
-
     public ScrollOrientation getOrientation() {
         return orientation;
     }
 
     public ScrollbarScrubber getScrubber() {
         return scrubber;
-    }
-
-    /**
-     * Gets the vertical scroll amount.
-     *
-     * @deprecated Will be removed in MC1.22. Use scrubber.getPosition() instead.
-     */
-    @Deprecated(forRemoval = true)
-    public int getHorizontalScrollAmount() {
-        return orientation == ScrollOrientation.HORIZONTAL ? scrubber.getPosition() : 0;
     }
 
     @Override

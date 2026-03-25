@@ -13,11 +13,6 @@ import com.mojang.serialization.Codec;
  * A configuration container that lets you programmatically index values by a key.
  */
 public abstract class Config implements Iterable<Grouping> {
-    /**
-     * @deprecated Will be removed in MC1.22. Use HEIRARCHICAL_JSON_ADAPTER instead! It's backwards compatible! :D
-     */
-    @Deprecated(forRemoval = true)
-    public static final Adapter FLATTENED_JSON_ADAPTER = LegacyJsonConfigAdapter.DEFAULT;
     public static final Adapter HEIRARCHICAL_JSON_ADAPTER = HeirarchicalJsonConfigAdapter.DEFAULT;
 
     private final Map<String, Grouping> categories = new HashMap<>();
@@ -96,31 +91,6 @@ public abstract class Config implements Iterable<Grouping> {
         return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>(), new ArrayList<>())))
                 .map()
                 .computeIfAbsent(key.toLowerCase(), k -> new Value<>(key, type));
-    }
-
-    /**
-     * @deprecated Will be removed in MC1.22. Use getCategory(category) instead!
-     */
-    @Deprecated(forRemoval = true)
-    public Iterable<Setting<?>> getByCategory(String category) {
-        return categories.get(category).entries();
-    }
-
-    /**
-     * @deprecated Will be removed in MC1.22. Use getCategory(category).get(key) instead!
-     */
-    @Deprecated(forRemoval = true)
-    @SuppressWarnings("unchecked")
-    public <T> Setting<T> get(String key) {
-        return (Setting<T>)categories.values().stream().flatMap(c -> c.stream()).filter(entry -> entry.name().equalsIgnoreCase(key)).findFirst().orElse(null);
-    }
-
-    /**
-     * @deprecated Will be removed in MC1.22. Use getCategory(category).containsKey(key) instead!
-     */
-    @Deprecated(forRemoval = true)
-    public boolean containsKey(String key) {
-        return get(key) != null;
     }
 
     public Iterable<String> categoryNames() {
