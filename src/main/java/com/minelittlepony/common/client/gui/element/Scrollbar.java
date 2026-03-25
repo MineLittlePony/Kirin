@@ -9,7 +9,7 @@ import com.minelittlepony.common.client.gui.scrollable.ScrollbarScrubber;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.KeyEvent;
@@ -111,7 +111,7 @@ public class Scrollbar implements Renderable, GuiEventListener, IBounded {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
         if (scrubber.getMaximum() <= 0) {
             return;
         }
@@ -127,7 +127,7 @@ public class Scrollbar implements Renderable, GuiEventListener, IBounded {
         }
     }
 
-    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, GuiGraphics context) {
+    private void renderScrubber(ScrollbarScrubber scrubber, ScrollOrientation orientation, GuiGraphicsExtractor context) {
         int scrubberStart = scrubber.getStart();
         int scrubberEnd = scrubberStart + scrubber.getLength();
 
@@ -138,11 +138,11 @@ public class Scrollbar implements Renderable, GuiEventListener, IBounded {
         );
     }
 
-    private void renderBackground(GuiGraphics context, int top, int left, int bottom, int right) {
+    private void renderBackground(GuiGraphicsExtractor context, int top, int left, int bottom, int right) {
         context.fill(left, top, right, bottom, 0x96000000);
     }
 
-    private void renderBar(GuiGraphics context, int left, int right, int top, int bottom) {
+    private void renderBar(GuiGraphicsExtractor context, int left, int right, int top, int bottom) {
         context.fill(left, top, right,     bottom,     dragging ? 0xFF80808A : 0xFF808080);
         context.fill(left, top, right - 1, bottom - 1, dragging ? 0xFFC0C0FC : 0xFFC0C0C0);
     }

@@ -3,7 +3,7 @@ package com.minelittlepony.common.client.gui;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -59,10 +59,10 @@ public class OutsideWorldRenderer {
      * @param x The left-X position (in pixels)
      * @param y The top-Y position (in pixels)
      */
-    public static void renderStack(GuiGraphics context, ItemStack stack, int x, int y) {
+    public static void renderStack(GuiGraphicsExtractor context, ItemStack stack, int x, int y) {
         try {
             configure();
         } catch (Throwable ignored) {}
-        context.renderFakeItem(stack, x, y);
+        context.fakeItem(stack, x, y);
     }
 }

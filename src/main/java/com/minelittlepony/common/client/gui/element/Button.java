@@ -19,8 +19,8 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.GuiGraphics.HoveredTextEffects;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.WidgetTooltipHolder;
@@ -70,7 +70,7 @@ public class Button extends AbstractButton implements IBounded, ITextContext, IS
         super(x, y, width, height, CommonComponents.EMPTY);
         tooltip = new WidgetTooltipHolder() {
             @Override
-            public void refreshTooltipForNextRenderPass(GuiGraphics context, int mouseX, int mouseY, boolean hovered, boolean focused, ScreenRectangle navigationFocus) {
+            public void refreshTooltipForNextRenderPass(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, boolean focused, ScreenRectangle navigationFocus) {
                 getStyle().getTooltip().ifPresentOrElse(tooltip -> {
                     if (tooltip != prevTooltip) {
                         prevTooltip = tooltip;
@@ -212,12 +212,12 @@ public class Button extends AbstractButton implements IBounded, ITextContext, IS
         return CursorTypes.POINTING_HAND;
     }
 
-    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphicsExtractor context, Minecraft mc, int mouseX, int mouseY) {
         context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isHoveredOrFocused()), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
     }
 
     @Override
-    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float tickDelta) {
+    protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float tickDelta) {
         isHovered = isMouseOver(mouseX, mouseY);
         Minecraft mc = Minecraft.getInstance();
         renderBackground(context, mc, mouseX, mouseY);
@@ -240,7 +240,7 @@ public class Button extends AbstractButton implements IBounded, ITextContext, IS
         }
     }
 
-    protected void renderForeground(GuiGraphics context, ActiveTextCollector drawer, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphicsExtractor context, ActiveTextCollector drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
         int left = getStyle().getIcon().getBounds().right();
         drawer.acceptScrollingWithDefaultCenter(getStyle().getText(), bounds.left + left, bounds.right() - 2, bounds.top, bounds.bottom());

@@ -11,7 +11,7 @@ import io.netty.buffer.ByteBuf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
@@ -169,7 +169,7 @@ public class Bounds {
      * Useful for debugging.
      */
     @Environment(EnvType.CLIENT)
-    public void draw(GuiGraphics context, int tint) {
+    public void draw(GuiGraphicsExtractor context, int tint) {
         context.fill(left, top, left + width, top + height, tint);
     }
 
@@ -194,12 +194,12 @@ public class Bounds {
      * @param context
      */
     @Environment(EnvType.CLIENT)
-    public void scissor(GuiGraphics context) {
+    public void scissor(GuiGraphicsExtractor context) {
         context.enableScissor(left, top, right(), bottom());
     }
 
     @Environment(EnvType.CLIENT)
-    public void debugMeasure(GuiGraphics context) {
+    public void debugMeasure(GuiGraphicsExtractor context) {
         Window window = Minecraft.getInstance().getWindow();
         context.fill(left, -1000, left + 1, window.getGuiScaledHeight() * 9, 0xFFFFFFFF);
         context.fill(left + width, -1000, left + width + 1, window.getGuiScaledHeight() * 9, 0xFFFFFFFF);

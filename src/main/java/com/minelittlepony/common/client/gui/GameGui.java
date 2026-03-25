@@ -9,7 +9,7 @@ import com.minelittlepony.common.client.gui.dimension.Padding;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
@@ -106,12 +106,12 @@ public class GameGui extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
-        super.render(context, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(context, mouseX, mouseY, partialTicks);
         drawDebugOverlays(context, mouseX, mouseY);
     }
 
-    private void drawDebugOverlays(GuiGraphics context, int mouseX, int mouseY) {
+    private void drawDebugOverlays(GuiGraphicsExtractor context, int mouseX, int mouseY) {
         if (drawDebugBounds || drawAllDebugBounds) {
             context.pose().pushMatrix();
             Padding padding = getContentPadding();

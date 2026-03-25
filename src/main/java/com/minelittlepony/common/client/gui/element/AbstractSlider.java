@@ -10,7 +10,7 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -186,7 +186,7 @@ public abstract class AbstractSlider<T> extends Button implements IField<T, Abst
     }
 
     @Override
-    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphicsExtractor context, Minecraft mc, int mouseX, int mouseY) {
         context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isHoveredOrFocused() && !handleFocused), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
         context.blitSprite(RenderPipelines.GUI_TEXTURED, HANDLE_TEXTURES.get(active, isHoveredOrFocused() && handleFocused), getX() + getSliderX(), getY(), 8, getHeight(), ARGB.white(alpha));
     }

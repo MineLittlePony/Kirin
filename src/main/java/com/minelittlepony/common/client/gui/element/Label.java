@@ -4,7 +4,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.MutableComponent;
@@ -59,7 +59,7 @@ public class Label extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
         int textY = (int)(getY() + Minecraft.getInstance().font.lineHeight/1.5F);
 
         if (center) {

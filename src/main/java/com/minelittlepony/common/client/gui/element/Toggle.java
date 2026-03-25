@@ -10,7 +10,7 @@ import com.minelittlepony.common.client.gui.dimension.Bounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -82,14 +82,14 @@ public class Toggle extends Button implements IField<Boolean, Toggle> {
     }
 
     @Override
-    protected void renderBackground(GuiGraphics context, Minecraft mc, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphicsExtractor context, Minecraft mc, int mouseX, int mouseY) {
         context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(false, isFocused()), getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
         int sliderX = getX() + (on ? getWidth() - 8 : 0);
         context.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURES.get(active, isFocused()), sliderX, getY(), 8, getHeight(), ARGB.white(alpha));
     }
 
     @Override
-    protected void renderForeground(GuiGraphics context, ActiveTextCollector drawer, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphicsExtractor context, ActiveTextCollector drawer, int mouseX, int mouseY) {
         Bounds bounds = getBounds();
         Component text = getStyle().getText();
         drawer.acceptScrollingWithDefaultCenter(text, getX() + width, bounds.right() - 5, bounds.top, bounds.bottom());

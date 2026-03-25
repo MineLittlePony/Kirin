@@ -1,6 +1,7 @@
 package com.minelittlepony.common.client.gui.sprite;
 
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
@@ -29,15 +30,15 @@ public class ItemStackSprite implements ISprite {
     }
 
     @Override
-    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta) {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
 
     @Override
-    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+    public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         if (alpha >= 0.5F) {
-            context.renderFakeItem(stack, x + 2, y + 2);
+            context.fakeItem(stack, x + 2, y + 2);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.minelittlepony.common.client.gui.sprite;
 
 import com.minelittlepony.common.client.gui.dimension.Bounds;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -49,12 +49,12 @@ public class TextureSprite implements ISprite {
     }
 
     @Override
-    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta) {
+    public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta) {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
     @Override
-    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
+    public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         context.blit(
                 RenderPipelines.GUI_TEXTURED,
                 texture,
