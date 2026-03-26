@@ -54,7 +54,7 @@ public class Button extends AbstractButton implements IBounded, ITextContext, IS
 
     private final Bounds bounds;
 
-    private static final Consumer<Button> NONE = v -> {};
+    private static final Consumer<Button> NONE = _ -> {};
     @NotNull
     private Consumer<Button> action = NONE;
     @NotNull

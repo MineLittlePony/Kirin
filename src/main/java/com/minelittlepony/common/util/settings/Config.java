@@ -29,7 +29,7 @@ public abstract class Config implements Iterable<Grouping> {
                 load();
                 break;
             case DELETE:
-                categories.forEach((name, category) -> {
+                categories.forEach((_, category) -> {
                     category.entries().forEach(setting -> {
                         ((Setting<Object>)setting).set(setting.getDefault());
                     });
@@ -88,9 +88,9 @@ public abstract class Config implements Iterable<Grouping> {
      */
     @SuppressWarnings("unchecked")
     protected <T> Setting<T> value(String category, String key, Value.Type<T> type) {
-        return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, c -> new MapGrouping(new HashMap<>(), new ArrayList<>())))
+        return (Setting<T>)((MapGrouping)categories.computeIfAbsent(category, _ -> new MapGrouping(new HashMap<>(), new ArrayList<>())))
                 .map()
-                .computeIfAbsent(key.toLowerCase(), k -> new Value<>(key, type));
+                .computeIfAbsent(key.toLowerCase(), _ -> new Value<>(key, type));
     }
 
     public Iterable<String> categoryNames() {

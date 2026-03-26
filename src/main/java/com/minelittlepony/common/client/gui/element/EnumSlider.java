@@ -23,7 +23,7 @@ public class EnumSlider<T extends Enum<T>> extends AbstractSlider<T> {
         super(x, y, 0, value.getClass().getEnumConstants().length - 1, value);
         values = (T[])value.getClass().getEnumConstants();
 
-        setTextFormat(s -> Component.literal(getValue().name()));
+        setTextFormat(_ -> Component.literal(getValue().name()));
     }
 
     @Override

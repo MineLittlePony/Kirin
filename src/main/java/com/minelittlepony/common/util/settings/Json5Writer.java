@@ -29,7 +29,7 @@ public class Json5Writer extends JsonWriter {
             };
         } catch (Throwable e) {
             LOAD_FAIL = true;
-            return (self, top) -> {};
+            return (_, _) -> {};
         }
     });
     static final Function<JsonWriter, Integer> INVOKE_PEEK = Util.make(() -> {
@@ -43,7 +43,7 @@ public class Json5Writer extends JsonWriter {
             };
         } catch (Throwable e) {
             LOAD_FAIL = true;
-            return self -> -1;
+            return _ -> -1;
         }
     });
 

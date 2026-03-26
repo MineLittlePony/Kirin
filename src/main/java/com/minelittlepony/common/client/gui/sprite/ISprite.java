@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface ISprite extends IBounded {
 
-    ISprite EMPTY = (m, x, y, mx, my, t) -> {};
+    ISprite EMPTY = (_, _, _, _, _, _) -> {};
 
     void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta);
 

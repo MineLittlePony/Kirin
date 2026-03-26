@@ -88,7 +88,7 @@ public interface Setting<T> extends IChangeCallback<T>, Supplier<T> {
         @SuppressWarnings("unchecked")
         JsonElement write(Setting<?> value, Gson gson) throws IOException {
             return token().map(
-                    token -> gson.toJsonTree(value, Setting.class),
+                    _ -> gson.toJsonTree(value, Setting.class),
                     codec ->  ((Codec<Object>)codec).encodeStart(JsonOps.INSTANCE, value.get()).getOrThrow()
             );
         }

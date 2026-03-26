@@ -13,7 +13,7 @@ class SettingSerializer implements JsonSerializer<Setting<?>> {
     @Override
     public JsonElement serialize(Setting<?> src, Type typeOfSrc, JsonSerializationContext context) {
         return src.getType().token().map(
-                token -> context.serialize(src.get()),
+                _ -> context.serialize(src.get()),
                 codec -> ((Codec<Object>)codec).encodeStart(JsonOps.INSTANCE, src.get()).result().orElseThrow()
         );
     }
