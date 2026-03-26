@@ -14,11 +14,14 @@ import com.minelittlepony.common.client.gui.element.Toggle;
 import com.minelittlepony.common.client.gui.packing.GridPacker;
 import com.minelittlepony.common.client.gui.packing.IPacker;
 import com.minelittlepony.common.client.gui.packing.ListPacker;
+import com.minelittlepony.common.client.gui.sprite.ItemStackSprite;
 import com.minelittlepony.common.client.gui.style.Style;
 
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
@@ -170,6 +173,14 @@ class KirinTestScreen extends GameGui {
             int l = i;
             content.addButton(new Button(0, 0)).styled(s -> s.setText("" + l)).setBounds(packer.next());
         }
+        for (var item : BuiltInRegistries.ITEM) {
+            if (item != Items.AIR) {
+                var b = new Button(0, 0);
+                b.getStyle().setIcon(new ItemStackSprite().setStack(item).setTint(CommonColors.DARK_PURPLE));
+                content.addButton(b).setBounds(packer.next());
+            }
+        }
         row = packer.next().bottom();
+
     }
 }

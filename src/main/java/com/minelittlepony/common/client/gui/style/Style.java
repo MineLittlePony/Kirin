@@ -8,7 +8,7 @@ import com.minelittlepony.common.client.gui.sprite.ItemStackSprite;
 
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 
 /**
@@ -90,7 +90,7 @@ public class Style {
      *
      * @param stack An ItemStack to render on this button
      */
-    public Style setIcon(ItemStack stack) {
+    public Style setIcon(ItemStackTemplate stack) {
         return setIcon(new ItemStackSprite().setStack(stack));
     }
 
@@ -109,7 +109,7 @@ public class Style {
      * @param stack An ItemStack to render on this button
      * @param colour If the ItemStack is dyeable, will use the defined colour.
      */
-    public Style setIcon(ItemStack stack, int colour) {
+    public Style setIcon(ItemStackTemplate stack, int colour) {
         return setIcon(new ItemStackSprite().setStack(stack).setTint(colour));
     }
 

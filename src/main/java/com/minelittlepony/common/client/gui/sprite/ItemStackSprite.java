@@ -1,31 +1,45 @@
 package com.minelittlepony.common.client.gui.sprite;
 
 
+import org.jetbrains.annotations.Nullable;
+
+import com.minelittlepony.common.util.registry.ComponentUtils;
+import com.minelittlepony.common.util.registry.ForwardingHolder;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.ItemLike;
 
 public class ItemStackSprite implements ISprite {
 
-    private ItemStack stack = ItemStack.EMPTY;
+    @Nullable
+    private ItemStackTemplate stack;
+    @Nullable
+    private ItemStack itemStack;
 
     private int tint = CommonColors.WHITE;
 
-    public ItemStackSprite setStack(ItemLike iitem) {
-        return setStack(new ItemStack(iitem));
+    public ItemStackSprite setStack(ItemLike item) {
+        return setStack(new ItemStackTemplate(item.asItem()));
     }
 
-    public ItemStackSprite setStack(ItemStack stack) {
+    public ItemStackSprite setStack(ItemStackTemplate stack) {
         this.stack = stack;
+        this.itemStack = null;
         return setTint(tint);
     }
 
     public ItemStackSprite setTint(int tint) {
         this.tint = tint;
-        stack.set(DataComponents.DYED_COLOR, new DyedItemColor(tint));
+        if (stack != null) {
+            stack = new ItemStackTemplate(stack.item(), stack.count(), ComponentUtils.copy(stack.components())
+                    .set(DataComponents.DYED_COLOR, new DyedItemColor(tint))
+                    .build());
+        }
         return this;
     }
 
@@ -34,11 +48,22 @@ public class ItemStackSprite implements ISprite {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
-
     @Override
     public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
-        if (alpha >= 0.5F) {
-            context.fakeItem(stack, x + 2, y + 2);
+        if (alpha >= 0.5F && stack != null) {
+            if (itemStack == null) {
+                if (stack.item().areComponentsBound()) {
+                    itemStack = stack.create();
+                } else {
+                    itemStack = new ItemStack(ForwardingHolder.withComponents(stack.item(), DataComponentMap.builder()
+                            .addAll(DataComponents.COMMON_ITEM_COMPONENTS)
+                            .set(DataComponents.ITEM_MODEL, stack.item().unwrapKey().orElseThrow().identifier())
+                            .build()
+                    ), 1, stack.components());
+                }
+            }
+
+            context.fakeItem(itemStack, x + 2, y + 2);
         }
     }
 }
