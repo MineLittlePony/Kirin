@@ -71,7 +71,7 @@ tasks.withType(JavaCompile) {
 tasks.modrinth {
     onlyIf {
       def stage = version.version.stage.value
-      (stage == null || stage.name != 'beta')
+      stage == null || stage.name != 'beta'
     }
 }
 
