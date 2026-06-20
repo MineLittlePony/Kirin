@@ -23,8 +23,8 @@ public class OutsideWorldRenderer {
     public static BlockEntityRenderDispatcher configure() {
         Minecraft mc = Minecraft.getInstance();
         BlockEntityRenderDispatcher dispatcher = mc.getBlockEntityRenderDispatcher();
-        dispatcher.prepare(mc.gameRenderer.getMainCamera().position());
-        mc.getEntityRenderDispatcher().prepare(mc.gameRenderer.getMainCamera(), mc.crosshairPickEntity);
+        dispatcher.prepare(mc.gameRenderer.mainCamera().position());
+        mc.getEntityRenderDispatcher().prepare(mc.gameRenderer.mainCamera(), mc.crosshairPickEntity);
 
         return dispatcher;
     }

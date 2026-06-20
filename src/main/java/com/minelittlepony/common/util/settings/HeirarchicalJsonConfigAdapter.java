@@ -7,7 +7,7 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonReader;
 import com.mojang.util.UUIDTypeAdapter;
 
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.resources.Identifier;
 import java.nio.file.Files;
 import java.nio.file.Path;

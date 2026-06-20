@@ -42,7 +42,7 @@ public class GameGui extends Screen {
      * @param title The screen's title
      */
     protected GameGui(Component title) {
-        this(title, Minecraft.getInstance().screen);
+        this(title, Minecraft.getInstance().gui.screen());
     }
 
     /**
@@ -102,7 +102,7 @@ public class GameGui extends Screen {
      */
     public void finish() {
         onClose();
-        minecraft.setScreen(parent);
+        minecraft.gui.setScreen(parent);
     }
 
     @Override

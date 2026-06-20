@@ -5,6 +5,8 @@ accessible          field    net/minecraft/client/gui/components/AbstractWidget 
 mutable             field    net/minecraft/client/gui/components/AbstractWidget        tooltip                  Lnet/minecraft/client/gui/components/WidgetTooltipHolder;
 
 accessible          class    net/minecraft/client/renderer/rendertype/RenderSetup$TextureBinding
+extendable          class    net/minecraft/core/Holder
+
 
 accessible          field    net/minecraft/client/renderer/rendertype/RenderType       state                    Lnet/minecraft/client/renderer/rendertype/RenderSetup;
 accessible          field    net/minecraft/client/renderer/rendertype/RenderSetup      textures                 Ljava/util/Map;

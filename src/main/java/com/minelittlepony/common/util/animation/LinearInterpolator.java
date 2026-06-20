@@ -4,14 +4,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class LinearInterpolator implements Interpolator {
     static LoadingCache<UUID, LinearInterpolator> instanceCache = CacheBuilder.newBuilder()
-        .expireAfterAccess(30, TimeUnit.SECONDS)
+        .expireAfterAccess(Duration.ofSeconds(30))
         .build(CacheLoader.from(LinearInterpolator::new));
 
     private final Map<String, Float> properties = new HashMap<>();

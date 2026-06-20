@@ -7,6 +7,7 @@ import com.minelittlepony.common.event.ScreenInitCallback;
 import com.minelittlepony.common.util.GamePaths.AssetsDirProvider;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 
 import java.nio.file.Path;
@@ -44,18 +45,19 @@ abstract class MixinMinecraft implements AssetsDirProvider {
     )
     private void onResizeGui(CallbackInfo ci) {
         Minecraft client = Minecraft.getInstance();
-        if (client.screen instanceof IViewRoot root) {
+        Screen screen = client.gui.screen();
+        if (screen instanceof IViewRoot root) {
             Bounds bounds = root.getBounds();
             bounds.width = client.getWindow().getGuiScaledWidth();
             bounds.height = client.getWindow().getGuiScaledHeight();
-            ScreenInitCallback.EVENT.invoker().init(client.screen, client.screen);
+            ScreenInitCallback.EVENT.invoker().init(screen, screen);
         }
     }
 
     @Inject(method = "runTick(Z)V", at = @At("HEAD"))
     public void onTick(CallbackInfo info) {
         Minecraft client = Minecraft.getInstance();
-        if (client.screen instanceof IViewRoot root) {
+        if (client.gui.screen() instanceof IViewRoot root) {
             root.getChildElements().forEach(element -> {
                 if (element instanceof ITickableElement t) {
                     t.tick();
