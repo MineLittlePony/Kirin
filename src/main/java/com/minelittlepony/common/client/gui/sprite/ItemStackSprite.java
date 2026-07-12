@@ -48,6 +48,7 @@ public class ItemStackSprite implements ISprite {
         render(context, x, y, mouseX, mouseY, tickDelta, 1);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void render(GuiGraphicsExtractor context, int x, int y, int mouseX, int mouseY, float tickDelta, float alpha) {
         if (alpha >= 0.5F && stack != null) {
@@ -55,11 +56,13 @@ public class ItemStackSprite implements ISprite {
                 if (stack.item().areComponentsBound()) {
                     itemStack = stack.create();
                 } else {
-                    itemStack = new ItemStack(ForwardingHolder.withComponents(stack.item(), DataComponentMap.builder()
+                    var baseComponents = DataComponentMap.builder()
                             .addAll(DataComponents.COMMON_ITEM_COMPONENTS)
                             .set(DataComponents.ITEM_MODEL, stack.item().unwrapKey().orElseThrow().identifier())
-                            .build()
-                    ), 1, stack.components());
+                            .build();
+                    itemStack = new ItemStack(ForwardingHolder.withComponents(stack.item(), baseComponents), 1, stack.components());
+                    // ensure components are bound
+                    itemStack.getItem().builtInRegistryHolder().bindComponents(baseComponents);
                 }
             }
 
